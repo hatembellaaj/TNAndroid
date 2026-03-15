@@ -1,0 +1,22 @@
+{
+  "slider": [
+    {
+      "title": "Maroc – Israël : Vers une reprise prochaine",
+      "image": "https://i.ibb.co/9pZr2X7/macron.jpg",
+      "category": "MONDE",
+      "date": "09 Novembre 2025"
+    },
+    {
+      "title": "Tunisie : Nouvelles annonces politiques",
+      "image": "https://i.ibb.co/7k0TvbV/tunisia-flag.jpg",
+      "category": "NEWS",
+      "date": "10 Novembre 2025"
+    },
+    {
+      "title": "Technologie : IA en 2025",
+      "image": "https://i.ibb.co/7pX1W8f/ai.jpg",
+      "category": "TECH",
+      "date": "11 Novembre 2025"
+    }
+  ]
+}

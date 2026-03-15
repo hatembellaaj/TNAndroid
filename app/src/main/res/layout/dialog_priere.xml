@@ -1,0 +1,153 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:orientation="vertical"
+    android:paddingLeft="20dp"
+    android:paddingTop="40dp"
+    android:paddingRight="20dp"
+    android:paddingBottom="40dp"
+    android:gravity="center_horizontal">
+
+
+    <LinearLayout
+        android:layout_width="@dimen/dialog_priere_width"
+        android:layout_height="wrap_content"
+        android:background="@drawable/bg_dialog_priere"
+        android:gravity="center"
+        android:orientation="vertical"
+        android:paddingBottom="24dp"
+        >
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="32dp"
+                android:gravity="right"
+
+                >
+                <ImageView
+                    android:id="@+id/close_popup"
+                    android:layout_marginRight="8.00dp"
+                    android:layout_marginTop="8.00dp"
+                    android:layout_width="25.00dp"
+                    android:visibility="gone"
+                    android:layout_height="20.00dp"
+                    app:srcCompat="@drawable/ic_icon_close"/>
+            </LinearLayout>
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center_horizontal"
+                android:paddingRight="24dp"
+                android:paddingLeft="24dp"
+                >
+                <com.mdweb.tunnumerique.tools.style.TextViewTypo
+                    android:id="@+id/dialog_title"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/title_dialog_priere"
+                    android:textColor="@color/black_color"
+                    android:gravity="center"
+                    app:sizeTypoText="19"
+                    app:styleTypoText="medium" />
+
+            </LinearLayout>
+        </LinearLayout>
+
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_marginBottom="20dp"
+            android:gravity="center">
+
+        </LinearLayout>
+        <LinearLayout
+            android:id="@+id/search_layout"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:layout_marginRight="24dp"
+            android:layout_marginLeft="24dp"
+            android:visibility="gone"
+            android:layout_marginBottom="20dp"
+            android:gravity="center"
+            android:background="@drawable/bg_dialog_filter">
+
+            <LinearLayout
+                android:id="@+id/back_icon"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:clickable="true"
+                android:layout_marginLeft="11dp"
+                android:layout_marginRight="3dp"
+                android:focusable="true"
+                android:gravity="center"
+                android:orientation="horizontal">
+
+                <ImageView
+                    android:layout_margin="5.00dp"
+                    android:layout_width="20.00dp"
+                    android:layout_height="18.00dp"
+                    app:srcCompat="@drawable/ic_icon_search"/>
+            </LinearLayout>
+
+
+            <EditText
+
+                android:gravity="start|center"
+                android:id="@+id/search_text"
+                android:layout_width="0dp"
+                android:layout_height="50dp"
+                android:paddingRight="5dp"
+                android:layout_weight="1"
+                android:background="@null"
+                android:focusable="true"
+                android:hint="@string/hint_search"
+                android:maxLines="1"
+                android:lines="1"
+                android:inputType="text"
+                android:textColor="#000"
+                android:backgroundTint="#f5f5f5"
+                android:textColorHint="@color/bg_search_icon"
+                android:imeOptions="actionSearch"
+                android:textSize="14dp"
+                tools:ignore="RtlSymmetry" />
+            <LinearLayout
+                android:layout_margin="5dp"
+                android:id="@+id/clear_text"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:clickable="true"
+                android:visibility="gone"
+                android:focusable="true"
+                android:gravity="center"
+                android:orientation="horizontal"
+                >
+                <TextView
+                    android:textSize="12dp"
+                    android:layout_margin="10dp"
+                    android:layout_width="wrap_content"
+                    android:gravity="center_vertical|center_horizontal"
+                    android:layout_height="18.00dp"
+                    android:text="@string/annuler" />
+            </LinearLayout>
+
+        </LinearLayout>
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/recycler"
+            android:scrollbars="vertical"
+            android:fadeScrollbars="false"
+            android:scrollbarThumbVertical="@drawable/scrollbar"
+            android:layout_width="match_parent"
+            android:paddingLeft="24dp"
+            android:paddingRight="24dp"
+            android:layout_height="match_parent"></androidx.recyclerview.widget.RecyclerView>
+    </LinearLayout>
+</LinearLayout>

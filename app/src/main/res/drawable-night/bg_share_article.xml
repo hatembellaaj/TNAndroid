@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<selector xmlns:android="http://schemas.android.com/apk/res/android"
+    >
+    <!-- We make the pressed and focused selector items transparent so the ListView's own selector states show through. -->
+    <item android:state_pressed="false"
+        android:drawable="@drawable/ic_share_off" /> <!-- pressed -->
+
+    <item android:state_pressed="true"
+        android:drawable="@drawable/ic_share_article"
+        />
+    <item android:state_focused="true"
+        android:drawable="@drawable/ic_share_article"
+        />
+
+</selector>

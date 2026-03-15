@@ -1,0 +1,195 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:ads="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <com.huawei.hms.ads.banner.BannerView
+            xmlns:hwads="http://schemas.android.com/apk/res-auto"
+            android:id="@+id/hw_banner_view"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            hwads:adId="l4yj9fiyhp"
+            android:visibility="visible"
+            hwads:bannerSize="BANNER_SIZE_320_100" >
+        </com.huawei.hms.ads.banner.BannerView>
+        <!--<WebView-->
+        <!--android:id="@+id/web_view_pub"-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:clickable="false"-->
+        <!--android:layout_height="120dp"/>-->
+        <LinearLayout
+            android:id="@+id/content_item_pub"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:visibility="visible"
+            android:orientation="horizontal" />
+    </FrameLayout>
+
+    <ImageView
+        android:id="@+id/image_header_theme"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/height_pub"
+        android:src="@drawable/header_pub"
+        android:visibility="visible" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:paddingTop="12dp"
+        android:orientation="vertical"
+        android:paddingRight="24dp"
+        android:paddingLeft="24dp">
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+            <RelativeLayout
+                android:id="@+id/filter_select_country"
+                android:layout_width="0px"
+                android:layout_height="@dimen/baniaire_horaire"
+                android:layout_weight="1"
+                android:layout_marginLeft="12dp"
+                android:background="@drawable/bg_select_items"
+                android:gravity="center_vertical">
+
+                <com.mdweb.tunnumerique.tools.style.TextViewTypo
+                    android:id="@+id/country_name"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="20dp"
+
+                    android:textColor="@color/black_color"
+                    app:sizeTypoText="18"
+                    app:styleTypoText="book" />
+
+                <ImageView
+                    android:layout_width="15dp"
+                    android:layout_height="15dp"
+                    android:layout_alignTop="@+id/country_name"
+                    android:layout_alignParentEnd="true"
+                    android:layout_centerVertical="true"
+                    android:layout_marginTop="14dp"
+                    android:layout_marginEnd="12dp"
+                    android:layout_marginRight="3dp"
+                    android:src="@drawable/ic_arrow_down_sign_to_navigate"
+                    app:tint="@color/black_color" />
+            </RelativeLayout>
+        <RelativeLayout
+            android:id="@+id/filter_select_zone"
+            android:layout_width="0px"
+            android:layout_height="@dimen/baniaire_horaire"
+            android:layout_weight="1"
+            android:background="@drawable/bg_select_items"
+            android:gravity="center_vertical">
+
+            <com.mdweb.tunnumerique.tools.style.TextViewTypo
+                android:id="@+id/zone_name"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="14dp"
+
+                android:ellipsize="end"
+                android:ems="4"
+                android:gravity="right"
+                android:maxLines="1"
+                android:textColor="@color/black_color"
+                app:sizeTypoText="18"
+                app:styleTypoText="book" />
+
+            <ImageView
+                android:layout_width="15dp"
+                android:layout_height="15dp"
+                android:layout_alignTop="@+id/zone_name"
+                android:layout_alignParentEnd="true"
+                android:layout_centerVertical="true"
+                android:layout_marginTop="14dp"
+                android:layout_marginEnd="12dp"
+                android:layout_marginRight="3dp"
+                android:src="@drawable/ic_arrow_down_sign_to_navigate"
+                app:tint="@color/black_color" />
+        </RelativeLayout>
+        </LinearLayout>
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/baniaire_horaire"
+            android:layout_marginTop="12dp"
+            android:background="@drawable/bg_selected_date"
+
+            >
+
+            <ImageView
+                android:id="@+id/back_page"
+                android:layout_width="25dp"
+                android:layout_height="30dp"
+                android:layout_alignParentStart="true"
+                android:layout_centerVertical="true"
+                android:layout_marginStart="11dp"
+
+                android:padding="5dp"
+                android:src="@drawable/ic_next"
+                android:visibility="visible" />
+
+            <com.mdweb.tunnumerique.tools.style.TextViewTypo
+                android:id="@+id/current_date"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerInParent="true"
+                android:text="01/12/2016"
+                android:textColor="#fff"
+                app:sizeTypoText="20"
+                app:styleTypoText="heavy" />
+
+            <ImageView
+                android:id="@+id/next_page"
+                android:layout_width="25dp"
+                android:layout_height="30dp"
+                android:layout_alignParentEnd="true"
+                android:layout_centerVertical="true"
+                android:layout_marginEnd="11dp"
+                android:padding="5dp"
+                android:src="@drawable/ic_back_white" />
+        </RelativeLayout>
+        <androidx.viewpager.widget.ViewPager
+            android:id="@+id/view_pager"
+            android:layoutDirection="rtl"
+            android:visibility="visible"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+        </androidx.viewpager.widget.ViewPager>
+
+        <LinearLayout
+            android:id="@+id/no_priere"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="0.33"
+            android:orientation="vertical"
+            android:visibility="gone"
+            android:gravity="center_horizontal">
+            <ImageView
+                android:layout_width="120dp"
+                android:layout_height="120dp"
+                android:src="@drawable/icon_info"/>
+            <com.mdweb.tunnumerique.tools.style.TextViewTypo
+                android:layout_width="match_parent"
+                android:gravity="center"
+                android:layout_height="wrap_content"
+                android:paddingLeft="16dp"
+                android:paddingRight="16dp"
+                app:styleTypoText="oblique"
+                app:sizeTypoText="17"
+
+                android:textColor="@color/color_default_text"
+                android:text="@string/text_vide"/>
+        </LinearLayout>
+
+    </LinearLayout>
+
+</LinearLayout>

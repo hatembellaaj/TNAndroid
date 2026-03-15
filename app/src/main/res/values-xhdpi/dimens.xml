@@ -1,0 +1,15 @@
+<resources>
+    <!-- Default screen margins, per the Android Design guidelines. -->
+    <dimen name="activity_horizontal_margin">16dp</dimen>
+    <dimen name="activity_vertical_margin">16dp</dimen>
+    <dimen name="margin_contact">15dp</dimen>
+    <dimen name="marginto_contact">15dp</dimen>
+    <dimen name="dimens_icon_contact">25dp</dimen>
+    <dimen name="heder_image_heigt">260dp</dimen>
+    <dimen name="height_image_filter">350dp</dimen>
+    <dimen name="item_menu_height">45dp</dimen>
+    <dimen name="baniaire_horaire">60dp</dimen>
+    <dimen name="height_pub">140dp</dimen>
+    <dimen name="dialog_priere_title">26dp</dimen>
+    <dimen name="dialog_priere_width">320dp</dimen>
+</resources>

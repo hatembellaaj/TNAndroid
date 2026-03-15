@@ -1,0 +1,1 @@
+package com.mdweb.tunnumerique.tools.application;public final class AnalyticsTrackers {}

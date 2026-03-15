@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:padding="12dp"
+    android:layout_marginBottom="20dp"
+    android:elevation="4dp">
+
+    <!-- Catégorie : ici tu mets "A LA UNE", "Monde +", etc -->
+    <TextView
+        android:id="@+id/tvCategorie"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="A LA UNE"
+        android:textStyle="bold"
+        android:textSize="14sp"
+        android:textColor="#778" />
+
+    <!-- Barre verte -->
+    <View
+        android:id="@+id/barCategorie"
+        android:layout_width="40dp"
+        android:layout_height="4dp"
+        android:background="#63B833"
+        android:layout_marginTop="4dp"
+        android:layout_marginBottom="8dp" />
+
+    <ImageView
+        android:id="@+id/imgNews"
+        android:layout_width="match_parent"
+        android:layout_height="200dp"
+        android:scaleType="centerCrop"
+        android:src="@drawable/bg_sport" />
+
+    <TextView
+        android:id="@+id/tvTitre"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Titre ici"
+        android:textStyle="bold"
+        android:textSize="15sp"
+        android:layout_marginTop="12dp" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_marginTop="4dp"
+        android:gravity="center_vertical">
+
+        <TextView
+            android:id="@+id/tvDate"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="09 Novembre 2025"
+            android:textColor="#777" />
+
+        <View
+            android:layout_width="0dp"
+            android:layout_height="1dp"
+            android:layout_weight="1" />
+
+        <ImageView
+            android:id="@+id/save"
+            android:layout_width="22dp"
+            android:layout_height="22dp"
+            android:src="@drawable/save" />
+
+
+        <ImageView
+            android:id="@+id/shareBtn"
+            android:layout_width="22dp"
+            android:layout_height="22dp"
+            android:layout_marginLeft="12dp"
+            android:src="@drawable/ic_share" />
+
+    </LinearLayout>
+
+</LinearLayout>

@@ -1,0 +1,114 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_marginLeft="20dp"
+    android:layout_marginRight="20dp"
+    android:layout_height="match_parent">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:orientation="vertical"
+        android:layout_gravity="center"
+        android:background="@drawable/selector_popup_photo"
+        android:layout_height="240dp">
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="0.5"
+            android:orientation="vertical"
+            android:gravity="center">
+            <com.mdweb.tunnumerique.tools.style.TextViewTypo
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:layout_marginEnd="15dp"
+                android:layout_marginStart="15dp"
+                app:sizeTypoText="18"
+                android:textColor="@color/black_color"
+                app:styleTypoText="oblique"
+                android:text="@string/text_call_part1"/>
+            <com.mdweb.tunnumerique.tools.style.TextViewTypo
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:textColor="@color/black_color"
+
+                android:layout_marginRight="15dp"
+                android:layout_marginLeft="15dp"
+                app:sizeTypoText="18"
+                app:styleTypoText="oblique"
+                android:text="@string/text_call_part2"/>
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layoutDirection="ltr"
+                android:orientation="horizontal">
+                <com.mdweb.tunnumerique.tools.style.TextViewTypo
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center"
+                    app:sizeTypoText="18"
+                    android:textColor="@color/black_color"
+
+                    app:styleTypoText="oblique"
+                    android:text="@string/phone_part1"/>
+                <com.mdweb.tunnumerique.tools.style.TextViewTypo
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center"
+                    android:layout_marginStart="4dp"
+                    app:sizeTypoText="18"
+                    app:styleTypoText="oblique"
+                    android:textColor="@color/text_numero"
+                    android:text="@string/phone_part2"/>
+            </LinearLayout>
+
+        </LinearLayout>
+
+
+
+        <View
+            android:background="@color/devider_params"
+            android:layout_width="match_parent"
+            android:layout_height="1dp"/>
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="0.2"
+            android:layoutDirection="ltr"
+
+            android:orientation="horizontal"
+            android:background="@drawable/bg_dialog_call">
+            <com.mdweb.tunnumerique.tools.style.TextViewTypo
+                android:id="@+id/cancel"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="0.5"
+                android:gravity="center"
+                app:sizeTypoText="18"
+                android:layout_marginRight="10dp"
+                app:styleTypoText="oblique"
+                android:textColor="@color/black_color"
+                android:text="@string/annuler"/>
+<!--            <View-->
+<!--                android:layout_width="1dp"-->
+<!--                android:layout_height="match_parent"-->
+<!--                android:background="@color/color_separ"/>-->
+            <com.mdweb.tunnumerique.tools.style.TextViewTypo
+                android:id="@+id/send_call"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="0.5"
+                android:gravity="center"
+                app:sizeTypoText="18"
+                android:layout_marginRight="10dp"
+                app:styleTypoText="oblique"
+                android:textColor="@color/text_numero"
+                android:text="@string/ok"/>
+        </LinearLayout>
+
+    </LinearLayout>
+
+</RelativeLayout>

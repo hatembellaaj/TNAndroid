@@ -1,0 +1,138 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/bottom_sheet"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/bg_bottom_sheet"
+    android:orientation="vertical"
+    android:padding="8dp"
+    app:behavior_hideable="true"
+    app:behavior_peekHeight="90dp"
+    app:layout_behavior="com.google.android.material.bottomsheet.BottomSheetBehavior">
+
+    <LinearLayout
+        android:layout_width="50dp"
+        android:layout_height="5dp"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginTop="5dp"
+        android:background="@drawable/bg_line" />
+
+    <com.mdweb.tunnumerique.tools.style.TextViewTypo
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="12dp"
+        android:gravity="center"
+        android:text="@string/choix_de_langues"
+        android:textColor="@color/black_color" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="32dp"
+        android:layoutDirection="ltr"
+        android:layout_marginTop="32dp"
+        android:layout_marginRight="32dp"
+        android:gravity="center">
+
+        <LinearLayout
+            android:id="@+id/layout_fr"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/btnfr"
+                android:layout_width="52dp"
+                android:layout_height="52dp"
+                android:background="@drawable/bg_selected_lng_off"
+                android:gravity="center"
+                android:text="Fr"
+                android:textColor="@color/white_color"
+                android:textSize="16sp" />
+
+            <TextView
+                android:id="@+id/fr"
+                android:layout_width="65dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="4dp"
+                android:layout_marginLeft="-5dp"
+                android:gravity="center"
+                android:textSize="13sp"
+                android:text="Français"
+                android:textColor="@color/black_color" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/layout_en"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/btnEn"
+                android:layout_width="52dp"
+                android:layout_height="52dp"
+                android:layout_marginTop="4dp"
+                android:background="@drawable/bg_selected_lng"
+                android:gravity="center"
+                android:text="En"
+                android:textColor="@color/white_color"
+                android:textSize="16sp" />
+
+            <TextView
+                android:id="@+id/en"
+                android:layout_width="52dp"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:text="English" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/layout_ar"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/btnar"
+                android:layout_width="52dp"
+                android:layout_height="52dp"
+                android:background="@drawable/bg_selected_lng"
+                android:gravity="center"
+                android:text="ع"
+                android:textColor="@color/white_color"
+                android:textSize="16sp" />
+
+            <TextView
+                android:id="@+id/ar"
+                android:layout_width="52dp"
+                android:layout_height="wrap_content"
+
+                android:layout_marginTop="-8dp"
+                android:gravity="center"
+                android:text="عربي"
+                android:textColor="@color/black_color" />
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+    <androidx.appcompat.widget.AppCompatButton
+        android:id="@+id/validateBtn"
+        android:layout_width="match_parent"
+        android:layout_height="52dp"
+        android:layout_marginLeft="52dp"
+        android:layout_marginTop="32dp"
+        android:layout_marginRight="52dp"
+        android:layout_marginBottom="24dp"
+        android:background="@drawable/bg_valid_btn"
+        android:text="@string/valider"
+        android:textAllCaps="false"
+        android:textColor="#fff"
+        android:textSize="16sp" />
+
+
+</LinearLayout>

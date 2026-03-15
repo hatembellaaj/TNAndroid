@@ -1,0 +1,15 @@
+{
+  "slider": [
+    { "imageUrl": "https://picsum.photos/800/400" },
+    { "imageUrl": "https://picsum.photos/801/400" }
+  ],
+  "sections": [
+    {
+      "title": "A LA UNE",
+      "articles": [
+        { "title": "Title 1", "imageUrl": "https://picsum.photos/200/300" },
+        { "title": "Title 2", "imageUrl": "https://picsum.photos/201/300" }
+      ]
+    }
+  ]
+}

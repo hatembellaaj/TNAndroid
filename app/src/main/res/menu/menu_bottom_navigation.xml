@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:id="@+id/nav_home"
+        android:icon="@drawable/ic_home"
+        android:title="Home" />
+
+    <item
+        android:id="@+id/nav_horaires"
+        android:icon="@drawable/ic_priere"
+        android:title="Horaires de Prière" />
+
+    <item
+        android:id="@+id/nav_enregistres"
+        android:icon="@drawable/ic_saved"
+        android:title="Enregistrés" />
+
+    <item
+        android:id="@+id/nav_top24"
+        android:icon="@drawable/top_24"
+        android:title="Top24" />
+</menu>

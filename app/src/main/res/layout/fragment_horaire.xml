@@ -1,0 +1,216 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:layoutDirection="ltr"
+
+    android:orientation="vertical"
+    android:paddingTop="24dp">
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="7dp">
+        <com.mdweb.tunnumerique.tools.style.TextViewTypo
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/horaires_prieres"
+            android:textColor="@color/black_color"
+            android:paddingLeft="5dp"
+            app:sizeTypoText="20"
+            app:styleTypoText="book" />
+
+    </LinearLayout>
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:scrollbars="none">
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/baniaire_horaire"
+        android:background="@drawable/bg_prieres_items"
+        android:gravity="center_vertical"
+        android:layout_marginBottom="10dp"
+        android:paddingLeft="5dp">
+        <ImageView
+            android:layout_width="60dp"
+            android:layout_height="50dp"
+            android:src="@drawable/ic_sobh"
+            />
+
+        <com.mdweb.tunnumerique.tools.style.TextViewTypo
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/al_sobh"
+            android:textColor="@color/black_color"
+            app:sizeTypoText="18"
+            app:styleTypoText="book" />
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="right"
+        android:paddingRight="24dp">
+        <com.mdweb.tunnumerique.tools.style.TextViewTypo
+            android:id="@+id/fajer"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="05:41"
+            android:textColor="@color/black_color"
+            app:sizeTypoText="18"
+            app:styleTypoText="book" />
+    </LinearLayout>
+    </LinearLayout>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/baniaire_horaire"
+        android:background="@drawable/bg_prieres_items"
+        android:gravity="center_vertical"
+        android:layout_marginBottom="10dp"
+        android:paddingLeft="5dp">
+        <ImageView
+            android:layout_width="60dp"
+            android:layout_height="50dp"
+            android:src="@drawable/ic_dhohr"
+            />
+
+        <com.mdweb.tunnumerique.tools.style.TextViewTypo
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/al_dhohr"
+            android:textColor="@color/black_color"
+            app:sizeTypoText="18"
+            app:styleTypoText="book" />
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="right"
+            android:paddingRight="24dp">
+        <com.mdweb.tunnumerique.tools.style.TextViewTypo
+            android:id="@+id/dhohor"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="05:41"
+            android:textColor="@color/black_color"
+            app:sizeTypoText="18"
+            app:styleTypoText="book" />
+        </LinearLayout>
+    </LinearLayout>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/baniaire_horaire"
+        android:background="@drawable/bg_prieres_items"
+        android:gravity="center_vertical"
+        android:layout_marginBottom="10dp"
+        android:paddingLeft="5dp">
+        <ImageView
+            android:layout_width="60dp"
+            android:layout_height="50dp"
+            android:src="@drawable/ic_asr"
+            />
+
+        <com.mdweb.tunnumerique.tools.style.TextViewTypo
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/al_asr"
+            android:textColor="@color/black_color"
+            app:sizeTypoText="18"
+            app:styleTypoText="book" />
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="right"
+            android:paddingRight="24dp">
+
+        <com.mdweb.tunnumerique.tools.style.TextViewTypo
+            android:id="@+id/aser"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="05:41"
+            android:textColor="@color/black_color"
+            app:sizeTypoText="18"
+            app:styleTypoText="book" />
+        </LinearLayout>
+    </LinearLayout>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/baniaire_horaire"
+        android:background="@drawable/bg_prieres_items"
+        android:gravity="center_vertical"
+        android:layout_marginBottom="10dp"
+        android:paddingLeft="5dp"
+      >
+        <ImageView
+            android:layout_width="60dp"
+            android:layout_height="50dp"
+            android:src="@drawable/ic_moghreb"
+            />
+
+        <com.mdweb.tunnumerique.tools.style.TextViewTypo
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/al_maghreb"
+            android:textColor="@color/black_color"
+            app:sizeTypoText="18"
+            app:styleTypoText="book" />
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="right"
+            android:paddingRight="24dp">
+        <com.mdweb.tunnumerique.tools.style.TextViewTypo
+            android:id="@+id/maghreb"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="05:41"
+            android:textColor="@color/black_color"
+            app:sizeTypoText="18"
+            app:styleTypoText="book" />
+        </LinearLayout>
+    </LinearLayout>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/baniaire_horaire"
+        android:background="@drawable/bg_prieres_items"
+        android:gravity="center_vertical"
+        android:layout_marginBottom="10dp"
+        android:paddingLeft="5dp">
+        <ImageView
+            android:layout_width="60dp"
+            android:layout_height="50dp"
+            android:src="@drawable/ic_ichaa"
+            />
+
+        <com.mdweb.tunnumerique.tools.style.TextViewTypo
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/al_icha"
+            android:textColor="@color/black_color"
+            app:sizeTypoText="18"
+            app:styleTypoText="book" />
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="right"
+            android:paddingRight="24dp">
+
+        <com.mdweb.tunnumerique.tools.style.TextViewTypo
+            android:id="@+id/icha"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="05:41"
+            android:textColor="@color/black_color"
+            app:sizeTypoText="18"
+            app:styleTypoText="book" />
+        </LinearLayout>
+    </LinearLayout>
+    </LinearLayout>
+    </ScrollView>
+</LinearLayout>

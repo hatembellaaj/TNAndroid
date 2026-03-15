@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="colorPrimary">#00000000</color>
+    <color name="colorPrimaryDark">#292d37</color>
+    <color name="colorAccent">#06C750</color>
+
+    <color name="green_color">#36C750</color>
+    <color name="green_color_tittle">#fff</color>
+    <color name="green_color_icon">#fff</color>
+
+    <color name="color_background">#5b5f6a</color>
+    <color name="color_divider">#5b5f6a</color>
+    <color name="color_background_guide">#F7F7F7</color>
+    <color name="red_color">#ed1c24</color>
+    <color name="black_color">#FFF</color>
+    <color name="white_color">#292d37</color>
+    <color name="color_separ">#96eaa5</color>
+    <color name="transparent_color">#00000000</color>
+    <color name="color_date_news">#848589</color>
+    <color name="color_backg_share_img">#dcdcdc</color>
+    <color name="color_default_text">#ffffff</color>
+
+    <!-- color filter-->
+    <color name="color_sport">#d3275f</color>
+    <color name="color_politique">#df0e22</color>
+    <color name="color_company">#0ea6df</color>
+    <color name="color_economie">#b00edf</color>
+    <color name="color_sante">#292d37</color>
+    <color name="color_hi_tech">#ff5400</color>
+    <color name="color_earning">#10e5e2</color>
+    <color name="color_bg_notification_ecran">#99000000</color>
+    <color name="transparent">#00000000</color>
+
+    <color name="text_numero">#36C750</color>
+    <color name="green_ok">#36C750</color>
+    <color name="transparent_color_pop">#5b5f6a</color>
+    <color name="bg_note_color">#494c55</color>
+
+
+
+    <color name="shimmer_placeholder">#dddddd</color>
+    <color name="toolbar_color">#292d37</color>
+    <color name="green_header_details">#292d37</color>
+    <color name="color_text_switch">#FFF</color>
+    <color name="color_horaire">#5b5f6a</color>
+    <color name="devider_params">#5b5f6a</color>
+    <color name="greenSplash">#FFF</color>
+    <color name="tint_color_fav">#FFF</color>
+    <color name="check_box_color">#aaaaaa</color>
+    <color name="text_color_off">#5B5F6A</color>
+    <color name="bg_off_lng_color">#5B5F6A</color>
+    <color name="bg_close_btn">#ffffff</color>
+    <color name="bg_search_icon">#9599a2</color>
+
+</resources>

@@ -1,0 +1,203 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <uses-permission
+        android:name="android.permission.MOUNT_UNMOUNT_FILESYSTEMS"
+        tools:ignore="ProtectedPermissions" />
+    <uses-permission android:name="android.permission.CHANGE_WIFI_STATE" />
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.VIBRATE" />
+
+
+    <application
+        android:name=".tools.application.Application"
+        android:allowBackup="false"
+        android:hardwareAccelerated="true"
+        android:icon="@mipmap/ic_launcher"
+        android:label="@string/app_name"
+        android:largeHeap="true"
+        android:resizeableActivity="false"
+        android:supportsRtl="true"
+        android:theme="@style/AppTheme"
+        android:usesCleartextTraffic="true">
+        <uses-library
+            android:name="org.apache.http.legacy"
+            android:required="false" />
+        <meta-data
+            android:name="install_channel"
+            android:value="TunisieNumerique">
+        </meta-data>
+        <provider
+            android:name="androidx.core.content.FileProvider"
+            android:authorities="${applicationId}.provider"
+            android:exported="false"
+            android:grantUriPermissions="true">
+            <meta-data
+                android:name="android.support.FILE_PROVIDER_PATHS"
+                android:resource="@xml/provider_paths" />
+        </provider>
+
+        <activity
+            android:name=".ui.activitys.MainActivity"
+            android:exported="false"
+            android:launchMode="singleTop"
+            android:configChanges="uiMode|locale|layoutDirection"
+            android:screenOrientation="portrait" />
+        <activity android:name=".ui.activitys.ArticleDetailActivity" />
+        <activity android:name=".ui.activitys.CategoryNewsActivity" />
+
+        <activity
+            android:name=".ui.activitys.PlusLusActivity"
+            android:exported="true">
+        </activity>
+
+        <activity
+            android:name=".ui.activitys.FavorisActivity"
+            android:exported="true">
+        </activity>
+
+        <activity
+            android:name=".ui.activitys.HomeTnActivity"
+            android:exported="true">
+            <!-- Si vous voulez que ce soit l'activité de démarrage, ajoutez : -->
+
+        </activity>
+        <activity
+            android:name=".ui.activitys.SplashScreenActivity"
+            android:exported="true"
+            android:launchMode="singleTop"
+            android:noHistory="false"
+            android:resizeableActivity="false"
+            android:screenOrientation="portrait">
+
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+        <activity
+            android:name=".ui.activitys.GuideActivity"
+            android:launchMode="singleTop"
+            android:screenOrientation="portrait" />
+
+        <activity
+            android:name=".ui.activitys.LangueActivity"
+            android:launchMode="singleTop"
+            android:configChanges="uiMode"
+
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".ui.activitys.EnqueteActivity"
+            android:theme="@style/Theme.Transparent" />
+        <activity
+            android:name=".ui.activitys.DetailsArticleActivity"
+            android:exported="false"
+            android:configChanges="uiMode"
+
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".ui.activitys.DetailsVideoActivity"
+            android:launchMode="singleTop"
+            android:configChanges="uiMode"
+
+            android:screenOrientation="portrait" />
+
+        <activity
+            android:name=".ui.activitys.DetailsBlagueActivity"
+            android:launchMode="singleTop"
+            android:configChanges="uiMode"
+            android:screenOrientation="portrait" />
+        <!--
+ ATTENTION: This was auto-generated to add Google Play services to your project for
+     App Indexing.  See https://g.co/AppIndexing/AndroidStudio for more information.
+        -->
+        <meta-data
+            android:name="com.google.android.gms.version"
+            android:value="@integer/google_play_services_version" />
+        <meta-data
+            android:name="com.onesignal.NotificationOpened.DEFAULT"
+            android:value="DISABLE" />
+
+        <meta-data
+            android:name="android.webkit.WebView.EnableSafeBrowsing"
+            android:value="true" />
+
+        <activity
+            android:name=".ui.activitys.FilterArticleActivity"
+            android:label="@string/title_activity_filter_article"
+            android:launchMode="singleTop"
+            android:screenOrientation="portrait"
+            android:theme="@style/AppTheme" />
+
+        <service
+            android:name=".services.ServiceSynchronisation"
+            android:enabled="true"
+            android:exported="true"
+            android:permission="android.permission.BIND_JOB_SERVICE" />
+        <service
+            android:name=".services.YourHmsMessageService"
+            android:exported="false">
+
+            <intent-filter>
+                <action android:name="com.huawei.push.action.MESSAGING_EVENT" />
+            </intent-filter>
+
+        </service>
+
+        <!--        <meta-data android:name="com.onesignal.NotificationServiceExtension"-->
+        <!--            android:value="com.mdweb.tunnumerique.tools.application.ExampleNotificationReceivedHandler" />-->
+
+        <meta-data android:name="com.onesignal.NotificationServiceExtension"
+            android:value="com.mdweb.tunnumerique.services.NotificationExtenderAndroid" />
+        <receiver
+            android:name=".ui.fragments.ActualiteFragment$MyReceiver"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="com.mdweb.tn.refresh" />
+            </intent-filter>
+
+
+        </receiver>
+
+        <receiver
+            android:name=".tools.application.Application$ReceiverRequete"
+            android:exported="false">
+
+            <!--<intent-filter>-->
+            <!--<action android:name="com.example.app.START_SERVICE" />-->
+            <!--</intent-filter>-->
+            <!--<intent-filter>-->
+            <!--<action android:name="com.example.app.STOP_SERVICE" />-->
+            <!--</intent-filter>-->
+
+
+        </receiver>
+
+        <activity
+            android:name=".ui.activitys.DetailArticleFragment"
+            android:exported="false"
+            android:launchMode="singleTop"
+            android:configChanges="uiMode"
+
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".ui.activitys.NotificationActivity"
+            android:exported="false"
+            android:launchMode="singleTop"
+            android:theme="@style/ThemeTransparent" />
+
+
+
+    </application>
+    <queries>
+        <intent>
+            <action android:name="com.google.android.youtube.api.service.START" />
+        </intent>
+    </queries>
+</manifest>

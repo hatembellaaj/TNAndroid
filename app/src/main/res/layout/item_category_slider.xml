@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:paddingTop="16dp"
+    android:paddingBottom="0dp"
+    android:background="#FFFFFF">
+
+    <!-- Titre catégorie + barre horizontale centrée sur le mot -->
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingStart="16dp"
+        android:paddingEnd="16dp"
+        android:paddingBottom="16dp">
+
+        <TextView
+            android:id="@+id/categoryTitle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="MONDE"
+            android:textSize="11sp"
+            android:textColor="#FF0C0805"
+            android:textStyle="bold"
+            android:fontFamily="sans-serif-bold"
+            android:letterSpacing="0.05"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent" />
+
+        <!-- Barre verte horizontale ALIGNÉE AU CENTRE DU TEXTE -->
+        <View
+            android:id="@+id/barCategorie"
+            android:layout_width="30dp"
+            android:layout_height="4dp"
+            android:layout_marginStart="4dp"
+            android:background="@drawable/bg_bar_categorie"
+            app:layout_constraintStart_toEndOf="@id/categoryTitle"
+            app:layout_constraintTop_toTopOf="@id/categoryTitle"
+            app:layout_constraintBottom_toBottomOf="@id/categoryTitle" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <!-- Slider -->
+    <androidx.viewpager2.widget.ViewPager2
+        android:id="@+id/itemSliderViewPager"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+
+    <!-- TRAIT DE SÉPARATION ENTRE LES CATÉGORIES - ESPACE MINIMAL -->
+    <View
+        android:id="@+id/categoryDivider"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_marginTop="0dp"
+        android:layout_marginBottom="0dp"
+
+        android:background="#E2E2E2"/>
+
+</LinearLayout>

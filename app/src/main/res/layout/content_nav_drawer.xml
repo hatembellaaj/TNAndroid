@@ -1,0 +1,291 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/white_color">
+
+
+    <LinearLayout
+        android:id="@+id/designed"
+        android:layout_width="match_parent"
+        android:layout_height="40dp"
+        android:layout_alignParentBottom="true"
+        android:orientation="vertical">
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="@color/color_background" />
+
+        <com.mdweb.tunnumerique.tools.style.TextViewTypo
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:gravity="center"
+            android:text="mdweb © 2022"
+            android:textColor="@color/color_default_text"
+            app:bilingual="false"
+            app:styleTypoText="book" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_above="@id/designed"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentLeft="true"
+
+        android:layout_alignParentTop="true"
+        android:orientation="vertical">
+
+        <include layout="@layout/nav_header_main" />
+
+        <ScrollView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_above="@+id/designed">
+
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="15dp"
+                android:orientation="vertical"
+                android:paddingStart="40dp">
+
+                <LinearLayout
+                    android:id="@+id/actualite"
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/item_menu_height"
+                    android:gravity="center_vertical">
+
+                    <ImageView
+                        android:layout_width="30dp"
+                        android:layout_height="30dp"
+                        android:src="@drawable/icon_actu" />
+
+                    <com.mdweb.tunnumerique.tools.style.TextViewTypo
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="15dp"
+                        android:text="@string/actualite"
+                        android:textColor="@color/black_color"
+                        app:sizeTypoText="17"
+                        app:styleTypoText="book" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/dossiers"
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/item_menu_height"
+                    android:gravity="center_vertical">
+
+                    <ImageView
+                        android:layout_width="30dp"
+                        android:layout_height="30dp"
+                        android:src="@drawable/icon_dossier" />
+
+                    <com.mdweb.tunnumerique.tools.style.TextViewTypo
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="15dp"
+                        android:text="@string/dossiers_menu"
+                        android:textColor="@color/black_color"
+                        app:sizeTypoText="17"
+                        app:styleTypoText="book" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/plus_lus"
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/item_menu_height"
+                    android:gravity="center_vertical">
+
+                    <ImageView
+                        android:layout_width="30dp"
+                        android:layout_height="30dp"
+                        android:src="@drawable/icon_plu_lu" />
+
+                    <com.mdweb.tunnumerique.tools.style.TextViewTypo
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="15dp"
+                        android:text="@string/les_plus_lus_menu"
+                        android:textColor="@color/black_color"
+                        app:sizeTypoText="17"
+                        app:styleTypoText="book" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/videos"
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/item_menu_height"
+                    android:gravity="center_vertical">
+
+                    <ImageView
+                        android:layout_width="30dp"
+                        android:layout_height="30dp"
+                        android:src="@drawable/icon_video" />
+
+                    <com.mdweb.tunnumerique.tools.style.TextViewTypo
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="15dp"
+                        android:text="@string/videos_menu"
+                        android:textColor="@color/black_color"
+                        app:sizeTypoText="17"
+                        app:styleTypoText="book" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/blague"
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/item_menu_height"
+                    android:gravity="center_vertical">
+
+                    <ImageView
+                        android:layout_width="30dp"
+                        android:layout_height="30dp"
+                        android:src="@drawable/icon_blagues" />
+
+                    <com.mdweb.tunnumerique.tools.style.TextViewTypo
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="15dp"
+                        android:text="@string/blague_menu"
+                        android:textColor="@color/black_color"
+                        app:sizeTypoText="17"
+                        app:styleTypoText="book" />
+                </LinearLayout>
+
+
+                <LinearLayout
+                    android:id="@+id/horaire_prieres"
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/item_menu_height"
+                    android:gravity="center_vertical">
+
+                    <ImageView
+                        android:layout_width="30dp"
+                        android:layout_height="30dp"
+                        android:src="@drawable/icon_priere" />
+
+                    <com.mdweb.tunnumerique.tools.style.TextViewTypo
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="15dp"
+                        android:text="@string/horaires_prieres"
+                        android:textColor="@color/black_color"
+                        app:sizeTypoText="17"
+                        app:styleTypoText="book" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/item_menu_height"
+                    android:gravity="center_vertical"
+                    android:visibility="gone">
+
+                    <ImageView
+                        android:layout_width="30dp"
+                        android:layout_height="30dp"
+                        android:src="@drawable/icon_marche" />
+
+                    <com.mdweb.tunnumerique.tools.style.TextViewTypo
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="15dp"
+                        android:text="@string/marche"
+                        android:textColor="@color/black_color"
+                        app:sizeTypoText="17"
+                        app:styleTypoText="book" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/mes_favoris"
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/item_menu_height"
+                    android:gravity="center_vertical">
+
+                    <ImageView
+                        android:layout_width="30dp"
+                        android:layout_height="30dp"
+                        android:src="@drawable/icon_favorite" />
+
+                    <com.mdweb.tunnumerique.tools.style.TextViewTypo
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="15dp"
+                        android:text="@string/mes_favoris"
+                        android:textColor="@color/black_color"
+                        app:sizeTypoText="17"
+                        app:styleTypoText="book" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/parametre"
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/item_menu_height"
+                    android:gravity="center_vertical"
+                    android:visibility="visible">
+
+                    <ImageView
+                        android:layout_width="22dp"
+                        android:layout_height="22dp"
+                        android:layout_marginLeft="3dp"
+                        android:src="@drawable/icon_setting" />
+
+                    <com.mdweb.tunnumerique.tools.style.TextViewTypo
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="20dp"
+                        android:text="@string/paremtre"
+                        android:textColor="@color/black_color"
+                        app:sizeTypoText="17"
+                        app:styleTypoText="book" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/a_propos"
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/item_menu_height"
+                    android:layout_marginBottom="20dp"
+                    android:gravity="center_vertical">
+
+                    <ImageView
+                        android:layout_width="30dp"
+                        android:layout_height="30dp"
+                        android:src="@drawable/icon_apropos" />
+
+                    <com.mdweb.tunnumerique.tools.style.TextViewTypo
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="15dp"
+                        android:text="@string/a_propos"
+                        android:textColor="@color/black_color"
+                        app:sizeTypoText="17"
+                        app:styleTypoText="book" />
+                </LinearLayout>
+
+
+            </LinearLayout>
+
+        </ScrollView>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:gravity="center|bottom"
+            android:orientation="horizontal">
+
+            <com.mdweb.tunnumerique.tools.style.TextViewTypo
+                android:id="@+id/privacy"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/privacy"
+                app:sizeTypoText="12"
+                app:styleTypoText="oblique" />
+        </LinearLayout>
+    </LinearLayout>
+</RelativeLayout>

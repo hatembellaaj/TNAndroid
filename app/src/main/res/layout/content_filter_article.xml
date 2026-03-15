@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/content_filter_article"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/white_color"
+    app:layout_behavior="@string/appbar_scrolling_view_behavior"
+
+    tools:showIn="@layout/activity_filter_article">
+
+    <FrameLayout
+        android:id="@+id/container_article"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+
+        android:background="@color/white_color">
+
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/recycler_news"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
+
+
+        <!--<com.google.android.material.floatingactionbutton.FloatingActionButton-->
+        <!--android:id="@+id/fab_guide"-->
+        <!--android:layout_width="60dp"-->
+        <!--android:layout_height="60dp"-->
+        <!--android:layout_gravity="bottom|end"-->
+        <!--android:layout_margin="15dp"-->
+        <!--android:src="@drawable/ic_icon_capture"-->
+        <!--android:visibility="visible" />-->
+
+    </FrameLayout>
+
+    <LinearLayout
+        android:id="@+id/empty_liste"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:gravity="center_horizontal"
+        android:orientation="vertical"
+        android:visibility="gone">
+
+        <ImageView
+            android:layout_width="120dp"
+            android:layout_height="120dp"
+            android:layout_marginTop="50dp"
+            android:src="@drawable/icon_info" />
+
+        <com.mdweb.tunnumerique.tools.style.TextViewTypo
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:paddingLeft="16dp"
+            android:paddingRight="16dp"
+            android:text="@string/text_vide"
+            android:textColor="@color/color_default_text"
+            app:sizeTypoText="18"
+            app:styleTypoText="oblique" />
+    </LinearLayout>
+</FrameLayout>

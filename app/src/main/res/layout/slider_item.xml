@@ -1,0 +1,161 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#FFFFFF">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingStart="16dp"
+        android:paddingEnd="16dp"
+        android:orientation="vertical">
+
+        <!-- Image de l'article avec coins arrondis -->
+        <androidx.cardview.widget.CardView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:cardCornerRadius="12dp"
+            app:cardElevation="0dp"
+            app:cardUseCompatPadding="false">
+
+            <ImageView
+                android:id="@+id/slideImage"
+                android:layout_width="match_parent"
+                android:layout_height="200dp"
+                android:scaleType="centerCrop"
+                android:contentDescription="Article image" />
+
+        </androidx.cardview.widget.CardView>
+
+        <!-- ESPACEMENT DE 4dp ENTRE IMAGE ET DOTS -->
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="4dp"
+            android:background="@android:color/transparent" />
+
+        <!-- Section combinée : Dots au-dessus, Actions en dessous -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:background="#FFFFFF">
+
+            <!-- Dots indicateurs centrés -->
+            <LinearLayout
+                android:id="@+id/slideDotsLayout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:gravity="center"
+                android:paddingTop="4dp"
+                android:paddingBottom="2dp" />
+
+            <!-- Ligne avec Catégorie + "+" à gauche et Actions à droite -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="40dp"
+                android:orientation="horizontal"
+                android:gravity="center_vertical"
+                android:paddingStart="0dp"
+                android:paddingEnd="0dp">
+
+                <!-- Catégorie + Plus à gauche -->
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:orientation="horizontal"
+                    android:gravity="start|center_vertical"
+                    android:paddingStart="0dp">
+
+                    <TextView
+                        android:id="@+id/slideCategory"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="MONDE"
+                        android:textStyle="bold"
+                        android:textSize="10sp"
+                        android:textColor="#88BD2E"
+                        android:fontFamily="sans-serif-bold"
+                        android:letterSpacing="0.08" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text=" +"
+                        android:textStyle="bold"
+                        android:textSize="10sp"
+                        android:textColor="#000000"
+                        android:fontFamily="sans-serif-bold"
+                        android:layout_marginStart="2dp" />
+
+                </LinearLayout>
+
+                <!-- Actions à droite -->
+                <ImageView
+                    android:id="@+id/slideBookmark"
+                    android:layout_width="20dp"
+                    android:layout_height="20dp"
+                    android:src="@drawable/icon_save_r"
+                    android:contentDescription="Bookmark"
+                    android:background="?attr/selectableItemBackgroundBorderless"
+                    app:tint="#AAAAAA" />
+
+                <ImageView
+                    android:id="@+id/slideShare"
+                    android:layout_width="20dp"
+                    android:layout_height="20dp"
+                    android:layout_marginStart="16dp"
+                    android:background="?attr/selectableItemBackgroundBorderless"
+                    android:contentDescription="Partager"
+                    android:src="@drawable/icon_partage_r"
+                    app:tint="#AAAAAA" />
+
+            </LinearLayout>
+
+        </LinearLayout>
+
+        <!-- Contenu avec hauteur fixe -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="64dp"
+            android:orientation="vertical"
+            android:paddingStart="0dp"
+            android:paddingEnd="0dp"
+            android:paddingTop="0dp"
+            android:paddingBottom="4dp"
+            android:background="#FFFFFF">
+
+            <!-- Titre de l'article -->
+            <TextView
+                android:id="@+id/slideTitle"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Maroc–Israël : vers une reprise prochaine des"
+                android:textSize="11sp"
+                android:textColor="#0C0805"
+                android:maxLines="2"
+                android:ellipsize="end" />
+
+            <!-- SPACER : Pousse la date vers le bas -->
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="1" />
+
+            <!-- Date toujours en bas -->
+            <TextView
+                android:id="@+id/slideDate"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="09 Novembre 2025"
+                android:textSize="11sp"
+                android:textColor="#AAAAAA" />
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+</FrameLayout>

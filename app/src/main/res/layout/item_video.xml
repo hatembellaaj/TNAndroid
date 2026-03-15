@@ -1,0 +1,147 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@color/white_color"
+    android:orientation="vertical">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingStart="15dp"
+        android:paddingTop="15dp"
+        android:gravity="center_vertical"
+        android:id="@+id/item_news">
+
+
+        <androidx.cardview.widget.CardView
+            app:cardCornerRadius="10dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content">
+            <FrameLayout
+                android:layout_width="127dp"
+                android:layout_height="127dp"
+                android:background="@drawable/bg_annuler_image">
+
+
+                <ImageView
+                    android:id="@+id/image_article"
+                    android:layout_width="127dp"
+                    android:layout_height="127dp"
+                    android:scaleType="centerCrop"
+                    android:adjustViewBounds="true"
+                    android:layout_gravity="center"
+                    android:src="@drawable/img"/>
+                <ImageView
+                    android:id="@+id/icon_video"
+                    android:layout_width="34dp"
+                    android:layout_height="24dp"
+                    android:layout_gravity="center"
+                    android:scaleType="fitXY"
+                    android:visibility="gone"
+                    android:src="@drawable/icon_video_min"/>
+            </FrameLayout>
+        </androidx.cardview.widget.CardView>
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="130dp"
+            android:layout_marginStart="15dp"
+            android:paddingEnd="10dp"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/title_article"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+
+                android:maxLines="3"
+                android:ellipsize="end"
+                android:textSize="15sp"
+                android:lineSpacingMultiplier="0.95"
+                android:text="la faramineuse somme que doit débourser le CS Sfaxie"
+                android:textColor="@color/black_color"
+                />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_alignParentBottom="true"
+                android:orientation="vertical">
+                <com.mdweb.tunnumerique.tools.style.TextViewTypo
+                    android:id="@+id/cat_article"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text=""
+                    android:visibility="gone"
+                    android:textColor="@color/green_color"
+                    app:styleTypoText="book"
+                    app:sizeTypoText="15" />
+
+                <com.mdweb.tunnumerique.tools.style.TextViewTypo
+                    android:id="@+id/auteur_article"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Par Maher Chaabane"
+                    android:visibility="gone"
+                    android:gravity="start"
+                    app:styleTypoText="book"
+
+                    android:textColor="@color/green_color"
+                    app:sizeTypoText="15" />
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:orientation="horizontal"
+                    android:gravity="center_vertical"
+                    android:layout_height="wrap_content">
+                    <com.mdweb.tunnumerique.tools.style.TextViewTypo
+                        android:id="@+id/date_article"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentBottom="true"
+                        android:text="14 -11- 2016"
+                        app:sizeTypoText="13"
+                        android:textColor="@color/color_date_news"
+                        app:styleTypoText="light" />
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="32dp"
+                        android:gravity="end|center_vertical">
+
+                        <ImageView
+                            android:id="@+id/image_favoris_article"
+                            android:layout_width="30dp"
+                            android:layout_height="30dp"
+                            android:padding="5dp"
+                            android:layout_marginEnd="2dp"
+                            app:tint="@color/tint_color_fav"
+                            android:src="@drawable/icon_fav_off" />
+
+                        <ImageView
+                            android:id="@+id/image_share_article"
+                            android:layout_width="30dp"
+                            android:layout_height="30dp"
+                            android:padding="5dp"
+                            android:layout_marginEnd="2dp"
+                            android:src="@drawable/bg_share_article" />
+
+                    </LinearLayout>
+                </LinearLayout>
+            </LinearLayout>
+
+        </RelativeLayout>
+
+    </LinearLayout>
+
+
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_marginTop="16dp"
+        android:layout_marginLeft="3dp"
+        android:layout_marginRight="3dp"
+        android:background="@color/color_background" />
+
+</LinearLayout>

@@ -1,0 +1,207 @@
+<resources>
+
+    <string name="navigation_drawer_open">Open navigation drawer</string>
+    <string name="navigation_drawer_close">Close navigation drawer</string>
+
+    <string name="app_name">TUNumerique</string>
+    <string name="change_wifi_state">enable wifi</string>
+    <string name="chargement">Loading</string>
+    <string name="YOUTUBE_API_KEY">AIzaSyAt6Sjw_RI7y1oXcLB8yhzvQKb3rHi7aqE</string>
+    <string name="privacy"><u><a href="https://www.tunisienumerique.com/conditions-d-utilisation/">Privacy Policy</a></u></string>
+
+
+    <!-- array month -->
+    <string-array name="month_arrayFr">
+        <item>Janvier</item>
+        <item>Février</item>
+        <item>Mars</item>
+        <item>Avril</item>
+        <item>Mai</item>
+        <item>Juin</item>
+        <item>Juillet</item>
+        <item>Août</item>
+        <item>Septembre</item>
+        <item>Octobre</item>
+        <item>Novembre</item>
+        <item>Décembre</item>
+    </string-array>
+
+    <!-- array month -->
+    <string-array name="month_arrayAr">
+        <item>جانفي</item>
+        <item>فيفري</item>
+        <item>مارس</item>
+        <item>أفريل</item>
+        <item>ماي</item>
+        <item>جوان</item>
+        <item>جويلية</item>
+        <item>أوت</item>
+        <item>سبتمبر</item>
+        <item>أكتوبر</item>
+        <item>نوفمبر</item>
+        <item>ديسمبر</item>
+    </string-array>
+    <!-- array month -->
+    <string-array name="pays_array">
+        <item>Tunis</item>
+        <item>Ben Arous</item>
+        <item>Ariana</item>
+        <item>Manouba</item>
+        <item>Zaghouan</item>
+        <item>Nabeul</item>
+        <item>Kairouan</item>
+        <item>Sidi Bouzid</item>
+        <item>Kasserine</item>
+        <item>El Kef</item>
+        <item>Béja</item>
+        <item>Jendouba</item>
+        <item>Siliana</item>
+        <item>Bizerte</item>
+        <item>Sousse</item>
+        <item>Mahdia</item>
+        <item>Monastir</item>
+        <item>Sfax</item>
+        <item>Gafsa</item>
+        <item>Tozeur</item>
+        <item>Gabès</item>
+        <item>Médenine</item>
+        <item>Kébili</item>
+        <item>Tataouine</item>
+    </string-array>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="actualite">News</string>
+    <string name="actualite_detail">News</string>
+    <string name="ma_liste">My favourites</string>
+    <string name="horaire_title">Prayer times</string>
+    <string name="a_propos">About</string>
+    <string name="dossiers">Dossier</string>
+    <string name="dossiers_menu">Dossier</string>
+    <string name="les_plus_lus">Most read</string>
+    <string name="les_plus_lus_menu">Most read</string>
+    <string name="videos">Videos</string>
+    <string name="videos_menu">Videos</string>
+    <string name="horaires_prieres">Prayer times</string>
+    <string name="marche">Marché</string>
+    <string name="prendre_photo">Prendre une photo</string>
+    <string name="partage_photo">Info</string>
+    <string name="partage_message">Votre photo a été partagée \navec sucées </string>
+    <string name="erreur_upload">Image non envoyé, réessayer encore </string>
+    <string name="not_connected">Check your internet connection</string>
+    <string name="charger_photo">Charger une photo</string>
+    <string name="annuler">Cancel</string>
+    <string name="ok">OK</string>
+
+    <string name="search_title">Search</string>
+    <!-- filter news-->
+    <string name="tech_et_net">Tech &amp; Net</string>
+    <string name="politique">Politique</string>
+    <string name="societe">Societé</string>
+    <string name="economie">Economie</string>
+    <string name="enseignement">Enseignement</string>
+    <string name="sport">Sport</string>
+    <string name="sante">Santé</string>
+    <string name="text_bg_image">Un seul endroit pour organiser, lire et partager tous les contenus qui comptent pour vous et vos proches</string>
+    <string name="phone_number">(+216) 71 903 903</string>
+    <string name="phone_part1">(+216)</string>
+    <string name="phone_part2">71 903 903</string>
+    <string name="text_call_part1">Are you sure you want</string>
+    <string name="text_call_part2">to call this number ?</string>
+    <string name="mdweb_mail">dev-mobile@mdweb-int.com</string>
+    <string name="envoyer">Send</string>
+    <string name="al_sobh">Al-Sobh</string>
+    <string name="al_dhohr">Al-Dhohr</string>
+    <string name="al_asr">Al-Asr</string>
+    <string name="al_maghreb">Al-Maghreb</string>
+    <string name="al_icha">Al-Icha</string>
+    <string name="guide_toolbar">Envoi de photo</string>
+
+    //
+    <string name="quitter_app_text">Exit the application</string>
+    <string name="message_quit_app_text">Do you want to quit the application?</string>
+    <string name="non_text">No</string>
+    <string name="oui_text">Yes</string>
+    <string name="text_vide">There are no news to display</string>
+    <string name="no_available_pray">There are no prayer times to display</string>
+    <string name="text_blagues">There are no jokes to display</string>
+    <string name="text_vide_favori_v"> There are no favorite videos to display</string>
+    <string name="text_vide_favori_a"> There are no favorite articles to display</string>
+    <string name="title_dialog_priere">Please Choose your </string>
+    <string name="title_dialog_priere1">Please choose your country</string>
+    <string name="hint_search">Search</string>
+
+
+
+
+    <string-array name="drawable_filter">
+        <item>ico_1_off</item>
+        <item>ico_1_on</item>
+        <item>ico_2_off</item>
+        <item>ico_2_on</item>
+        <item>ico_3_off</item>
+        <item>ico_3_on</item>
+        <item>ico_4_off</item>
+        <item>ico_4_on</item>
+        <item>ico_5_off</item>
+        <item>ico_5_on</item>
+        <item>ico_6_off</item>
+        <item>ico_6_on</item>
+        <item>ico_7_off</item>
+        <item>ico_7_on</item>
+        <item>ico_8_off</item>
+        <item>ico_8_on</item>
+        <item>ico_9_off</item>
+        <item>ico_9_on</item>
+        <item>ico_10_off</item>
+        <item>ico_10_on</item>
+        <item>img_world</item>
+        <item>img_politique</item>
+        <item>img_economie</item>
+        <item>img_auto</item>
+        <item>img_sport</item>
+        <item>img_hitech</item>
+        <item>img_company</item>
+        <item>img_learning</item>
+        <item>img_health</item>
+
+
+    </string-array>
+    <string name="title_activity_filter_article">FilterArticleActivity</string>
+    <!--<string name="ad_id_test">ca-app-pub-3940256099942544/6300978111</string>-->
+    <!--<string name="ad_id_test">ca-app-pub-2102118777505746/4044741086</string>-->
+    <string name="ad_id_test">ca-app-pub-2102118777505746~3353162866</string>
+    <string name="paremtre">Settings</string>
+    <string name="huawei_text">Pour recevoir des  notifications vous devez activer l\'application.</string>
+    <string name="go_to_protected">Protogée votre application</string>
+    <string name="huawei_headline">Application  protégée</string>
+    <string name="connexion"> Check your internet connection!</string>
+    <string name="envoie_on_cours">Envoie d image en cours</string>
+    <string name="blague_menu">Jokes</string>
+    <string name="share_text">Share</string>
+    <string name="blagues_tittle">Jokes</string>
+    <string name="choix_de_langues">Choice of languages</string>
+    <string name="automatique">Automatic</string>
+    <string name="veuillez_choisir_votre_mode">Please choose your mode</string>
+    <string name="mes_favoris">My favourites</string>
+    <string name="nouveau">New</string>
+    <string name="pour_tous_vos">For all your </string>
+    <string name="d_veloppements_mobile">mobile developments</string>
+    <string name="appelez_nous">Call us:</string>
+    <string name="contactez_nous">Contact us:</string>
+    <string name="veuillez_choisir_votre_langue">Please choose your language</string>
+    <string name="jours">Day</string>
+    <string name="nuit">Night</string>
+    <string name="valider">Validate</string>
+    <string name="lire">Read</string>
+    <string name="mes_video">My videos</string>
+    <string name="mes_articles">My articles</string>
+    <string name="tunis">Tunis</string>
+    <string name="fajr">Al-Fajir</string>
+    <string name="dhohr">Al-Dhohr</string>
+    <string name="asr">Al-Asr</string>
+    <string name="maghreb">Al-Maghreb</string>
+    <string name="isha">Al-Icha</string>
+    <string name="blagues">Jokes</string>
+    <string name="tunisie">Tunisia</string>
+    <string name="loading">loading</string>
+</resources>

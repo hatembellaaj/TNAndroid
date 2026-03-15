@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/layout_blagues"
+    android:layout_width="match_parent"
+    android:layout_height="130dp"
+    android:background="@color/white_color">
+
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <ImageView
+            android:layout_width="18dp"
+            android:layout_height="18dp"
+            android:layout_gravity="bottom"
+            android:layout_marginLeft="16dp"
+            android:layout_marginRight="11dp"
+            android:layout_marginBottom="16dp"
+            android:rotation="90"
+            android:src="@drawable/icon_filter"
+            android:visibility="gone"
+            app:tint="@color/black_color" />
+
+        <com.mdweb.tunnumerique.tools.style.TextViewTypo
+            android:id="@+id/title_blague"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="8dp"
+            android:layout_marginRight="8dp"
+            android:ellipsize="end"
+            android:gravity="right"
+            android:maxLines="1"
+            android:padding="12dp"
+            android:text="la faramineuse somme que doit débourser le CS Sfaxie"
+            android:textColor="@color/black_color"
+
+            app:sizeTypoText="16"
+            app:styleTypoText="oblique" />
+    </LinearLayout>
+
+    <View
+        android:id="@+id/devider"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_marginLeft="3dp"
+        android:layout_marginTop="10dp"
+        android:layout_marginRight="3dp"
+        android:background="@color/color_background"
+        app:layout_constraintBottom_toBottomOf="parent" />
+
+    <LinearLayout
+        android:id="@+id/read"
+        android:layout_width="120dp"
+        android:layout_height="48dp"
+        android:layout_marginLeft="24dp"
+        android:layout_marginTop="10dp"
+        android:layout_marginRight="24dp"
+
+        android:background="@drawable/bg_share_btn"
+        android:layout_marginBottom="20dp"
+        android:gravity="center"
+
+        android:orientation="horizontal"
+        app:layout_constraintBottom_toTopOf="@id/devider"
+        app:layout_constraintLeft_toLeftOf="parent"
+
+        app:layout_constraintRight_toRightOf="parent">
+
+        <com.mdweb.tunnumerique.tools.style.TextViewTypo
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/lire"
+            android:textColor="#fff"
+            app:sizeTypoText="16"
+            app:styleTypoText="oblique" />
+
+
+    </LinearLayout>
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>

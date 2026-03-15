@@ -1,0 +1,75 @@
+<FrameLayout android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <ScrollView
+        android:id="@+id/scroll_view"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            android:descendantFocusability="beforeDescendants"
+            android:focusableInTouchMode="true"
+            android:focusable="true"
+            >
+
+            <ImageView
+                android:id="@+id/image_details"
+                android:layout_width="match_parent"
+                android:layout_height="185dp"
+                android:fitsSystemWindows="true"
+                android:scaleType="centerCrop"
+                />
+
+            <com.huawei.hms.ads.banner.BannerView
+                xmlns:hwads="http://schemas.android.com/apk/res-auto"
+                android:id="@+id/hw_banner_view"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                hwads:adId="l4yj9fiyhp"
+                android:visibility="gone"
+                hwads:bannerSize="BANNER_SIZE_320_100" >
+            </com.huawei.hms.ads.banner.BannerView>
+
+            <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                android:id="@+id/webview_frame"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+
+                <!-- description news -->
+                <WebView
+                    android:id="@+id/details_article"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    />
+
+            </FrameLayout>
+
+        </LinearLayout>
+
+    </ScrollView>
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        app:fabCustomSize="60dp"
+        android:id="@+id/play_mp3"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center|end"
+        android:layout_margin="16dp"
+        android:visibility="gone"
+        android:src="@drawable/ic_icon_play"
+        app:layout_anchorGravity="bottom|right|end" />
+
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        app:fabCustomSize="60dp"
+        android:id="@+id/fab"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom|end"
+        android:layout_margin="16dp"
+        android:src="@drawable/ic_share_details"
+        app:layout_anchorGravity="bottom|right|end" />
+</FrameLayout>

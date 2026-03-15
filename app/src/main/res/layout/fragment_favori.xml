@@ -1,0 +1,72 @@
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="com.mdweb.tunnumerique.ui.fragments.FavoriFragment">
+    <!--<FrameLayout-->
+    <!--android:id="@+id/container_FAB"-->
+    <!--android:layout_width="match_parent"-->
+    <!--android:layout_height="match_parent">-->
+
+
+    <!--</FrameLayout>-->
+
+    <androidx.coordinatorlayout.widget.CoordinatorLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:fitsSystemWindows="false">
+
+
+        <!-- AppBar Layout   -->
+        <com.google.android.material.appbar.AppBarLayout
+            android:id="@+id/appBarLayout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:theme="@style/AppTheme.AppBarOverlay">
+
+            <!-- Tab Layout for creating tabs -->
+            <com.google.android.material.tabs.TabLayout
+                android:id="@+id/tabLayout"
+
+                style="@style/customTabLayout"
+                android:layout_width="match_parent"
+                android:layout_height="?attr/actionBarSize"
+                android:background="@color/white_color"
+                android:layoutDirection="ltr"
+                app:popupTheme="@style/AppTheme.PopupOverlay"
+                app:tabSelectedTextColor="@color/green_color"
+
+
+                app:tabTextColor="@color/color_default_text" />
+        </com.google.android.material.appbar.AppBarLayout>
+        <!--</androidx.coordinatorlayout.widget.CoordinatorLayout>-->
+        <!--&lt;!&ndash;<androidx.coordinatorlayout.widget.CoordinatorLayout&ndash;&gt;-->
+        <!--&lt;!&ndash;android:fitsSystemWindows="false"&ndash;&gt;-->
+        <!--&lt;!&ndash;android:layout_width="match_parent"&ndash;&gt;-->
+        <!--&lt;!&ndash;android:layout_height="match_parent">&ndash;&gt;-->
+        <!--<LinearLayout-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="match_parent"-->
+        <!--android:visibility="visible"-->
+        <!--android:orientation="vertical">-->
+        <androidx.viewpager.widget.ViewPager
+            android:id="@+id/viewPager"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            app:layout_behavior="@string/appbar_scrolling_view_behavior" />
+        <!--</LinearLayout>-->
+
+    </androidx.coordinatorlayout.widget.CoordinatorLayout>
+
+
+    <!--<com.google.android.material.floatingactionbutton.FloatingActionButton-->
+    <!--android:id="@+id/fab_guide"-->
+    <!--android:layout_width="60dp"-->
+    <!--android:layout_height="60dp"-->
+    <!--android:layout_gravity="bottom|end"-->
+    <!--android:layout_margin="15dp"-->
+    <!--android:src="@drawable/ic_icon_capture"-->
+    <!--android:visibility="visible" />-->
+
+</FrameLayout>

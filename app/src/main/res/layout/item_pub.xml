@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="120dp"
+    android:orientation="vertical">
+    <ImageView
+        android:visibility="gone"
+        android:id="@+id/pub_image"
+        android:layout_width="match_parent"
+        android:layout_height="120dp"
+        android:src="@drawable/header_pub"
+        android:scaleType="fitXY"/>
+<FrameLayout
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+    <com.huawei.hms.ads.banner.BannerView
+        xmlns:hwads="http://schemas.android.com/apk/res-auto"
+        android:id="@+id/hw_banner_view"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        hwads:adId="l4yj9fiyhp"
+        android:visibility="gone"
+        hwads:bannerSize="BANNER_SIZE_320_100" >
+    </com.huawei.hms.ads.banner.BannerView>
+    <!--<WebView-->
+        <!--android:id="@+id/web_view_pub"-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:clickable="false"-->
+        <!--android:layout_height="120dp"/>-->
+    <LinearLayout
+        android:id="@+id/content_item_pub"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:visibility="gone"
+        android:orientation="horizontal" />
+</FrameLayout>
+
+</LinearLayout>

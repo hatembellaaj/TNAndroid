@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<network-security-config>
+    <domain-config cleartextTrafficPermitted="true">
+        <domain includeSubdomains="true">https://www.tunisienumerique.com</domain>
+        <domain includeSubdomains="true">https://www.youtube.com</domain>
+        <domain includeSubdomains="true">http://www.mdweb-int.com</domain>
+        <domain includeSubdomains="true">http://jsondata.tunisienumerique.com</domain>
+        <domain includeSubdomains="true">196.203.63.50</domain>
+        <domain includeSubdomains="true">https://jsondata.tunisienumerique.com</domain>
+    </domain-config>
+</network-security-config>

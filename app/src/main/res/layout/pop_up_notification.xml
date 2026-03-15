@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    >
+
+
+    <!--<androidx.appcompat.widget.Toolbar-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="60dp"-->
+        <!--android:contentInsetLeft="0dp"-->
+        <!--android:contentInsetStart="0dp"-->
+        <!--android:background="@color/green_color"-->
+        <!--app:contentInsetLeft="0dp"-->
+        <!--app:contentInsetStart="0dp"-->
+        <!--&gt;-->
+
+        <!--<RelativeLayout-->
+            <!--android:layout_width="match_parent"-->
+            <!--android:layout_height="match_parent">-->
+
+        <!--<RelativeLayout-->
+            <!--android:id="@+id/back_image"-->
+            <!--android:layout_width="wrap_content"-->
+            <!--android:layout_height="match_parent"-->
+            <!--android:background="?android:attr/selectableItemBackground"-->
+            <!--android:gravity="center">-->
+
+            <!--<ImageView-->
+                <!--android:id="@+id/retour"-->
+                <!--android:layout_width="50dp"-->
+                <!--android:layout_height="match_parent"-->
+                <!--android:padding="15dp"-->
+                <!--android:clickable="true"-->
+                <!--android:onClick="onClick"-->
+                <!--android:src="@drawable/ic_back_white" />-->
+
+        <!--</RelativeLayout>-->
+
+<!--</RelativeLayout>-->
+
+    <!--</androidx.appcompat.widget.Toolbar>-->
+    <!---->
+<FrameLayout
+    android:id="@+id/bg_notif"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:orientation="vertical">
+
+            <pl.droidsonroids.gif.GifImageView
+                android:id="@+id/imaa"
+                android:layout_width="wrap_content"
+                android:layout_height="30dp"
+                android:layout_gravity="center"
+
+
+                />
+
+            <com.mdweb.tunnumerique.tools.style.TextViewTypo
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:text="Chargement"
+                app:styleTypoText="book"
+                app:sizeTypoText="19"
+                android:textColor="@color/white_color" />
+        </LinearLayout>
+    </RelativeLayout>
+
+    <WebView
+        android:id="@+id/webview"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_gravity="top"
+        android:visibility="gone" />
+
+</FrameLayout>
+
+</LinearLayout>

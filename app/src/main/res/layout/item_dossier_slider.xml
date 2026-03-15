@@ -1,0 +1,118 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+        <!-- Image du dossier avec coins arrondis - MÊME STYLE QUE NEWS -->
+        <androidx.cardview.widget.CardView
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            app:cardCornerRadius="12dp"
+            app:cardElevation="0dp"
+            app:cardUseCompatPadding="false"
+            android:layout_marginStart="4dp"
+            android:layout_marginEnd="4dp"
+            android:layout_marginTop="4dp">
+
+            <ImageView
+                android:id="@+id/dossierImage"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:scaleType="centerCrop"
+                android:contentDescription="Dossier image" />
+
+        </androidx.cardview.widget.CardView>
+
+        <!-- Section contenu sous l'image -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:background="#FFFFFF"
+            android:paddingStart="12dp"
+            android:paddingEnd="12dp"
+            android:paddingTop="8dp"
+            android:paddingBottom="12dp">
+
+            <!-- Titre du dossier -->
+            <TextView
+                android:id="@+id/dossierTitle"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Titre du dossier qui peut être sur deux lignes maximum"
+                android:textSize="15sp"
+                android:textColor="#0C0805"
+                android:textStyle="bold"
+                android:maxLines="2"
+                android:paddingBottom="6dp"
+                android:ellipsize="end" />
+
+            <!-- Ligne: Date à gauche + Actions à droite -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:gravity="center_vertical">
+
+                <!-- Date -->
+                <TextView
+                    android:id="@+id/dossierDate"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="09 Novembre 2025"
+                    android:textSize="13sp"
+                    android:textColor="#AAAAAA" />
+
+                <!-- Container Save/Bookmark -->
+                <ImageView
+                    android:id="@+id/dossierBookmark"
+                    android:layout_width="32dp"
+                    android:layout_height="32dp"
+                    android:layout_marginEnd="8dp"
+                    android:padding="6dp"
+                    android:src="@drawable/icon_save_r"
+                    android:contentDescription="Save"
+                    android:clickable="true"
+                    android:focusable="true"
+                    android:background="?attr/selectableItemBackgroundBorderless"
+                    app:tint="#AAAAAA" />
+
+                <!-- Container Partage -->
+                <ImageView
+                    android:id="@+id/dossierShare"
+                    android:layout_width="32dp"
+                    android:layout_height="32dp"
+                    android:padding="6dp"
+                    android:src="@drawable/icon_partage_r"
+                    android:contentDescription="Share"
+                    android:clickable="true"
+                    android:focusable="true"
+                    android:background="?attr/selectableItemBackgroundBorderless"
+                    app:tint="#AAAAAA" />
+
+            </LinearLayout>
+
+            <!-- DOTS INDICATEUR -->
+            <LinearLayout
+                android:id="@+id/dotsIndicatorInCard"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginTop="12dp"
+                android:layout_marginBottom="8dp"
+                android:orientation="horizontal"
+                android:visibility="gone"/>
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+</FrameLayout>

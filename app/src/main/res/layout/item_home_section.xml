@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:padding="8dp">
+
+    <!-- Le titre de la section (Ex : A LA UNE, NEWS, SPORT...) -->
+    <TextView
+        android:id="@+id/sectionTitle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Section Title"
+        android:textSize="18sp"
+        android:textStyle="bold"
+        android:paddingBottom="4dp"
+        android:textColor="#000000" />
+
+    <!-- RecyclerView horizontal pour afficher les éléments -->
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/sectionRecycler"
+        android:layout_width="match_parent"
+        android:layout_height="180dp"
+        android:orientation="horizontal"
+        android:overScrollMode="never" />
+
+</LinearLayout>

@@ -1,0 +1,1 @@
+package com.mdweb.tunnumerique.tools.mdwebNetworkingLib.jsonRequest;/** * Interface of CallBack Method */import com.android.volley.VolleyError;public interface ResponseCompleteInterface {    // ok Callback method    void onResponseComplete(String response);    // Error Callback method    void onResponseError(VolleyError volleyError);}

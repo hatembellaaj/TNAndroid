@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:id="@+id/container"
+    android:clickable="true"
+    android:paddingLeft="40dp"
+    android:paddingRight="40dp"
+    android:paddingTop="40dp"
+    android:paddingBottom="40dp"
+
+    >
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/recycler"
+        android:background="@drawable/bg_dialog_priere"
+
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+        </androidx.recyclerview.widget.RecyclerView>
+
+</LinearLayout>
+

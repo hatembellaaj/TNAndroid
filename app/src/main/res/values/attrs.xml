@@ -1,0 +1,42 @@
+<resources>
+
+    <!-- Declare custom theme attributes that allow changing which styles are
+         used for button bars depending on the API level.
+         ?android:attr/buttonBarStyle is new as of API 11 so this is
+         necessary to support previous API levels. -->
+    <declare-styleable name="ButtonBarContainerTheme">
+        <attr name="metaButtonBarStyle" format="reference" />
+        <attr name="metaButtonBarButtonStyle" format="reference" />
+    </declare-styleable>
+
+
+    <declare-styleable name="ButtonTypo">
+        <attr name="sizeTypo" format="float" />
+        <attr name="styleTypo" format="enum">
+            <enum name="regular" value="1" />
+            <enum name="bold" value="2" />
+            <enum name="light" value="3" />
+        </attr>
+    </declare-styleable>
+
+    <declare-styleable name="TextViewTypo">
+        <attr name="sizeTypoText" format="float" />
+        <attr name="bilingual" format="boolean" />
+        <attr name="styleTypoText" format="enum">
+            <enum name="black" value="1" />
+            <enum name="blackOblique" value="2" />
+            <enum name="book" value="3" />
+            <enum name="bookOblique" value="4" />
+            <enum name="heavy" value="5" />
+            <enum name="heavyOblique" value="6" />
+            <enum name="light" value="7" />
+            <enum name="lightOblique" value="8" />
+            <enum name="medium" value="9" />
+            <enum name="meduimOblique" value="10" />
+            <enum name="oblique" value="11" />
+            <enum name="roman" value="12" />
+        </attr>
+    </declare-styleable>
+
+
+</resources>

@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
+    android:layout_height="wrap_content">
+<RelativeLayout
+    android:id="@+id/container_child"
+    android:layout_width="match_parent"
+    android:layout_height="52dp">
+
+
+    <ImageView
+        android:id="@+id/icon_menu"
+        android:layout_width="25dp"
+        android:layout_height="25dp"
+        android:adjustViewBounds="true"
+        android:layout_centerVertical="true"
+        android:layout_marginEnd="10dp"/>
+
+    <com.mdweb.tunnumerique.tools.style.TextViewTypo
+        android:id="@+id/title_menu"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerVertical="true"
+        android:layout_toEndOf="@+id/icon_menu"
+        android:paddingBottom="5dp"
+        android:paddingTop="5dp"
+        app:sizeTypoText="14"
+        app:styleTypoText="oblique"
+        android:text=""
+        android:textColor="@android:color/black" />
+
+    <ImageView
+        android:id="@+id/icon_shape"
+        android:layout_width="25dp"
+        android:layout_height="25dp"
+        android:src="@drawable/shape_circle"
+        android:layout_alignParentEnd="true"
+        android:layout_centerVertical="true"
+        android:layout_marginEnd="10dp" />
+
+
+
+</RelativeLayout>
+    <View
+        android:id="@+id/devider"
+        android:layout_width="match_parent"
+        android:layout_height="0.5dp"
+        android:layout_marginEnd="15dp"
+        android:background="@color/color_divider"/>
+</LinearLayout>

@@ -1,0 +1,182 @@
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="com.mdweb.tunnumerique.ui.fragments.AproposFragment">
+
+    <!-- TODO: Update blank fragment layout -->
+    <LinearLayout
+        android:id="@+id/presentation_view"
+        android:layout_width="match_parent"
+        android:layoutDirection="ltr"
+
+        android:layout_height="match_parent"
+        android:background="@drawable/contact_bg"
+
+        android:orientation="horizontal"
+        android:visibility="visible">
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_gravity="start"
+            android:layout_weight="0.33">
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="0.66"
+            android:layout_gravity="right"
+
+            android:orientation="vertical">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="0.20" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="0.55"
+                android:gravity="center_horizontal"
+                android:orientation="vertical">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center_horizontal"
+                    android:orientation="vertical">
+
+                    <com.mdweb.tunnumerique.tools.style.TextViewTypo
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="@dimen/marginto_contact"
+                        android:text="@string/pour_tous_vos"
+                        app:bilingual="true"
+                        android:textColor="@color/color_default_text"
+
+                        app:sizeTypoText="16"
+                        app:styleTypoText="oblique" />
+
+                    <com.mdweb.tunnumerique.tools.style.TextViewTypo
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/d_veloppements_mobile"
+                        android:textColor="@color/color_default_text"
+                        app:sizeTypoText="16"
+
+                        app:styleTypoText="oblique" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/call"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/margin_contact"
+                    android:gravity="center_horizontal"
+                    android:orientation="vertical">
+
+                    <FrameLayout
+                        android:layout_width="48dp"
+                        android:layout_height="48dp"
+                        android:background="@drawable/bg_call">
+
+                        <ImageView
+                            android:layout_width="@dimen/dimens_icon_contact"
+                            android:layout_height="@dimen/dimens_icon_contact"
+                            android:layout_gravity="center"
+                            android:src="@drawable/icon_phone"
+                            app:tint="#fff" />
+                    </FrameLayout>
+
+
+                    <com.mdweb.tunnumerique.tools.style.TextViewTypo
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/appelez_nous"
+                        android:textColor="@color/green_color"
+                        app:styleTypoText="oblique" />
+
+                    <com.mdweb.tunnumerique.tools.style.TextViewTypo
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="5dp"
+                        android:padding="10dp"
+                        app:bilingual="false"
+                        android:text="@string/phone_number"
+                        app:sizeTypoText="16"
+
+                        android:textColor="@color/color_default_text"
+
+                        app:styleTypoText="oblique" />
+
+                    <View
+                        android:layout_width="match_parent"
+                        android:layout_height="0.5dp"
+                        android:layout_marginTop="15dp"
+                        android:background="@color/color_background" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/send_mail"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/margin_contact"
+                    android:gravity="center_horizontal"
+                    android:orientation="vertical">
+
+                    <FrameLayout
+                        android:layout_width="48dp"
+                        android:layout_height="48dp"
+                        android:background="@drawable/bg_call">
+
+                        <ImageView
+                            android:layout_width="@dimen/dimens_icon_contact"
+                            android:layout_height="@dimen/dimens_icon_contact"
+                            android:layout_gravity="center"
+                            android:src="@drawable/icon_mail"
+                            app:tint="#fff" />
+                    </FrameLayout>
+
+                    <com.mdweb.tunnumerique.tools.style.TextViewTypo
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/contactez_nous"
+                        android:textColor="@color/green_color"
+                        app:styleTypoText="oblique" />
+
+                    <com.mdweb.tunnumerique.tools.style.TextViewTypo
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="5dp"
+                        android:padding="10dp"
+                        app:sizeTypoText="16"
+
+                        app:bilingual="false"
+                        android:text="@string/mdweb_mail"
+                        android:textColor="@color/color_default_text"
+                        app:styleTypoText="oblique" />
+
+                </LinearLayout>
+
+            </LinearLayout>
+
+
+        </LinearLayout>
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/tn_website"
+        android:layout_width="match_parent"
+        android:layout_height="40dp"
+        android:layout_gravity="bottom"
+        android:layout_marginStart="70dp"
+        android:layout_marginEnd="70dp"
+        android:orientation="horizontal"
+        android:visibility="gone" />
+
+</FrameLayout>
