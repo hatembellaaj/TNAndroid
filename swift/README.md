@@ -12,8 +12,7 @@ Contenu principal:
 - `Features/` : écrans + view models par domaine fonctionnel.
 - `Services/` : notifications, synchronisation arrière-plan.
 - `TNNewsAppApp.swift` : point d'entrée SwiftUI.
-- `TNNewsAppApp.swift` contient aussi `AppSettingsStore` et `AppEnvironment` pour garantir leur disponibilité dans le target principal.
-- `ContentView.swift` : entry view (redirigé vers `SplashView`).
+- `ContentView.swift` : vue d'entrée autonome (tabs de base) pour vérifier rapidement que l'application démarre.
 
 ## Fonctionnalités couvertes
 - Splash + bootstrap
@@ -29,3 +28,8 @@ Contenu principal:
 - Conserver un seul fichier `@main` (`TNNewsAppApp.swift`).
 - Supprimer/retirer du target tout `ContentView` template affichant "Hello, world!".
 - Vérifier le Target Membership de `Core`, `Features`, `Services` dans le target app.
+
+
+## Mode bootstrap autonome
+- `TNNewsAppApp.swift` et `ContentView.swift` sont autonomes pour garantir un run sans erreur même si le target membership Xcode est incomplet.
+- Ensuite, ajoute progressivement `Core/`, `Features/` et `Services` au target pour activer toute la solution.
