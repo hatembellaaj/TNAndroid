@@ -12,6 +12,7 @@ Contenu principal:
 - `Features/` : écrans + view models par domaine fonctionnel.
 - `Services/` : notifications, synchronisation arrière-plan.
 - `TNNewsAppApp.swift` : point d'entrée SwiftUI.
+- `AppSettingsStore.swift` / `AppEnvironment.swift` : DI/config racine au même niveau que l'entrypoint (évite les erreurs de scope dans des projets Xcode templates).
 - `ContentView.swift` : entry view (redirigé vers `SplashView`).
 
 ## Fonctionnalités couvertes
