@@ -1,17 +1,15 @@
-//
-//  TNNewsAppApp.swift
-//  TNNewsApp
-//
-//  Created by Hatem Bellaaj on 03/04/2026.
-//
-
 import SwiftUI
 
 @main
 struct TNNewsAppApp: App {
+    @StateObject private var settings = AppSettingsStore()
+    @StateObject private var env = AppEnvironment()
+
     var body: some Scene {
         WindowGroup {
-            ContentView()
+            SplashView()
+                .environmentObject(settings)
+                .environmentObject(env)
         }
     }
 }
