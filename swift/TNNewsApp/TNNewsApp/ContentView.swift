@@ -92,8 +92,18 @@ final class BootstrapViewModel: ObservableObject {
     private let prayersURL = URL(string: "http://196.203.63.50/Isslamyat/web/json/priere.json")!
 
     func loadAll() async {
+        logATSConfiguration()
         await loadNews()
         await loadPrayers()
+    }
+
+    private func logATSConfiguration() {
+        let ats = Bundle.main.object(forInfoDictionaryKey: "NSAppTransportSecurity") as? [String: Any]
+        let allowsArbitraryLoads = (ats?["NSAllowsArbitraryLoads"] as? Bool) ?? false
+        print("[TN-iOS] ATS config detected - NSAllowsArbitraryLoads=\(allowsArbitraryLoads)")
+        if !allowsArbitraryLoads {
+            print("[TN-iOS] ATS is still strict. Prayer HTTP endpoint will be blocked until Info.plist is updated.")
+        }
     }
 
     func loadNews() async {

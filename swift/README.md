@@ -25,6 +25,12 @@ Ajoute ces clés dans le `Info.plist` du target iOS:
 Ou copie le snippet depuis:
 - `swift/TNNewsApp/TNNewsApp/Info.plist.ats-snippet.xml`
 
+### Vérification rapide
+Après lancement, vérifie dans la console Xcode:
+- `[TN-iOS] ATS config detected - NSAllowsArbitraryLoads=true`
+
+Si `false`, l'exception n'est pas appliquée au bon `Info.plist` target (vérifie `Build Settings` -> `Info.plist File`).
+
 ## Activer ensuite la version modulaire complète
 Ajoute ensuite au target app:
 - `Core/`
