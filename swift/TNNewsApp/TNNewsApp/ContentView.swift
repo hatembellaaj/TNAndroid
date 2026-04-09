@@ -156,7 +156,12 @@ final class BootstrapViewModel: ObservableObject {
             prayers = rows
             print("[TN-iOS] Prayers loaded count: \(rows.count)")
         } catch {
-            prayerError = "Erreur chargement prières: \(error.localizedDescription)"
+            let nsError = error as NSError
+            if nsError.domain == NSURLErrorDomain && nsError.code == -1022 {
+                prayerError = "ATS bloque le flux HTTP des prières. Ajoute l'exception ATS dans Info.plist (voir README)."
+            } else {
+                prayerError = "Erreur chargement prières: \(error.localizedDescription)"
+            }
             print("[TN-iOS] Prayers load error: \(error)")
         }
 

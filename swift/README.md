@@ -23,6 +23,12 @@ puis rebascule vers le flux complet (`SplashView`/`RootTabView`) quand le target
 ## APIs Android
 Les endpoints Android restent définis dans `Core/Networking/Endpoint.swift` pour l'alignement de migration.
 
+
+## ATS (prières en HTTP)
+Le flux prières Android utilise actuellement une URL `http://`.
+Sur iOS, ATS bloque ce chargement (erreur `-1022`) par défaut.
+Ajoute le bloc fourni dans `swift/TNNewsApp/TNNewsApp/Info.plist.ats-snippet.xml` au `Info.plist` du target pour autoriser ce flux (temporaire).
+
 ## Intégration Xcode
 - Conserver un seul fichier `@main`.
 - Vérifier le Target Membership de tous les dossiers.
