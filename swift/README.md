@@ -5,20 +5,23 @@ Ce dossier contient une version SwiftUI modulaire de l'application TNAndroid.
 ## Emplacement recommandé pour Xcode
 - `swift/TNNewsApp/TNNewsApp/`
 
-## Démarrage garanti (anti erreurs de scope)
-- `TNNewsAppApp.swift` est volontairement minimal et lance `ContentView`.
-- `ContentView.swift` est autonome (tabs de base), pour garantir un run même si le target membership Xcode n'inclut pas encore tous les fichiers.
+## Démarrage garanti + chargement réel
+- `TNNewsAppApp.swift` lance `ContentView`.
+- `ContentView.swift` charge réellement les données:
+  - News: `https://preprod.tunisienumerique.com/results.json`
+  - Prières: `http://196.203.63.50/Isslamyat/web/json/priere.json`
+- Logs visibles dans la console Xcode avec préfixe `[TN-iOS]` (URL, status HTTP, count, erreurs).
 
-## Activer la version complète
+## Activer ensuite la version modulaire complète
 Ajoute ensuite au target app:
 - `Core/`
 - `Features/`
 - `Services/`
 
-puis remplace le `ContentView` autonome par le flux complet (`SplashView` / `RootTabView`) lorsque le target membership est propre.
+puis rebascule vers le flux complet (`SplashView`/`RootTabView`) quand le target membership est propre.
 
 ## APIs Android
-Les endpoints Android restent définis dans `Core/Networking/Endpoint.swift` pour l'alignement fonctionnel de la migration.
+Les endpoints Android restent définis dans `Core/Networking/Endpoint.swift` pour l'alignement de migration.
 
 ## Intégration Xcode
 - Conserver un seul fichier `@main`.
