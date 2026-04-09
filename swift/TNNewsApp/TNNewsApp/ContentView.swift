@@ -158,7 +158,9 @@ final class BootstrapViewModel: ObservableObject {
         } catch {
             let nsError = error as NSError
             if nsError.domain == NSURLErrorDomain && nsError.code == -1022 {
-                prayerError = "ATS bloque le flux HTTP des prières. Ajoute l'exception ATS dans Info.plist (voir README)."
+                prayerError = "ATS bloque le flux HTTP des prières. Active l'exception ATS dans Info.plist (README)."
+                prayers = fallbackPrayerRows()
+                print("[TN-iOS] ATS blocked prayers endpoint, using fallback local rows: \(prayers.count)")
             } else {
                 prayerError = "Erreur chargement prières: \(error.localizedDescription)"
             }
@@ -198,6 +200,16 @@ final class BootstrapViewModel: ObservableObject {
             seen.insert(key)
             return true
         }
+    }
+
+    private func fallbackPrayerRows() -> [PrayerRow] {
+        [
+            PrayerRow(name: "Sobh", time: "05:10"),
+            PrayerRow(name: "Dhohr", time: "12:30"),
+            PrayerRow(name: "Asr", time: "16:05"),
+            PrayerRow(name: "Maghreb", time: "18:45"),
+            PrayerRow(name: "Icha", time: "20:10")
+        ]
     }
 
     private func parsePrayerArray(_ arr: [[String: Any]]) -> [PrayerRow] {
