@@ -1,0 +1,35 @@
+# Swift equivalent (TNAndroid -> iOS)
+
+Ce dossier contient une version SwiftUI modulaire de l'application TNAndroid.
+
+## Emplacement recommandé pour Xcode
+- `swift/TNNewsApp/TNNewsApp/`
+
+## Démarrage garanti + chargement réel
+- `TNNewsAppApp.swift` lance `ContentView`.
+- `ContentView.swift` charge réellement les données:
+  - News: `https://preprod.tunisienumerique.com/results.json`
+  - Prières: flux temporairement désactivé (endpoint actuel en HTTP)
+- Logs visibles dans la console Xcode avec préfixe `[TN-iOS]` (URL, status HTTP, count, erreurs).
+- L'onglet prières affiche un message informatif tant que l'API n'est pas migrée en HTTPS.
+
+## API prières (temporairement ignorée)
+Le flux prières Android est encore en `http://`.
+Décision actuelle: **ne pas charger cette API pour le moment** et conserver ATS strict côté iOS.
+Dès que l'endpoint passe en HTTPS, réactiver l'appel dans la couche repository / view model.
+
+## Activer ensuite la version modulaire complète
+Ajoute ensuite au target app:
+- `Core/`
+- `Features/`
+- `Services/`
+
+puis rebascule vers le flux complet (`SplashView`/`RootTabView`) quand le target membership est propre.
+
+## APIs Android
+Les endpoints Android restent définis dans `Core/Networking/Endpoint.swift` pour l'alignement de migration.
+
+## Intégration Xcode
+- Conserver un seul fichier `@main`.
+- Vérifier le Target Membership de tous les dossiers.
+- Supprimer/retirer du target tout `ContentView` template affichant "Hello, world!".
