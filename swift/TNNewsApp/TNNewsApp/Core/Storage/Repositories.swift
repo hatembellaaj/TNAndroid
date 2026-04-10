@@ -27,15 +27,9 @@ struct RemotePrayerRepository: PrayerRepository {
     let client: HTTPClient
 
     func fetchPrayerTimes() async throws -> [PrayerTime] {
-        struct PrayerPayload: Codable {
-            let data: [PrayerPayloadEntry]
-        }
-        struct PrayerPayloadEntry: Codable {
-            let name: String
-            let time: String
-        }
-
-        let payload = try await client.fetch(PrayerPayload.self, endpoint: .prayers)
-        return payload.data.map { PrayerTime(name: $0.name, time: $0.time) }
+        // Temporary product decision: ignore the prayer API while it is HTTP-only.
+        // Keeping this repository method avoids breaking call sites.
+        _ = client
+        return []
     }
 }

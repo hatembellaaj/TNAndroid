@@ -32,6 +32,11 @@ struct ContentView: View {
                         ProgressView("Chargement des prières...")
                     } else if let error = vm.prayerError {
                         Text(error).foregroundStyle(.red)
+                    } else if vm.prayers.isEmpty {
+                        Text("Flux prières ignoré temporairement (endpoint HTTP).")
+                            .foregroundStyle(.secondary)
+                            .multilineTextAlignment(.center)
+                            .padding()
                     } else {
                         List(vm.prayers) { prayer in
                             HStack {
@@ -89,21 +94,9 @@ final class BootstrapViewModel: ObservableObject {
     @Published var prayerError: String?
 
     private let newsURL = URL(string: "https://preprod.tunisienumerique.com/results.json")!
-    private let prayersURL = URL(string: "http://196.203.63.50/Isslamyat/web/json/priere.json")!
-
     func loadAll() async {
-        logATSConfiguration()
         await loadNews()
-        await loadPrayers()
-    }
-
-    private func logATSConfiguration() {
-        let ats = Bundle.main.object(forInfoDictionaryKey: "NSAppTransportSecurity") as? [String: Any]
-        let allowsArbitraryLoads = (ats?["NSAllowsArbitraryLoads"] as? Bool) ?? false
-        print("[TN-iOS] ATS config detected - NSAllowsArbitraryLoads=\(allowsArbitraryLoads)")
-        if !allowsArbitraryLoads {
-            print("[TN-iOS] ATS is still strict. Prayer HTTP endpoint will be blocked until Info.plist is updated.")
-        }
+        disablePrayersTemporarily()
     }
 
     func loadNews() async {
@@ -150,90 +143,11 @@ final class BootstrapViewModel: ObservableObject {
         isLoadingNews = false
     }
 
-    func loadPrayers() async {
-        isLoadingPrayers = true
-        prayerError = nil
-        print("[TN-iOS] Loading prayers from: \(prayersURL.absoluteString)")
-
-        do {
-            let (data, response) = try await URLSession.shared.data(from: prayersURL)
-            if let http = response as? HTTPURLResponse {
-                print("[TN-iOS] Prayers HTTP status: \(http.statusCode)")
-            }
-
-            let json = try JSONSerialization.jsonObject(with: data)
-            let rows = flattenPrayerRows(json)
-            prayers = rows
-            print("[TN-iOS] Prayers loaded count: \(rows.count)")
-        } catch {
-            let nsError = error as NSError
-            if nsError.domain == NSURLErrorDomain && nsError.code == -1022 {
-                prayerError = "ATS bloque le flux HTTP des prières. Active l'exception ATS dans Info.plist (README)."
-                prayers = fallbackPrayerRows()
-                print("[TN-iOS] ATS blocked prayers endpoint, using fallback local rows: \(prayers.count)")
-            } else {
-                prayerError = "Erreur chargement prières: \(error.localizedDescription)"
-            }
-            print("[TN-iOS] Prayers load error: \(error)")
-        }
-
+    func disablePrayersTemporarily() {
         isLoadingPrayers = false
-    }
-
-    private func flattenPrayerRows(_ payload: Any) -> [PrayerRow] {
-        var out: [PrayerRow] = []
-
-        if let dict = payload as? [String: Any] {
-            // Common keys from prayer payloads
-            let candidateKeys = ["data", "times", "prayer", "prayers", "horaire", "horaires"]
-            for key in candidateKeys {
-                if let arr = dict[key] as? [[String: Any]] {
-                    out.append(contentsOf: parsePrayerArray(arr))
-                }
-            }
-
-            // fallback: parse key/value hh:mm directly
-            for (k, v) in dict {
-                if let time = v as? String, time.contains(":") {
-                    out.append(PrayerRow(name: k, time: time))
-                }
-            }
-        } else if let arr = payload as? [[String: Any]] {
-            out.append(contentsOf: parsePrayerArray(arr))
-        }
-
-        // Remove duplicates by (name,time)
-        var seen = Set<String>()
-        return out.filter {
-            let key = "\($0.name)|\($0.time)"
-            if seen.contains(key) { return false }
-            seen.insert(key)
-            return true
-        }
-    }
-
-    private func fallbackPrayerRows() -> [PrayerRow] {
-        [
-            PrayerRow(name: "Sobh", time: "05:10"),
-            PrayerRow(name: "Dhohr", time: "12:30"),
-            PrayerRow(name: "Asr", time: "16:05"),
-            PrayerRow(name: "Maghreb", time: "18:45"),
-            PrayerRow(name: "Icha", time: "20:10")
-        ]
-    }
-
-    private func parsePrayerArray(_ arr: [[String: Any]]) -> [PrayerRow] {
-        arr.compactMap { row in
-            let name = (row["name"] as? String) ??
-                (row["prayer"] as? String) ??
-                (row["nom"] as? String)
-            let time = (row["time"] as? String) ??
-                (row["heure"] as? String) ??
-                (row["value"] as? String)
-
-            guard let n = name, let t = time else { return nil }
-            return PrayerRow(name: n, time: t)
-        }
+        prayerError = nil
+        prayers = []
+        print("[TN-iOS] Prayer endpoint ignored temporarily (HTTP-only source).")
     }
 }
 

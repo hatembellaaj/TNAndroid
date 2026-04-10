@@ -9,33 +9,14 @@ Ce dossier contient une version SwiftUI modulaire de l'application TNAndroid.
 - `TNNewsAppApp.swift` lance `ContentView`.
 - `ContentView.swift` charge réellement les données:
   - News: `https://preprod.tunisienumerique.com/results.json`
-  - Prières: `http://196.203.63.50/Isslamyat/web/json/priere.json`
+  - Prières: flux temporairement désactivé (endpoint actuel en HTTP)
 - Logs visibles dans la console Xcode avec préfixe `[TN-iOS]` (URL, status HTTP, count, erreurs).
-- Si ATS bloque les prières (`-1022`), l'app affiche une liste fallback locale pour garder l'écran utilisable.
+- L'onglet prières affiche un message informatif tant que l'API n'est pas migrée en HTTPS.
 
-## ATS (prières en HTTP)
-Le flux prières Android utilise une URL `http://`.
-Sur iOS, ATS bloque ce chargement par défaut.
-
-Ajoute ces clés dans le `Info.plist` du target iOS:
-
-- `NSAppTransportSecurity` (Dictionary)
-  - `NSAllowsArbitraryLoads` (Boolean) = `YES`
-
-Ou copie le snippet depuis:
-- `swift/TNNewsApp/TNNewsApp/Info.plist.ats-snippet.xml`
-
-### Vérification rapide
-Après lancement, vérifie dans la console Xcode:
-- `[TN-iOS] ATS config detected - NSAllowsArbitraryLoads=true`
-
-Si `false`, l'exception n'est pas appliquée au bon `Info.plist` target (vérifie `Build Settings` -> `Info.plist File`).
-
-### Application immédiate (recommandée)
-1. Dans Xcode, ouvre `Build Settings` du target `TNNewsApp`.
-2. Vérifie `Info.plist File` = `TNNewsApp/Info.plist`.
-3. Si besoin, utilise le fichier versionné: `swift/TNNewsApp/TNNewsApp/Info.plist` (inclut déjà ATS).
-4. Clean Build Folder puis relance.
+## API prières (temporairement ignorée)
+Le flux prières Android est encore en `http://`.
+Décision actuelle: **ne pas charger cette API pour le moment** et conserver ATS strict côté iOS.
+Dès que l'endpoint passe en HTTPS, réactiver l'appel dans la couche repository / view model.
 
 ## Activer ensuite la version modulaire complète
 Ajoute ensuite au target app:
