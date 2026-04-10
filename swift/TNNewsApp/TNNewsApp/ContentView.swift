@@ -17,11 +17,30 @@ struct ContentView: View {
                             NavigationLink {
                                 NewsHTMLDetailView(item: item)
                             } label: {
-                                VStack(alignment: .leading, spacing: 4) {
-                                    Text(item.title).font(.headline)
-                                    if !item.summary.isEmpty {
-                                        Text(item.summary).font(.subheadline).foregroundStyle(.secondary)
+                                HStack(spacing: 10) {
+                                    if let imageURL = URL(string: item.imageURL), !item.imageURL.isEmpty {
+                                        AsyncImage(url: imageURL) { phase in
+                                            switch phase {
+                                            case .success(let image):
+                                                image
+                                                    .resizable()
+                                                    .scaledToFill()
+                                            default:
+                                                Image(systemName: "newspaper")
+                                                    .resizable()
+                                                    .scaledToFit()
+                                                    .padding(10)
+                                                    .foregroundStyle(.secondary)
+                                            }
+                                        }
+                                        .frame(width: 54, height: 54)
+                                        .background(Color(.secondarySystemBackground))
+                                        .clipShape(RoundedRectangle(cornerRadius: 8))
                                     }
+
+                                    Text(item.title)
+                                        .font(.headline)
+                                        .lineLimit(3)
                                 }
                             }
                         }
@@ -84,6 +103,7 @@ final class BootstrapViewModel: ObservableObject {
         let contentHTML: String
         let date: String
         let shareURL: String
+        let imageURL: String
     }
 
     struct PrayerRow: Identifiable {
@@ -139,6 +159,7 @@ final class BootstrapViewModel: ObservableObject {
                 ]) ?? rawSummary
                 let date = pickString(row, keys: ["News_Format_Date", "News_Date", "date"]) ?? ""
                 let shareURL = pickString(row, keys: ["News_Url_Partage", "shareURL", "shareUrlNews"]) ?? ""
+                let imageURL = pickString(row, keys: ["News_Url_Image", "imageURL", "imageUrlNews"]) ?? ""
 
                 let title = normalizeDisplayText(rawTitle)
                 let summary = normalizeDisplayText(rawSummary)
@@ -149,7 +170,8 @@ final class BootstrapViewModel: ObservableObject {
                     summary: summary,
                     contentHTML: rawContent,
                     date: normalizeDisplayText(date),
-                    shareURL: shareURL
+                    shareURL: shareURL,
+                    imageURL: imageURL
                 )
             }
 
