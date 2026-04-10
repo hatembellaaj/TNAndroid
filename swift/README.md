@@ -31,6 +31,12 @@ Après lancement, vérifie dans la console Xcode:
 
 Si `false`, l'exception n'est pas appliquée au bon `Info.plist` target (vérifie `Build Settings` -> `Info.plist File`).
 
+### Application immédiate (recommandée)
+1. Dans Xcode, ouvre `Build Settings` du target `TNNewsApp`.
+2. Vérifie `Info.plist File` = `TNNewsApp/Info.plist`.
+3. Si besoin, utilise le fichier versionné: `swift/TNNewsApp/TNNewsApp/Info.plist` (inclut déjà ATS).
+4. Clean Build Folder puis relance.
+
 ## Activer ensuite la version modulaire complète
 Ajoute ensuite au target app:
 - `Core/`
