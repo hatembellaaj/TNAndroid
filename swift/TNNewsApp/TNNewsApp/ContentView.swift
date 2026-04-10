@@ -117,15 +117,18 @@ final class BootstrapViewModel: ObservableObject {
                 (json?["news"] as? [[String: Any]]) ?? []
 
             let mapped = arrays.enumerated().map { idx, row in
-                let id = (row["id"] as? String) ??
-                    (row["id_news"] as? String) ??
+                let id = pickString(row, keys: ["News_ID", "id", "id_news", "idNews"]) ??
                     String(describing: row["id"] ?? idx)
-                let title = (row["title"] as? String) ??
-                    (row["titre"] as? String) ??
-                    (row["titleNews"] as? String) ?? "Sans titre"
-                let summary = (row["description"] as? String) ??
-                    (row["resume"] as? String) ??
-                    (row["summary"] as? String) ?? ""
+
+                let rawTitle = pickString(row, keys: [
+                    "News_Titre", "title", "titre", "titleNews", "post_title"
+                ]) ?? "Sans titre"
+                let rawSummary = pickString(row, keys: [
+                    "News_Description", "description", "resume", "summary"
+                ]) ?? ""
+
+                let title = normalizeDisplayText(rawTitle)
+                let summary = normalizeDisplayText(rawSummary)
 
                 return NewsRow(id: id, title: title, summary: summary)
             }
@@ -148,6 +151,24 @@ final class BootstrapViewModel: ObservableObject {
         prayerError = nil
         prayers = []
         print("[TN-iOS] Prayer endpoint ignored temporarily (HTTP-only source).")
+    }
+
+    private func pickString(_ row: [String: Any], keys: [String]) -> String? {
+        for key in keys {
+            if let value = row[key] as? String, !value.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty {
+                return value
+            }
+        }
+        return nil
+    }
+
+    private func normalizeDisplayText(_ text: String) -> String {
+        text
+            .replacingOccurrences(of: "&quot;", with: "\"")
+            .replacingOccurrences(of: "&amp;", with: "&")
+            .replacingOccurrences(of: "&#039;", with: "'")
+            .replacingOccurrences(of: "&nbsp;", with: " ")
+            .trimmingCharacters(in: .whitespacesAndNewlines)
     }
 }
 
