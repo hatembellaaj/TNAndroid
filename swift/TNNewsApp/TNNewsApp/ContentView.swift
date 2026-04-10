@@ -1,4 +1,5 @@
 import SwiftUI
+import WebKit
 
 struct ContentView: View {
     @StateObject private var vm = BootstrapViewModel()
@@ -13,10 +14,14 @@ struct ContentView: View {
                         Text(error).foregroundStyle(.red)
                     } else {
                         List(vm.newsItems) { item in
-                            VStack(alignment: .leading, spacing: 4) {
-                                Text(item.title).font(.headline)
-                                if !item.summary.isEmpty {
-                                    Text(item.summary).font(.subheadline).foregroundStyle(.secondary)
+                            NavigationLink {
+                                NewsHTMLDetailView(item: item)
+                            } label: {
+                                VStack(alignment: .leading, spacing: 4) {
+                                    Text(item.title).font(.headline)
+                                    if !item.summary.isEmpty {
+                                        Text(item.summary).font(.subheadline).foregroundStyle(.secondary)
+                                    }
                                 }
                             }
                         }
@@ -76,6 +81,9 @@ final class BootstrapViewModel: ObservableObject {
         let id: String
         let title: String
         let summary: String
+        let contentHTML: String
+        let date: String
+        let shareURL: String
     }
 
     struct PrayerRow: Identifiable {
@@ -126,11 +134,23 @@ final class BootstrapViewModel: ObservableObject {
                 let rawSummary = pickString(row, keys: [
                     "News_Description", "description", "resume", "summary"
                 ]) ?? ""
+                let rawContent = pickString(row, keys: [
+                    "News_Contenu", "content", "contenu", "News_commentaire_android"
+                ]) ?? rawSummary
+                let date = pickString(row, keys: ["News_Format_Date", "News_Date", "date"]) ?? ""
+                let shareURL = pickString(row, keys: ["News_Url_Partage", "shareURL", "shareUrlNews"]) ?? ""
 
                 let title = normalizeDisplayText(rawTitle)
                 let summary = normalizeDisplayText(rawSummary)
 
-                return NewsRow(id: id, title: title, summary: summary)
+                return NewsRow(
+                    id: id,
+                    title: title,
+                    summary: summary,
+                    contentHTML: rawContent,
+                    date: normalizeDisplayText(date),
+                    shareURL: shareURL
+                )
             }
 
             newsItems = mapped
@@ -169,6 +189,64 @@ final class BootstrapViewModel: ObservableObject {
             .replacingOccurrences(of: "&#039;", with: "'")
             .replacingOccurrences(of: "&nbsp;", with: " ")
             .trimmingCharacters(in: .whitespacesAndNewlines)
+    }
+}
+
+struct NewsHTMLDetailView: View {
+    let item: BootstrapViewModel.NewsRow
+
+    var body: some View {
+        VStack(alignment: .leading, spacing: 10) {
+            Text(item.title)
+                .font(.title3.bold())
+                .padding(.horizontal)
+                .padding(.top, 8)
+
+            if !item.date.isEmpty {
+                Text(item.date)
+                    .font(.footnote)
+                    .foregroundStyle(.secondary)
+                    .padding(.horizontal)
+            }
+
+            if let url = URL(string: item.shareURL), !item.shareURL.isEmpty {
+                ShareLink("Partager", item: url)
+                    .padding(.horizontal)
+            }
+
+            Divider()
+            HTMLContentView(html: item.contentHTML)
+        }
+        .navigationTitle("Détail")
+        .navigationBarTitleDisplayMode(.inline)
+    }
+}
+
+struct HTMLContentView: UIViewRepresentable {
+    let html: String
+
+    func makeUIView(context: Context) -> WKWebView {
+        let webView = WKWebView(frame: .zero)
+        webView.isOpaque = false
+        webView.backgroundColor = .clear
+        return webView
+    }
+
+    func updateUIView(_ webView: WKWebView, context: Context) {
+        let wrappedHTML = """
+        <html>
+          <head>
+            <meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\" />
+            <style>
+              body { font-family: -apple-system; font-size: 18px; color: #111; line-height: 1.5; margin: 0; padding: 0; }
+              img { max-width: 100%; height: auto; }
+              iframe { max-width: 100%; }
+            </style>
+          </head>
+          <body>\(html)</body>
+        </html>
+        """
+        webView.loadHTMLString(wrappedHTML, baseURL: URL(string: "https://www.tunisienumerique.com"))
     }
 }
 
