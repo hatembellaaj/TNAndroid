@@ -3,94 +3,176 @@ import WebKit
 
 struct ContentView: View {
     @StateObject private var vm = BootstrapViewModel()
+    @State private var showSplash = true
 
     var body: some View {
-        TabView {
-            NavigationStack {
-                Group {
-                    if vm.isLoadingNews {
-                        ProgressView("Chargement des articles...")
-                    } else if let error = vm.newsError {
-                        Text(error).foregroundStyle(.red)
-                    } else {
-                        List(vm.newsItems) { item in
-                            NavigationLink {
-                                NewsHTMLDetailView(item: item)
-                            } label: {
-                                HStack(spacing: 10) {
-                                    if let imageURL = URL(string: item.imageURL), !item.imageURL.isEmpty {
-                                        AsyncImage(url: imageURL) { phase in
-                                            switch phase {
-                                            case .success(let image):
-                                                image
-                                                    .resizable()
-                                                    .scaledToFill()
-                                            default:
-                                                Image(systemName: "newspaper")
-                                                    .resizable()
-                                                    .scaledToFit()
-                                                    .padding(10)
-                                                    .foregroundStyle(.secondary)
+        Group {
+            if showSplash {
+                AndroidStyleSplashView()
+            } else {
+                TabView {
+                    NavigationStack {
+                        Group {
+                            if vm.isLoadingNews {
+                                ProgressView("Chargement des articles...")
+                            } else if let error = vm.newsError {
+                                Text(error).foregroundStyle(.red)
+                            } else {
+                                List(vm.newsItems) { item in
+                                    NavigationLink {
+                                        NewsHTMLDetailView(item: item)
+                                    } label: {
+                                        HStack(spacing: 10) {
+                                            if let imageURL = URL(string: item.imageURL), !item.imageURL.isEmpty {
+                                                AsyncImage(url: imageURL) { phase in
+                                                    switch phase {
+                                                    case .success(let image):
+                                                        image
+                                                            .resizable()
+                                                            .scaledToFill()
+                                                    default:
+                                                        Image(systemName: "newspaper")
+                                                            .resizable()
+                                                            .scaledToFit()
+                                                            .padding(10)
+                                                            .foregroundStyle(.secondary)
+                                                    }
+                                                }
+                                                .frame(width: 54, height: 54)
+                                                .background(Color(.secondarySystemBackground))
+                                                .clipShape(RoundedRectangle(cornerRadius: 8))
                                             }
-                                        }
-                                        .frame(width: 54, height: 54)
-                                        .background(Color(.secondarySystemBackground))
-                                        .clipShape(RoundedRectangle(cornerRadius: 8))
-                                    }
 
-                                    Text(item.title)
-                                        .font(.headline)
-                                        .lineLimit(3)
+                                            Text(item.title)
+                                                .font(.headline)
+                                                .lineLimit(3)
+                                        }
+                                    }
                                 }
                             }
                         }
+                        .navigationTitle("Actualités")
                     }
-                }
-                .navigationTitle("Actualités")
-            }
-            .tabItem { Label("Home", systemImage: "house") }
+                    .tabItem { Label("Home", systemImage: "house") }
 
-            NavigationStack {
-                Group {
-                    if vm.isLoadingPrayers {
-                        ProgressView("Chargement des prières...")
-                    } else if let error = vm.prayerError {
-                        Text(error).foregroundStyle(.red)
-                    } else if vm.prayers.isEmpty {
-                        Text("Flux prières ignoré temporairement (endpoint HTTP).")
-                            .foregroundStyle(.secondary)
-                            .multilineTextAlignment(.center)
-                            .padding()
-                    } else {
-                        List(vm.prayers) { prayer in
-                            HStack {
-                                Text(prayer.name)
-                                Spacer()
-                                Text(prayer.time).bold()
+                    NavigationStack {
+                        Group {
+                            if vm.isLoadingPrayers {
+                                ProgressView("Chargement des prières...")
+                            } else if let error = vm.prayerError {
+                                Text(error).foregroundStyle(.red)
+                            } else if vm.prayers.isEmpty {
+                                Text("Flux prières ignoré temporairement (endpoint HTTP).")
+                                    .foregroundStyle(.secondary)
+                                    .multilineTextAlignment(.center)
+                                    .padding()
+                            } else {
+                                List(vm.prayers) { prayer in
+                                    HStack {
+                                        Text(prayer.name)
+                                        Spacer()
+                                        Text(prayer.time).bold()
+                                    }
+                                }
                             }
                         }
+                        .navigationTitle("Prières")
                     }
+                    .tabItem { Label("Prières", systemImage: "clock") }
+
+                    NavigationStack {
+                        Text("Favoris (intégration complète après target membership)")
+                            .padding()
+                            .navigationTitle("Favoris")
+                    }
+                    .tabItem { Label("Favoris", systemImage: "bookmark") }
+
+                    NavigationStack {
+                        Text("Paramètres")
+                            .navigationTitle("Paramètres")
+                    }
+                    .tabItem { Label("Paramètres", systemImage: "gearshape") }
                 }
-                .navigationTitle("Prières")
+                .tint(Color(androidGreen))
+                .task {
+                    await vm.loadAll()
+                }
             }
-            .tabItem { Label("Prières", systemImage: "clock") }
-
-            NavigationStack {
-                Text("Favoris (intégration complète après target membership)")
-                    .padding()
-                    .navigationTitle("Favoris")
-            }
-            .tabItem { Label("Favoris", systemImage: "bookmark") }
-
-            NavigationStack {
-                Text("Paramètres")
-                    .navigationTitle("Paramètres")
-            }
-            .tabItem { Label("Paramètres", systemImage: "gearshape") }
         }
         .task {
-            await vm.loadAll()
+            guard showSplash else { return }
+            try? await Task.sleep(nanoseconds: 1_200_000_000)
+            withAnimation(.easeOut(duration: 0.25)) {
+                showSplash = false
+            }
         }
+    }
+}
+
+struct AndroidStyleSplashView: View {
+    var body: some View {
+        ZStack {
+            Color.white.ignoresSafeArea()
+
+            Circle()
+                .fill(Color(androidGreenSecondary).opacity(0.18))
+                .frame(width: 320, height: 320)
+                .offset(x: -120, y: -260)
+
+            VStack(spacing: 16) {
+                TNBrandWordmarkView()
+
+                Text("Chargement de données...")
+                    .font(.footnote)
+                    .foregroundStyle(.secondary)
+
+                ProgressView()
+                    .tint(Color(androidGreen))
+                    .frame(width: 160)
+            }
+        }
+    }
+}
+
+struct TNBrandWordmarkView: View {
+    var body: some View {
+        HStack(spacing: 8) {
+            Image(systemName: "newspaper.fill")
+                .font(.system(size: 24, weight: .bold))
+                .foregroundStyle(Color(androidGreen))
+
+            VStack(alignment: .leading, spacing: 1) {
+                Text("TUNISIE")
+                    .font(.system(size: 14, weight: .bold))
+                    .foregroundStyle(Color(androidGreen))
+                Text("NUMÉRIQUE")
+                    .font(.system(size: 14, weight: .heavy))
+                    .foregroundStyle(Color(androidGreenSecondary))
+            }
+        }
+        .padding(.horizontal, 12)
+        .padding(.vertical, 8)
+        .background(.white.opacity(0.9))
+        .clipShape(RoundedRectangle(cornerRadius: 10))
+    }
+}
+
+private let androidGreen = "#36C750"
+private let androidGreenSecondary = "#83B01A"
+
+private extension Color {
+    init(_ hex: String) {
+        let value = hex.trimmingCharacters(in: CharacterSet.alphanumerics.inverted)
+        var int: UInt64 = 0
+        Scanner(string: value).scanHexInt64(&int)
+        let r, g, b: UInt64
+        switch value.count {
+        case 6:
+            (r, g, b) = (int >> 16, int >> 8 & 0xFF, int & 0xFF)
+        default:
+            (r, g, b) = (54, 199, 80)
+        }
+        self.init(.sRGB, red: Double(r) / 255, green: Double(g) / 255, blue: Double(b) / 255, opacity: 1)
     }
 }
 
