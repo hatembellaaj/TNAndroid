@@ -29,6 +29,21 @@ puis rebascule vers le flux complet (`SplashView`/`RootTabView`) quand le target
 ## APIs Android
 Les endpoints Android restent définis dans `Core/Networking/Endpoint.swift` pour l'alignement de migration.
 
+## Icône iOS depuis Android (sans fichier binaire dans Git)
+Pour éviter les PR bloquées par les fichiers binaires, l'asset catalog iOS est versionné **sans PNG**.
+
+Sur macOS, génère les icônes à partir de la source Android:
+
+```bash
+bash swift/TNNewsApp/scripts/generate_app_icon_from_android.sh
+```
+
+Le script utilise `app/src/main/res/drawable/logo.png` (Android) et remplit:
+- `swift/TNNewsApp/TNNewsApp/Assets.xcassets/AppIcon.appiconset/`
+
+Ensuite dans Xcode, vérifie:
+- Target `TNNewsApp` -> `General` -> `App Icons and Launch Screen` -> `App Icon = AppIcon`
+
 ## Intégration Xcode
 - Conserver un seul fichier `@main`.
 - Vérifier le Target Membership de tous les dossiers.
