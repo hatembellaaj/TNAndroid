@@ -38,7 +38,7 @@ Sur macOS, génère les icônes à partir de la source Android:
 bash swift/TNNewsApp/scripts/generate_app_icon_from_android.sh
 ```
 
-Le script utilise `app/src/main/res/drawable/logo.png` (Android) et remplit:
+Le script utilise `app/src/main/res/drawable/logo.png` (Android), applique un fond vert TN (non transparent), puis remplit:
 - `swift/TNNewsApp/TNNewsApp/Assets.xcassets/AppIcon.appiconset/`
 
 Ensuite dans Xcode, vérifie:
