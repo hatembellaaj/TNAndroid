@@ -4,6 +4,7 @@ import WebKit
 struct ContentView: View {
     @StateObject private var vm = BootstrapViewModel()
     @State private var showSplash = true
+    @State private var showMenu = false
 
     var body: some View {
         Group {
@@ -35,23 +36,67 @@ struct ContentView: View {
                                                             .resizable()
                                                             .scaledToFit()
                                                             .padding(10)
-                                                            .foregroundStyle(.secondary)
+                                                            .foregroundStyle(.white.opacity(0.85))
                                                     }
                                                 }
                                                 .frame(width: 54, height: 54)
-                                                .background(Color(.secondarySystemBackground))
+                                                .background(Color.white.opacity(0.08))
                                                 .clipShape(RoundedRectangle(cornerRadius: 8))
                                             }
 
                                             Text(item.title)
                                                 .font(.headline)
                                                 .lineLimit(3)
+                                                .foregroundStyle(.white)
                                         }
                                     }
                                 }
+                                .listRowBackground(Color(newsRowBackground))
                             }
                         }
-                        .navigationTitle("Actualités")
+                        .scrollContentBackground(.hidden)
+                        .background(Color(newsScreenBackground))
+                        .toolbar {
+                            ToolbarItem(placement: .topBarLeading) {
+                                Text("Ar")
+                                    .font(.system(size: 14, weight: .bold))
+                                    .padding(6)
+                                    .background(Color.white.opacity(0.12))
+                                    .clipShape(RoundedRectangle(cornerRadius: 6))
+                                    .foregroundStyle(.white)
+                            }
+
+                            ToolbarItem(placement: .principal) {
+                                Text("Actualités")
+                                    .font(.custom("AvenirNext-DemiBold", size: 24))
+                                    .foregroundStyle(.white)
+                            }
+
+                            ToolbarItem(placement: .topBarTrailing) {
+                                Button {
+                                    showMenu = true
+                                } label: {
+                                    Image(systemName: "line.3.horizontal")
+                                        .font(.system(size: 20, weight: .semibold))
+                                        .foregroundStyle(.white)
+                                }
+                            }
+                        }
+                        .toolbarBackground(Color(newsNavBackground), for: .navigationBar)
+                        .toolbarBackground(.visible, for: .navigationBar)
+                        .toolbarColorScheme(.dark, for: .navigationBar)
+                        .sheet(isPresented: $showMenu) {
+                            VStack(spacing: 16) {
+                                Text("Menu")
+                                    .font(.title3.bold())
+                                Text("Menu latéral à intégrer (parité Android).")
+                                    .foregroundStyle(.secondary)
+                                Button("Fermer") { showMenu = false }
+                                    .buttonStyle(.borderedProminent)
+                            }
+                            .padding(24)
+                            .presentationDetents([.fraction(0.25)])
+                        }
                     }
                     .tabItem { Label("Home", systemImage: "house") }
 
@@ -159,6 +204,9 @@ struct TNBrandWordmarkView: View {
 
 private let androidGreen = "#36C750"
 private let androidGreenSecondary = "#83B01A"
+private let newsNavBackground = "#2F3444"
+private let newsScreenBackground = "#2E3342"
+private let newsRowBackground = "#33394A"
 
 private extension Color {
     init(_ hex: String) {
