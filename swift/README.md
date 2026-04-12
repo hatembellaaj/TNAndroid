@@ -32,13 +32,13 @@ Les endpoints Android restent définis dans `Core/Networking/Endpoint.swift` pou
 ## Icône iOS depuis Android (sans fichier binaire dans Git)
 Pour éviter les PR bloquées par les fichiers binaires, l'asset catalog iOS est versionné **sans PNG**.
 
-Sur macOS, génère les icônes à partir de la source Android:
+Sur macOS, génère les icônes au style launcher TN (carré vert arrondi + lettres TN):
 
 ```bash
 bash swift/TNNewsApp/scripts/generate_app_icon_from_android.sh
 ```
 
-Le script utilise `app/src/main/res/drawable/logo.png` (Android), applique un fond vert TN (non transparent), puis remplit:
+Le script génère des PNG non transparents au style TN, puis remplit:
 - `swift/TNNewsApp/TNNewsApp/Assets.xcassets/AppIcon.appiconset/`
 
 Ensuite dans Xcode, vérifie:

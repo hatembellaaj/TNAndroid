@@ -1,20 +1,14 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-# Generate iOS AppIcon files from Android logo source.
+# Generate iOS AppIcon files with TN launcher style (green square + "TN").
 # Run on macOS (requires swift + AppKit).
 
 ROOT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/../../.." && pwd)"
-SOURCE_PNG="$ROOT_DIR/app/src/main/res/drawable/logo.png"
 TARGET_DIR="$ROOT_DIR/swift/TNNewsApp/TNNewsApp/Assets.xcassets/AppIcon.appiconset"
 
 if ! command -v swift >/dev/null 2>&1; then
   echo "❌ 'swift' command is required."
-  exit 1
-fi
-
-if [[ ! -f "$SOURCE_PNG" ]]; then
-  echo "❌ Android source icon not found: $SOURCE_PNG"
   exit 1
 fi
 
@@ -46,20 +40,14 @@ for entry in "${icons[@]}"; do
   file="${entry%%:*}"
   size="${entry##*:}"
 
-  swift - "$SOURCE_PNG" "$TARGET_DIR/$file" "$size" <<'SWIFT'
+  swift - "$TARGET_DIR/$file" "$size" <<'SWIFT'
 import AppKit
 import Foundation
 
 let args = CommandLine.arguments
-guard args.count >= 4 else { exit(1) }
-let sourcePath = args[1]
-let outputPath = args[2]
-let size = Int(args[3]) ?? 1024
-
-guard let source = NSImage(contentsOfFile: sourcePath) else {
-    fputs("❌ Cannot open source image: \(sourcePath)\n", stderr)
-    exit(2)
-}
+guard args.count >= 3 else { exit(1) }
+let outputPath = args[1]
+let size = Int(args[2]) ?? 1024
 
 let canvasSize = NSSize(width: size, height: size)
 let rep = NSBitmapImageRep(
@@ -79,14 +67,52 @@ NSGraphicsContext.saveGraphicsState()
 let ctx = NSGraphicsContext(bitmapImageRep: rep)!
 NSGraphicsContext.current = ctx
 
-// TN green background to avoid transparent/blank launcher icon.
-NSColor(calibratedRed: 54/255, green: 199/255, blue: 80/255, alpha: 1).setFill()
+// Canvas white (iOS icon alpha-safe background).
+NSColor.white.setFill()
 NSBezierPath(rect: NSRect(origin: .zero, size: canvasSize)).fill()
 
-// Center Android logo with safe margins.
-let inset = CGFloat(size) * 0.18
-let targetRect = NSRect(x: inset, y: inset, width: CGFloat(size) - 2 * inset, height: CGFloat(size) - 2 * inset)
-source.draw(in: targetRect, from: .zero, operation: .sourceOver, fraction: 1.0)
+// Green rounded square like Android launcher icon.
+let margin = CGFloat(size) * 0.09
+let iconRect = NSRect(x: margin, y: margin, width: CGFloat(size) - 2 * margin, height: CGFloat(size) - 2 * margin)
+let radius = CGFloat(size) * 0.20
+let iconPath = NSBezierPath(roundedRect: iconRect, xRadius: radius, yRadius: radius)
+NSColor(calibratedRed: 64/255, green: 214/255, blue: 98/255, alpha: 1).setFill()
+iconPath.fill()
+
+// Subtle darker border.
+NSColor(calibratedRed: 45/255, green: 179/255, blue: 77/255, alpha: 1).setStroke()
+iconPath.lineWidth = max(2, CGFloat(size) * 0.02)
+iconPath.stroke()
+
+// White letter blocks ("T" and "N"), centered.
+let blockGap = CGFloat(size) * 0.05
+let blockWidth = CGFloat(size) * 0.25
+let blockHeight = CGFloat(size) * 0.36
+let blockY = CGFloat(size) * 0.34
+let totalWidth = blockWidth * 2 + blockGap
+let startX = (CGFloat(size) - totalWidth) / 2
+
+func drawLetterBlock(x: CGFloat, letter: String) {
+    let rect = NSRect(x: x, y: blockY, width: blockWidth, height: blockHeight)
+    let blockPath = NSBezierPath(roundedRect: rect, xRadius: blockWidth * 0.18, yRadius: blockWidth * 0.18)
+    NSColor.white.setFill()
+    blockPath.fill()
+
+    let attrs: [NSAttributedString.Key: Any] = [
+        .font: NSFont.systemFont(ofSize: CGFloat(size) * 0.23, weight: .heavy),
+        .foregroundColor: NSColor(calibratedRed: 72/255, green: 182/255, blue: 88/255, alpha: 1)
+    ]
+    let text = NSAttributedString(string: letter, attributes: attrs)
+    let textSize = text.size()
+    let textPoint = NSPoint(
+        x: rect.midX - textSize.width / 2,
+        y: rect.midY - textSize.height / 2 - CGFloat(size) * 0.01
+    )
+    text.draw(at: textPoint)
+}
+
+drawLetterBlock(x: startX, letter: "T")
+drawLetterBlock(x: startX + blockWidth + blockGap, letter: "N")
 
 NSGraphicsContext.restoreGraphicsState()
 
@@ -97,5 +123,5 @@ SWIFT
   echo "✅ generated $file (${size}x${size})"
 done
 
-echo "\nDone. Icons are generated with non-transparent TN green background."
+echo "\nDone. Icons are generated with TN launcher style (green rounded square + TN letters)."
 echo "Set App Icons Source to 'AppIcon' in Xcode target settings if needed."
