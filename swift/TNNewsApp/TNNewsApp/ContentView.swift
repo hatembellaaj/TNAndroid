@@ -5,6 +5,7 @@ struct ContentView: View {
     @StateObject private var vm = BootstrapViewModel()
     @State private var showSplash = true
     @State private var showMenu = false
+    @State private var selectedLanguage: AppLanguage = .ar
 
     var body: some View {
         Group {
@@ -58,7 +59,7 @@ struct ContentView: View {
                         .background(Color(newsScreenBackground))
                         .toolbar {
                             ToolbarItem(placement: .topBarLeading) {
-                                Text("Ar")
+                                Text(selectedLanguage.menuBadgeTitle)
                                     .font(.system(size: 14, weight: .bold))
                                     .padding(6)
                                     .background(Color.white.opacity(0.12))
@@ -67,7 +68,7 @@ struct ContentView: View {
                             }
 
                             ToolbarItem(placement: .principal) {
-                                Text("Actualités")
+                                Text(selectedLanguage.newsTitle)
                                     .font(.custom("AvenirNext-DemiBold", size: 24))
                                     .foregroundStyle(.white)
                             }
@@ -86,16 +87,11 @@ struct ContentView: View {
                         .toolbarBackground(.visible, for: .navigationBar)
                         .toolbarColorScheme(.dark, for: .navigationBar)
                         .sheet(isPresented: $showMenu) {
-                            VStack(spacing: 16) {
-                                Text("Menu")
-                                    .font(.title3.bold())
-                                Text("Menu latéral à intégrer (parité Android).")
-                                    .foregroundStyle(.secondary)
-                                Button("Fermer") { showMenu = false }
-                                    .buttonStyle(.borderedProminent)
-                            }
-                            .padding(24)
-                            .presentationDetents([.fraction(0.25)])
+                            LegacySideMenuView(
+                                selectedLanguage: $selectedLanguage,
+                                onClose: { showMenu = false }
+                            )
+                            .presentationDetents([.fraction(0.90)])
                         }
                     }
                     .tabItem { Label("Home", systemImage: "house") }
@@ -140,7 +136,10 @@ struct ContentView: View {
                 }
                 .tint(Color(androidGreen))
                 .task {
-                    await vm.loadAll()
+                    await vm.loadAll(language: selectedLanguage)
+                }
+                .onChange(of: selectedLanguage) { _, newLanguage in
+                    Task { await vm.loadAll(language: newLanguage) }
                 }
             }
         }
@@ -149,6 +148,111 @@ struct ContentView: View {
             try? await Task.sleep(nanoseconds: 1_200_000_000)
             withAnimation(.easeOut(duration: 0.25)) {
                 showSplash = false
+            }
+        }
+    }
+}
+
+private extension AppLanguage {
+    var menuBadgeTitle: String {
+        switch self {
+        case .ar: return "Ar"
+        case .fr: return "Fr"
+        case .en: return "En"
+        }
+    }
+
+    var newsTitle: String {
+        switch self {
+        case .ar: return "الأخبار"
+        case .fr: return "Actualités"
+        case .en: return "News"
+        }
+    }
+}
+
+struct LegacySideMenuView: View {
+    @Binding var selectedLanguage: AppLanguage
+    let onClose: () -> Void
+
+    private let items: [(label: String, icon: String)] = [
+        ("الأخبار", "newspaper"),
+        ("ملفات", "folder"),
+        ("الاكثر قراءة", "book"),
+        ("فيديو", "play.circle"),
+        ("نكتة", "face.smiling"),
+        ("أوقات الصلاة", "moon.stars"),
+        ("مفضلاتي", "heart"),
+        ("الإعدادات", "gearshape"),
+        ("من نحن", "info.circle")
+    ]
+
+    var body: some View {
+        ZStack {
+            Color(newsNavBackground).ignoresSafeArea()
+
+            VStack(spacing: 0) {
+                ZStack(alignment: .top) {
+                    Color(androidGreen)
+                    VStack(spacing: 6) {
+                        Spacer().frame(height: 20)
+                        Text("TUNISIE NUMERIQUE")
+                            .font(.system(size: 22, weight: .heavy))
+                            .foregroundStyle(.white)
+                        Text("LA TUNISIE A L'ÈRE DE LA DÉMOCRATIE")
+                            .font(.system(size: 13, weight: .semibold))
+                            .foregroundStyle(.white.opacity(0.9))
+                        Spacer().frame(height: 18)
+                    }
+                }
+                .frame(height: 180)
+
+                HStack(spacing: 12) {
+                    ForEach(AppLanguage.allCases) { lng in
+                        Button(lng.menuBadgeTitle) { selectedLanguage = lng }
+                            .font(.system(size: 14, weight: .bold))
+                            .padding(.horizontal, 12)
+                            .padding(.vertical, 8)
+                            .background(selectedLanguage == lng ? Color(androidGreen) : Color.white.opacity(0.08))
+                            .foregroundStyle(.white)
+                            .clipShape(RoundedRectangle(cornerRadius: 8))
+                    }
+                }
+                .padding(.vertical, 14)
+
+                VStack(spacing: 18) {
+                    ForEach(items, id: \.label) { item in
+                        HStack {
+                            Image(systemName: item.icon)
+                                .frame(width: 24)
+                                .foregroundStyle(Color(androidGreen))
+                            Text(item.label)
+                                .font(.system(size: 21, weight: .semibold))
+                                .foregroundStyle(.white)
+                            Spacer()
+                        }
+                    }
+                }
+                .padding(.horizontal, 22)
+
+                Spacer()
+
+                Text("سياسة الخصوصية")
+                    .font(.system(size: 26, weight: .bold))
+                    .foregroundStyle(Color(androidGreen))
+                    .padding(.bottom, 8)
+                Text("mdweb © 2022")
+                    .font(.system(size: 15, weight: .semibold))
+                    .foregroundStyle(.white)
+                    .padding(.bottom, 20)
+            }
+        }
+        .overlay(alignment: .topTrailing) {
+            Button(action: onClose) {
+                Image(systemName: "xmark.circle.fill")
+                    .font(.system(size: 30))
+                    .foregroundStyle(.white.opacity(0.85))
+                    .padding(16)
             }
         }
     }
@@ -251,15 +355,19 @@ final class BootstrapViewModel: ObservableObject {
     @Published var newsError: String?
     @Published var prayerError: String?
 
-    private let newsURL = URL(string: "https://preprod.tunisienumerique.com/results.json")!
-    func loadAll() async {
-        await loadNews()
+    func loadAll(language: AppLanguage) async {
+        await loadNews(language: language)
         disablePrayersTemporarily()
     }
 
-    func loadNews() async {
+    func loadNews(language: AppLanguage) async {
         isLoadingNews = true
         newsError = nil
+        guard let newsURL = Endpoint.newsInit(language).url else {
+            newsError = "URL news invalide"
+            isLoadingNews = false
+            return
+        }
         print("[TN-iOS] Loading news from: \(newsURL.absoluteString)")
 
         do {

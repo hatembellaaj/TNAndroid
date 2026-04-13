@@ -14,6 +14,7 @@ enum Endpoint {
     case survey
 
     var urlString: String {
+        // URL mapping aligned with Android Communication.java constants.
         switch self {
         case .newsInit(.fr): return "https://preprod.tunisienumerique.com/results.json"
         case .newsInit(.ar): return "https://arabe.tunisienumerique.com/results.json"
