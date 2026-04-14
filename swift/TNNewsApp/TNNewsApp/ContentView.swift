@@ -5,7 +5,7 @@ struct ContentView: View {
     @StateObject private var vm = BootstrapViewModel()
     @State private var showSplash = true
     @State private var showMenu = false
-    @State private var selectedLanguage: AppLanguage = .ar
+    @State private var selectedLanguage: AppLanguage = .fr
 
     var body: some View {
         Group {
@@ -220,20 +220,23 @@ struct LegacySideMenuView: View {
                 }
                 .padding(.vertical, 14)
 
-                VStack(spacing: 18) {
-                    ForEach(items, id: \.label) { item in
-                        HStack {
-                            Image(systemName: item.icon)
-                                .frame(width: 24)
-                                .foregroundStyle(Color(androidGreen))
-                            Text(item.label)
-                                .font(.system(size: 21, weight: .semibold))
-                                .foregroundStyle(.white)
-                            Spacer()
+                ScrollView {
+                    VStack(spacing: 18) {
+                        ForEach(items, id: \.label) { item in
+                            HStack {
+                                Image(systemName: item.icon)
+                                    .frame(width: 24)
+                                    .foregroundStyle(Color(androidGreen))
+                                Text(item.label)
+                                    .font(.system(size: 21, weight: .semibold))
+                                    .foregroundStyle(.white)
+                                Spacer()
+                            }
                         }
                     }
+                    .padding(.horizontal, 22)
+                    .padding(.top, 8)
                 }
-                .padding(.horizontal, 22)
 
                 Spacer()
 
@@ -247,6 +250,7 @@ struct LegacySideMenuView: View {
                     .padding(.bottom, 20)
             }
         }
+        .frame(maxWidth: .infinity, maxHeight: .infinity)
         .overlay(alignment: .topTrailing) {
             Button(action: onClose) {
                 Image(systemName: "xmark.circle.fill")
