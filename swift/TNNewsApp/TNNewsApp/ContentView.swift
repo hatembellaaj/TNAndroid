@@ -1,5 +1,4 @@
 import SwiftUI
-import WebKit
 
 struct ContentView: View {
     @StateObject private var vm = BootstrapViewModel()
@@ -486,31 +485,48 @@ struct NewsHTMLDetailView: View {
     }
 }
 
-struct HTMLContentView: UIViewRepresentable {
+struct HTMLContentView: View {
     let html: String
 
-    func makeUIView(context: Context) -> WKWebView {
-        let webView = WKWebView(frame: .zero)
-        webView.isOpaque = false
-        webView.backgroundColor = .clear
-        return webView
+    var body: some View {
+        Group {
+            if let attributed = html.asAttributedString {
+                Text(attributed)
+                    .font(.body)
+            } else {
+                Text(html.strippingHTMLTags)
+                    .font(.body)
+            }
+        }
+        .frame(maxWidth: .infinity, alignment: .leading)
+        .padding(.horizontal)
+        .padding(.bottom, 12)
+    }
+}
+
+private extension String {
+    var asAttributedString: AttributedString? {
+        guard let data = data(using: .utf8),
+              let nsAttributed = try? NSAttributedString(
+                data: data,
+                options: [
+                    .documentType: NSAttributedString.DocumentType.html,
+                    .characterEncoding: String.Encoding.utf8.rawValue
+                ],
+                documentAttributes: nil
+              ) else {
+            return nil
+        }
+        return AttributedString(nsAttributed)
     }
 
-    func updateUIView(_ webView: WKWebView, context: Context) {
-        let wrappedHTML = """
-        <html>
-          <head>
-            <meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\" />
-            <style>
-              body { font-family: -apple-system; font-size: 18px; color: #111; line-height: 1.5; margin: 0; padding: 0; }
-              img { max-width: 100%; height: auto; }
-              iframe { max-width: 100%; }
-            </style>
-          </head>
-          <body>\(html)</body>
-        </html>
-        """
-        webView.loadHTMLString(wrappedHTML, baseURL: URL(string: "https://www.tunisienumerique.com"))
+    var strippingHTMLTags: String {
+        replacingOccurrences(of: "<[^>]+>", with: " ", options: .regularExpression)
+            .replacingOccurrences(of: "&nbsp;", with: " ")
+            .replacingOccurrences(of: "&amp;", with: "&")
+            .replacingOccurrences(of: "&quot;", with: "\"")
+            .replacingOccurrences(of: "&#039;", with: "'")
+            .trimmingCharacters(in: .whitespacesAndNewlines)
     }
 }
 
