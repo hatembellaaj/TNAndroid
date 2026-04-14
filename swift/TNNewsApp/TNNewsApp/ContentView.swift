@@ -4,7 +4,7 @@ struct ContentView: View {
     @StateObject private var vm = BootstrapViewModel()
     @State private var showSplash = true
     @State private var showMenu = false
-    @State private var selectedLanguage: AppLanguage = .fr
+    @State private var selectedLanguage: UiLanguage = .fr
 
     var body: some View {
         Group {
@@ -152,7 +152,23 @@ struct ContentView: View {
     }
 }
 
-private extension AppLanguage {
+enum UiLanguage: String, CaseIterable, Identifiable {
+    case fr
+    case en
+    case ar
+
+    var id: String { rawValue }
+
+    var newsInitURL: String {
+        switch self {
+        case .fr: return "https://preprod.tunisienumerique.com/results.json"
+        case .ar: return "https://arabe.tunisienumerique.com/results.json"
+        case .en: return "https://news-tunisia.tunisienumerique.com/results.json"
+        }
+    }
+}
+
+private extension UiLanguage {
     var menuBadgeTitle: String {
         switch self {
         case .ar: return "Ar"
@@ -171,7 +187,7 @@ private extension AppLanguage {
 }
 
 struct LegacySideMenuView: View {
-    @Binding var selectedLanguage: AppLanguage
+    @Binding var selectedLanguage: UiLanguage
     let onClose: () -> Void
 
     private let items: [(label: String, icon: String)] = [
@@ -207,7 +223,7 @@ struct LegacySideMenuView: View {
                 .frame(height: 180)
 
                 HStack(spacing: 12) {
-                    ForEach(AppLanguage.allCases) { lng in
+                    ForEach(UiLanguage.allCases) { lng in
                         Button(lng.menuBadgeTitle) { selectedLanguage = lng }
                             .font(.system(size: 14, weight: .bold))
                             .padding(.horizontal, 12)
@@ -358,15 +374,15 @@ final class BootstrapViewModel: ObservableObject {
     @Published var newsError: String?
     @Published var prayerError: String?
 
-    func loadAll(language: AppLanguage) async {
+    func loadAll(language: UiLanguage) async {
         await loadNews(language: language)
         disablePrayersTemporarily()
     }
 
-    func loadNews(language: AppLanguage) async {
+    func loadNews(language: UiLanguage) async {
         isLoadingNews = true
         newsError = nil
-        guard let newsURL = Endpoint.newsInit(language).url else {
+        guard let newsURL = URL(string: language.newsInitURL) else {
             newsError = "URL news invalide"
             isLoadingNews = false
             return
