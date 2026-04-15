@@ -5,6 +5,8 @@ struct ContentView: View {
     @State private var showSplash = true
     @State private var showMenu = false
     @State private var selectedLanguage: UiLanguage = .fr
+    @State private var selectedMenuLabel = ""
+    @State private var showMenuAlert = false
 
     var body: some View {
         Group {
@@ -50,8 +52,9 @@ struct ContentView: View {
                                                 .foregroundStyle(.white)
                                         }
                                     }
+                                    .listRowBackground(Color(newsRowBackground))
+                                    .listRowSeparatorTint(.white.opacity(0.16))
                                 }
-                                .listRowBackground(Color(newsRowBackground))
                             }
                         }
                         .scrollContentBackground(.hidden)
@@ -88,9 +91,19 @@ struct ContentView: View {
                         .sheet(isPresented: $showMenu) {
                             LegacySideMenuView(
                                 selectedLanguage: $selectedLanguage,
+                                onSelectMenuItem: { itemLabel in
+                                    selectedMenuLabel = itemLabel
+                                    showMenu = false
+                                    showMenuAlert = true
+                                },
                                 onClose: { showMenu = false }
                             )
                             .presentationDetents([.fraction(0.90)])
+                        }
+                        .alert("Menu", isPresented: $showMenuAlert) {
+                            Button("OK", role: .cancel) { }
+                        } message: {
+                            Text("Action '\(selectedMenuLabel)' à connecter.")
                         }
                     }
                     .tabItem { Label("Home", systemImage: "house") }
@@ -184,23 +197,61 @@ private extension UiLanguage {
         case .en: return "News"
         }
     }
+
+    var privacyLabel: String {
+        switch self {
+        case .ar: return "سياسة الخصوصية"
+        case .fr: return "Politique de confidentialité"
+        case .en: return "Privacy policy"
+        }
+    }
 }
 
 struct LegacySideMenuView: View {
     @Binding var selectedLanguage: UiLanguage
+    let onSelectMenuItem: (String) -> Void
     let onClose: () -> Void
 
-    private let items: [(label: String, icon: String)] = [
-        ("الأخبار", "newspaper"),
-        ("ملفات", "folder"),
-        ("الاكثر قراءة", "book"),
-        ("فيديو", "play.circle"),
-        ("نكتة", "face.smiling"),
-        ("أوقات الصلاة", "moon.stars"),
-        ("مفضلاتي", "heart"),
-        ("الإعدادات", "gearshape"),
-        ("من نحن", "info.circle")
-    ]
+    private var items: [(label: String, icon: String)] {
+        switch selectedLanguage {
+        case .fr:
+            return [
+                ("Actualités", "newspaper"),
+                ("Dossiers", "folder"),
+                ("Les plus lus", "book"),
+                ("Vidéos", "play.circle"),
+                ("Blagues", "face.smiling"),
+                ("Horaires de prière", "moon.stars"),
+                ("Mes favoris", "heart"),
+                ("Paramètres", "gearshape"),
+                ("Qui sommes-nous", "info.circle")
+            ]
+        case .en:
+            return [
+                ("News", "newspaper"),
+                ("Files", "folder"),
+                ("Most read", "book"),
+                ("Videos", "play.circle"),
+                ("Jokes", "face.smiling"),
+                ("Prayer times", "moon.stars"),
+                ("Favorites", "heart"),
+                ("Settings", "gearshape"),
+                ("About us", "info.circle")
+            ]
+        case .ar:
+            return [
+                ("الأخبار", "newspaper"),
+                ("ملفات", "folder"),
+                ("الاكثر قراءة", "book"),
+                ("فيديو", "play.circle"),
+                ("نكتة", "face.smiling"),
+                ("أوقات الصلاة", "moon.stars"),
+                ("مفضلاتي", "heart"),
+                ("الإعدادات", "gearshape"),
+                ("من نحن", "info.circle")
+            ]
+        }
+    }
 
     var body: some View {
         ZStack {
@@ -238,15 +289,21 @@ struct LegacySideMenuView: View {
                 ScrollView {
                     VStack(spacing: 18) {
                         ForEach(items, id: \.label) { item in
-                            HStack {
-                                Image(systemName: item.icon)
-                                    .frame(width: 24)
-                                    .foregroundStyle(Color(androidGreen))
-                                Text(item.label)
-                                    .font(.system(size: 21, weight: .semibold))
-                                    .foregroundStyle(.white)
-                                Spacer()
+                            Button {
+                                onSelectMenuItem(item.label)
+                            } label: {
+                                HStack {
+                                    Image(systemName: item.icon)
+                                        .frame(width: 24)
+                                        .foregroundStyle(Color(androidGreen))
+                                    Text(item.label)
+                                        .font(.system(size: 21, weight: .semibold))
+                                        .foregroundStyle(.white)
+                                    Spacer()
+                                }
+                                .contentShape(Rectangle())
                             }
+                            .buttonStyle(.plain)
                         }
                     }
                     .padding(.horizontal, 22)
@@ -255,7 +312,7 @@ struct LegacySideMenuView: View {
 
                 Spacer()
 
-                Text("سياسة الخصوصية")
+                Text(selectedLanguage.privacyLabel)
                     .font(.system(size: 26, weight: .bold))
                     .foregroundStyle(Color(androidGreen))
                     .padding(.bottom, 8)
