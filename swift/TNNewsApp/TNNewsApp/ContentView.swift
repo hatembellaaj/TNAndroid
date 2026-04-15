@@ -239,6 +239,14 @@ private extension UiLanguage {
         }
     }
 
+    var selectionLabel: String {
+        switch self {
+        case .ar: return "العربية"
+        case .fr: return "Français"
+        case .en: return "English"
+        }
+    }
+
     func title(for destination: MenuDestination) -> String {
         switch (self, destination) {
         case (.fr, .news): return "Actualités"
