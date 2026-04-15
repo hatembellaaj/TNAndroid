@@ -21,40 +21,7 @@ struct ContentView: View {
                             } else if let error = vm.newsError {
                                 Text(error).foregroundStyle(.red)
                             } else {
-                                List(vm.newsItems) { item in
-                                    NavigationLink {
-                                        NewsHTMLDetailView(item: item)
-                                    } label: {
-                                        HStack(spacing: 10) {
-                                            if let imageURL = URL(string: item.imageURL), !item.imageURL.isEmpty {
-                                                AsyncImage(url: imageURL) { phase in
-                                                    switch phase {
-                                                    case .success(let image):
-                                                        image
-                                                            .resizable()
-                                                            .scaledToFill()
-                                                    default:
-                                                        Image(systemName: "newspaper")
-                                                            .resizable()
-                                                            .scaledToFit()
-                                                            .padding(10)
-                                                            .foregroundStyle(.white.opacity(0.85))
-                                                    }
-                                                }
-                                                .frame(width: 54, height: 54)
-                                                .background(Color.white.opacity(0.08))
-                                                .clipShape(RoundedRectangle(cornerRadius: 8))
-                                            }
-
-                                            Text(item.title)
-                                                .font(.headline)
-                                                .lineLimit(3)
-                                                .foregroundStyle(.black)
-                                        }
-                                    }
-                                    .listRowBackground(Color.white)
-                                    .listRowSeparatorTint(Color.black.opacity(0.08))
-                                }
+                                HomeNewsFeedView(newsItems: vm.newsItems)
                             }
                         }
                         .scrollContentBackground(.hidden)
@@ -468,6 +435,162 @@ struct LanguageSelectionSheet: View {
             .padding(.vertical, 10)
         }
         .buttonStyle(.plain)
+    }
+}
+
+struct HomeNewsFeedView: View {
+    let newsItems: [BootstrapViewModel.NewsRow]
+
+    private var topStories: [BootstrapViewModel.NewsRow] {
+        Array(newsItems.prefix(8))
+    }
+
+    var body: some View {
+        ScrollView {
+            VStack(alignment: .leading, spacing: 14) {
+                NewsSectionHeader(title: "A LA UNE")
+
+                TabView {
+                    ForEach(topStories) { item in
+                        NavigationLink {
+                            NewsHTMLDetailView(item: item)
+                        } label: {
+                            TopHeadlineCard(item: item)
+                        }
+                        .buttonStyle(.plain)
+                        .padding(.horizontal, 4)
+                    }
+                }
+                .frame(height: 320)
+                .tabViewStyle(.page(indexDisplayMode: .always))
+
+                NewsSectionHeader(title: "NEWS")
+                    .padding(.top, 8)
+
+                VStack(spacing: 12) {
+                    ForEach(newsItems) { item in
+                        NavigationLink {
+                            NewsHTMLDetailView(item: item)
+                        } label: {
+                            NewsFeedRowCard(item: item)
+                        }
+                        .buttonStyle(.plain)
+                    }
+                }
+            }
+            .padding(.horizontal, 12)
+            .padding(.vertical, 8)
+        }
+        .background(Color(newsScreenBackground))
+    }
+}
+
+private struct NewsSectionHeader: View {
+    let title: String
+
+    var body: some View {
+        HStack(spacing: 8) {
+            Text(title)
+                .font(.system(size: 31, weight: .heavy))
+                .foregroundStyle(.black)
+            RoundedRectangle(cornerRadius: 3)
+                .fill(Color(androidGreen))
+                .frame(width: 56, height: 8)
+            Spacer()
+        }
+    }
+}
+
+private struct TopHeadlineCard: View {
+    let item: BootstrapViewModel.NewsRow
+
+    var body: some View {
+        VStack(alignment: .leading, spacing: 8) {
+            NewsThumbnail(urlString: item.imageURL)
+                .frame(height: 190)
+                .clipShape(RoundedRectangle(cornerRadius: 14, style: .continuous))
+
+            Text(item.title)
+                .font(.system(size: 32, weight: .bold))
+                .foregroundStyle(.black)
+                .lineLimit(3)
+
+            Text(item.summary.isEmpty ? item.date : item.summary)
+                .font(.system(size: 22))
+                .foregroundStyle(.gray)
+                .lineLimit(2)
+
+            if !item.date.isEmpty {
+                Text(item.date)
+                    .font(.system(size: 20))
+                    .foregroundStyle(.secondary)
+            }
+        }
+        .padding(12)
+        .background(Color.white)
+        .clipShape(RoundedRectangle(cornerRadius: 16, style: .continuous))
+    }
+}
+
+private struct NewsFeedRowCard: View {
+    let item: BootstrapViewModel.NewsRow
+
+    var body: some View {
+        VStack(alignment: .leading, spacing: 8) {
+            NewsThumbnail(urlString: item.imageURL)
+                .frame(height: 190)
+                .clipShape(RoundedRectangle(cornerRadius: 16, style: .continuous))
+
+            Text(item.title)
+                .font(.system(size: 30, weight: .bold))
+                .foregroundStyle(.black)
+                .lineLimit(3)
+
+            if !item.summary.isEmpty {
+                Text(item.summary)
+                    .font(.system(size: 22))
+                    .foregroundStyle(.secondary)
+                    .lineLimit(2)
+            }
+        }
+        .padding(10)
+        .background(Color.white)
+        .clipShape(RoundedRectangle(cornerRadius: 16, style: .continuous))
+    }
+}
+
+private struct NewsThumbnail: View {
+    let urlString: String
+
+    var body: some View {
+        Group {
+            if let imageURL = URL(string: urlString), !urlString.isEmpty {
+                AsyncImage(url: imageURL) { phase in
+                    switch phase {
+                    case .success(let image):
+                        image
+                            .resizable()
+                            .scaledToFill()
+                    default:
+                        placeholder
+                    }
+                }
+            } else {
+                placeholder
+            }
+        }
+        .frame(maxWidth: .infinity)
+        .background(Color.gray.opacity(0.2))
+    }
+
+    private var placeholder: some View {
+        Image(systemName: "newspaper")
+            .resizable()
+            .scaledToFit()
+            .padding(24)
+            .foregroundStyle(.white.opacity(0.85))
+            .frame(maxWidth: .infinity, maxHeight: .infinity)
+            .background(Color.gray.opacity(0.25))
     }
 }
 
