@@ -6,3 +6,4 @@
 /build
 /captures
 .externalNativeBuild
+swift/TNNewsApp/TNNewsApp/Assets.xcassets/AppIcon.appiconset/*.png
