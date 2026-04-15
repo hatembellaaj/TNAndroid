@@ -4,6 +4,7 @@ struct ContentView: View {
     @StateObject private var vm = BootstrapViewModel()
     @State private var showSplash = true
     @State private var showMenu = false
+    @State private var showLanguagePicker = false
     @State private var selectedLanguage: UiLanguage = .fr
     @State private var selectedDestination: MenuDestination = .news
 
@@ -74,32 +75,44 @@ struct ContentView: View {
                             }
 
                             ToolbarItem(placement: .topBarTrailing) {
-                                Text(selectedLanguage.menuBadgeTitle)
-                                    .font(.system(size: 20, weight: .semibold))
-                                    .foregroundStyle(.black)
+                                Button {
+                                    showLanguagePicker = true
+                                } label: {
+                                    Text(selectedLanguage.menuBadgeTitle)
+                                        .font(.system(size: 20, weight: .semibold))
+                                        .foregroundStyle(.black)
+                                }
                             }
                         }
                         .toolbarBackground(.white, for: .navigationBar)
                         .toolbarBackground(.visible, for: .navigationBar)
                         .toolbarColorScheme(.light, for: .navigationBar)
+                        .sheet(isPresented: $showLanguagePicker) {
+                            LanguageSelectionSheet(selectedLanguage: $selectedLanguage)
+                                .presentationDetents([.fraction(0.58)])
+                        }
                     }
                     .overlay(alignment: .leading) {
                         if showMenu {
-                            ZStack(alignment: .leading) {
-                                Color.black.opacity(0.22)
-                                    .ignoresSafeArea()
-                                    .onTapGesture { withAnimation(.easeInOut(duration: 0.2)) { showMenu = false } }
+                            GeometryReader { geo in
+                                ZStack(alignment: .leading) {
+                                    Color.black.opacity(0.22)
+                                        .ignoresSafeArea()
+                                        .onTapGesture { withAnimation(.easeInOut(duration: 0.2)) { showMenu = false } }
 
-                                LegacySideMenuView(
-                                    selectedLanguage: $selectedLanguage,
-                                    onSelectMenuItem: { destination in
-                                        selectedDestination = destination
-                                        withAnimation(.easeInOut(duration: 0.2)) { showMenu = false }
-                                    },
-                                    onClose: { withAnimation(.easeInOut(duration: 0.2)) { showMenu = false } }
-                                )
-                                .frame(maxWidth: 330)
-                                .transition(.move(edge: .leading))
+                                    LegacySideMenuView(
+                                        selectedLanguage: $selectedLanguage,
+                                        onSelectMenuItem: { destination in
+                                            selectedDestination = destination
+                                            withAnimation(.easeInOut(duration: 0.2)) { showMenu = false }
+                                        },
+                                        onClose: { withAnimation(.easeInOut(duration: 0.2)) { showMenu = false } }
+                                    )
+                                    .frame(maxWidth: 330)
+                                    .padding(.top, geo.safeAreaInsets.top + 6)
+                                    .padding(.bottom, geo.safeAreaInsets.bottom + 6)
+                                    .transition(.move(edge: .leading))
+                                }
                             }
                         }
                     }
@@ -398,6 +411,48 @@ struct TNCompactLogo: View {
                 .frame(width: 36, height: 36)
                 .background(Color(androidGreen))
         }
+    }
+}
+
+struct LanguageSelectionSheet: View {
+    @Binding var selectedLanguage: UiLanguage
+    @Environment(\.dismiss) private var dismiss
+
+    var body: some View {
+        VStack(spacing: 12) {
+            Image(systemName: "globe")
+                .font(.system(size: 64))
+                .foregroundStyle(Color(androidGreen))
+                .padding(.top, 12)
+            Text("الرجاء إختيار اللغة\nPlease select a language\nVeuillez sélectionner une langue")
+                .multilineTextAlignment(.center)
+                .font(.system(size: 24, weight: .semibold))
+                .foregroundStyle(.black.opacity(0.85))
+                .padding(.horizontal, 16)
+
+            Divider().padding(.top, 8)
+            ForEach(UiLanguage.allCases) { lang in
+                Button {
+                    selectedLanguage = lang
+                    dismiss()
+                } label: {
+                    HStack {
+                        Image(systemName: selectedLanguage == lang ? "largecircle.fill.circle" : "circle")
+                            .foregroundStyle(selectedLanguage == lang ? Color(androidGreen) : .gray)
+                        Text(lang.selectionLabel)
+                            .foregroundStyle(.black)
+                            .font(.system(size: 26, weight: .medium))
+                        Spacer()
+                    }
+                    .padding(.horizontal, 20)
+                    .padding(.vertical, 10)
+                }
+                .buttonStyle(.plain)
+                Divider()
+            }
+            Spacer()
+        }
+        .background(Color.white)
     }
 }
 
