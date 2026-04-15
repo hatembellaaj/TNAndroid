@@ -431,30 +431,35 @@ struct LanguageSelectionSheet: View {
                 .padding(.horizontal, 16)
 
             Divider().padding(.top, 8)
-            let languages = UiLanguage.allCases
-            ForEach(0..<languages.count, id: \.self) { index in
-                let lang = languages[index]
-                Button {
-                    selectedLanguage = lang
-                    dismiss()
-                } label: {
-                    HStack {
-                        Image(systemName: selectedLanguage == lang ? "largecircle.fill.circle" : "circle")
-                            .foregroundStyle(selectedLanguage == lang ? Color(androidGreen) : .gray)
-                        Text(lang.selectionLabel)
-                            .foregroundStyle(.black)
-                            .font(.system(size: 26, weight: .medium))
-                        Spacer()
-                    }
-                    .padding(.horizontal, 20)
-                    .padding(.vertical, 10)
-                }
-                .buttonStyle(.plain)
-                Divider()
-            }
+            languageRow(.fr)
+            Divider()
+            languageRow(.en)
+            Divider()
+            languageRow(.ar)
+            Divider()
             Spacer()
         }
         .background(Color.white)
+    }
+
+    @ViewBuilder
+    private func languageRow(_ lang: UiLanguage) -> some View {
+        Button {
+            selectedLanguage = lang
+            dismiss()
+        } label: {
+            HStack {
+                Image(systemName: selectedLanguage == lang ? "largecircle.fill.circle" : "circle")
+                    .foregroundStyle(selectedLanguage == lang ? Color(androidGreen) : .gray)
+                Text(lang.selectionLabel)
+                    .foregroundStyle(.black)
+                    .font(.system(size: 26, weight: .medium))
+                Spacer()
+            }
+            .padding(.horizontal, 20)
+            .padding(.vertical, 10)
+        }
+        .buttonStyle(.plain)
     }
 }
 
