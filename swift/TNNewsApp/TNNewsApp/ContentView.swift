@@ -48,55 +48,59 @@ struct ContentView: View {
                                             Text(item.title)
                                                 .font(.headline)
                                                 .lineLimit(3)
-                                                .foregroundStyle(.white)
+                                                .foregroundStyle(.black)
                                         }
                                     }
-                                    .listRowBackground(Color(newsRowBackground))
-                                    .listRowSeparatorTint(.white.opacity(0.16))
+                                    .listRowBackground(Color.white)
+                                    .listRowSeparatorTint(Color.black.opacity(0.08))
                                 }
                             }
                         }
                         .scrollContentBackground(.hidden)
-                        .background(Color(newsScreenBackground))
+                        .background(Color("#F6F7F7"))
                         .toolbar {
                             ToolbarItem(placement: .topBarLeading) {
-                                Text(selectedLanguage.menuBadgeTitle)
-                                    .font(.system(size: 14, weight: .bold))
-                                    .padding(6)
-                                    .background(Color.white.opacity(0.12))
-                                    .clipShape(RoundedRectangle(cornerRadius: 6))
-                                    .foregroundStyle(.white)
+                                Button {
+                                    withAnimation(.easeInOut(duration: 0.2)) { showMenu = true }
+                                } label: {
+                                    Image(systemName: "line.3.horizontal")
+                                        .font(.system(size: 22, weight: .bold))
+                                        .foregroundStyle(Color(androidGreen))
+                                }
                             }
 
                             ToolbarItem(placement: .principal) {
-                                Text(selectedLanguage.title(for: selectedDestination))
-                                    .font(.custom("AvenirNext-DemiBold", size: 24))
-                                    .foregroundStyle(.white)
+                                TNCompactLogo()
                             }
 
                             ToolbarItem(placement: .topBarTrailing) {
-                                Button {
-                                    showMenu = true
-                                } label: {
-                                    Image(systemName: "line.3.horizontal")
-                                        .font(.system(size: 20, weight: .semibold))
-                                        .foregroundStyle(.white)
-                                }
+                                Text(selectedLanguage.menuBadgeTitle)
+                                    .font(.system(size: 20, weight: .semibold))
+                                    .foregroundStyle(.black)
                             }
                         }
-                        .toolbarBackground(Color(newsNavBackground), for: .navigationBar)
+                        .toolbarBackground(.white, for: .navigationBar)
                         .toolbarBackground(.visible, for: .navigationBar)
-                        .toolbarColorScheme(.dark, for: .navigationBar)
-                        .sheet(isPresented: $showMenu) {
-                            LegacySideMenuView(
-                                selectedLanguage: $selectedLanguage,
-                                onSelectMenuItem: { destination in
-                                    selectedDestination = destination
-                                    showMenu = false
-                                },
-                                onClose: { showMenu = false }
-                            )
-                            .presentationDetents([.fraction(0.90)])
+                        .toolbarColorScheme(.light, for: .navigationBar)
+                    }
+                    .overlay(alignment: .leading) {
+                        if showMenu {
+                            ZStack(alignment: .leading) {
+                                Color.black.opacity(0.22)
+                                    .ignoresSafeArea()
+                                    .onTapGesture { withAnimation(.easeInOut(duration: 0.2)) { showMenu = false } }
+
+                                LegacySideMenuView(
+                                    selectedLanguage: $selectedLanguage,
+                                    onSelectMenuItem: { destination in
+                                        selectedDestination = destination
+                                        withAnimation(.easeInOut(duration: 0.2)) { showMenu = false }
+                                    },
+                                    onClose: { withAnimation(.easeInOut(duration: 0.2)) { showMenu = false } }
+                                )
+                                .frame(maxWidth: 330)
+                                .transition(.move(edge: .leading))
+                            }
                         }
                     }
                     .tabItem { Label("Home", systemImage: "house") }
@@ -268,97 +272,131 @@ struct LegacySideMenuView: View {
     let onSelectMenuItem: (MenuDestination) -> Void
     let onClose: () -> Void
 
-    private var items: [(destination: MenuDestination, label: String, icon: String)] {
+    private var categoryItems: [(destination: MenuDestination, label: String)] {
         [
-            (.news, selectedLanguage.title(for: .news), "newspaper"),
-            (.dossiers, selectedLanguage.title(for: .dossiers), "folder"),
-            (.mostRead, selectedLanguage.title(for: .mostRead), "book"),
-            (.videos, selectedLanguage.title(for: .videos), "play.circle"),
-            (.jokes, selectedLanguage.title(for: .jokes), "face.smiling"),
-            (.prayerTimes, selectedLanguage.title(for: .prayerTimes), "moon.stars"),
-            (.favorites, selectedLanguage.title(for: .favorites), "heart"),
-            (.settings, selectedLanguage.title(for: .settings), "gearshape"),
-            (.about, selectedLanguage.title(for: .about), "info.circle")
+            (.news, "A la une"),
+            (.dossiers, "Monde"),
+            (.mostRead, "Politique"),
+            (.videos, "Economie"),
+            (.jokes, "Autos"),
+            (.prayerTimes, "Sport"),
+            (.favorites, "Tech & net"),
+            (.settings, "Société"),
+            (.about, "Recette")
         ]
     }
 
     var body: some View {
-        ZStack {
-            Color(newsNavBackground).ignoresSafeArea()
-
-            VStack(spacing: 0) {
-                ZStack(alignment: .top) {
-                    Color(androidGreen)
-                    VStack(spacing: 6) {
-                        Spacer().frame(height: 20)
-                        Text("TUNISIE NUMERIQUE")
-                            .font(.system(size: 22, weight: .heavy))
+        VStack(spacing: 0) {
+            HStack(alignment: .top) {
+                VStack(alignment: .leading, spacing: 4) {
+                    HStack(spacing: 6) {
+                        Text("T")
+                            .font(.system(size: 24, weight: .heavy))
                             .foregroundStyle(.white)
-                        Text("LA TUNISIE A L'ÈRE DE LA DÉMOCRATIE")
-                            .font(.system(size: 13, weight: .semibold))
-                            .foregroundStyle(.white.opacity(0.9))
-                        Spacer().frame(height: 18)
-                    }
-                }
-                .frame(height: 180)
-
-                HStack(spacing: 12) {
-                    ForEach(UiLanguage.allCases) { lng in
-                        Button(lng.menuBadgeTitle) { selectedLanguage = lng }
-                            .font(.system(size: 14, weight: .bold))
-                            .padding(.horizontal, 12)
-                            .padding(.vertical, 8)
-                            .background(selectedLanguage == lng ? Color(androidGreen) : Color.white.opacity(0.08))
+                            .frame(width: 42, height: 42)
+                            .background(Color(androidGreen))
+                        Text("N")
+                            .font(.system(size: 24, weight: .heavy))
                             .foregroundStyle(.white)
-                            .clipShape(RoundedRectangle(cornerRadius: 8))
+                            .frame(width: 42, height: 42)
+                            .background(Color(androidGreen))
                     }
+                    Text("TUNISIE NUMÉRIQUE")
+                        .font(.system(size: 19, weight: .heavy))
+                        .foregroundStyle(Color(androidGreen))
+                    Text("LA TUNISIE À L'ÈRE DE LA DÉMOCRATIE")
+                        .font(.system(size: 10, weight: .bold))
+                        .foregroundStyle(Color(androidGreen).opacity(0.85))
                 }
-                .padding(.vertical, 14)
-
-                ScrollView {
-                    VStack(spacing: 18) {
-                        ForEach(items, id: \.destination) { item in
-                            Button {
-                                onSelectMenuItem(item.destination)
-                            } label: {
-                                HStack {
-                                    Image(systemName: item.icon)
-                                        .frame(width: 24)
-                                        .foregroundStyle(Color(androidGreen))
-                                    Text(item.label)
-                                        .font(.system(size: 21, weight: .semibold))
-                                        .foregroundStyle(.white)
-                                    Spacer()
-                                }
-                                .contentShape(Rectangle())
-                            }
-                            .buttonStyle(.plain)
-                        }
-                    }
-                    .padding(.horizontal, 22)
-                    .padding(.top, 8)
-                }
-
                 Spacer()
+                Button(action: onClose) {
+                    Image(systemName: "xmark.circle")
+                        .font(.system(size: 28, weight: .regular))
+                        .foregroundStyle(.black.opacity(0.75))
+                }
+            }
+            .padding(20)
+            .background(Color.white)
 
-                Text(selectedLanguage.privacyLabel)
-                    .font(.system(size: 26, weight: .bold))
-                    .foregroundStyle(Color(androidGreen))
-                    .padding(.bottom, 8)
-                Text("mdweb © 2022")
-                    .font(.system(size: 15, weight: .semibold))
-                    .foregroundStyle(.white)
-                    .padding(.bottom, 20)
+            VStack(spacing: 12) {
+                ForEach(categoryItems, id: \.label) { item in
+                    Button {
+                        onSelectMenuItem(item.destination)
+                    } label: {
+                        HStack {
+                            Text(item.label)
+                                .font(.system(size: 20, weight: .semibold))
+                                .foregroundStyle(item.destination == .news ? Color(androidGreen) : .black)
+                            Spacer()
+                        }
+                        .padding(.horizontal, 18)
+                        .frame(height: 56)
+                        .background(Color("#ECEEEE"))
+                        .overlay(
+                            RoundedRectangle(cornerRadius: 16)
+                                .stroke(item.destination == .news ? Color(androidGreen) : Color.clear, lineWidth: 2)
+                        )
+                        .clipShape(RoundedRectangle(cornerRadius: 16))
+                    }
+                    .buttonStyle(.plain)
+                }
             }
+            .padding(.horizontal, 18)
+            .padding(.vertical, 12)
+
+            Divider().padding(.top, 4)
+
+            Button {
+                onSelectMenuItem(.about)
+            } label: {
+                HStack {
+                    Text("A propos")
+                        .font(.system(size: 20, weight: .medium))
+                        .foregroundStyle(.gray)
+                    Spacer()
+                }
+                .padding(.horizontal, 18)
+                .frame(height: 62)
+            }
+            .buttonStyle(.plain)
+
+            Divider()
+            Button {
+                onSelectMenuItem(.settings)
+            } label: {
+                HStack {
+                    Text("Paramètres")
+                        .font(.system(size: 20, weight: .medium))
+                        .foregroundStyle(.gray)
+                    Spacer()
+                }
+                .padding(.horizontal, 18)
+                .frame(height: 62)
+            }
+            .buttonStyle(.plain)
+            Spacer()
         }
-        .frame(maxWidth: .infinity, maxHeight: .infinity)
-        .overlay(alignment: .topTrailing) {
-            Button(action: onClose) {
-                Image(systemName: "xmark.circle.fill")
-                    .font(.system(size: 30))
-                    .foregroundStyle(.white.opacity(0.85))
-                    .padding(16)
-            }
+        .frame(maxHeight: .infinity, alignment: .top)
+        .background(Color.white)
+        .clipShape(RoundedRectangle(cornerRadius: 22, style: .continuous))
+        .padding(.vertical, 10)
+    }
+}
+
+struct TNCompactLogo: View {
+    var body: some View {
+        HStack(spacing: 5) {
+            Text("T")
+                .font(.system(size: 22, weight: .heavy))
+                .foregroundStyle(.white)
+                .frame(width: 36, height: 36)
+                .background(Color(androidGreen))
+            Text("N")
+                .font(.system(size: 22, weight: .heavy))
+                .foregroundStyle(.white)
+                .frame(width: 36, height: 36)
+                .background(Color(androidGreen))
         }
     }
 }
@@ -413,9 +451,9 @@ struct TNBrandWordmarkView: View {
 
 private let androidGreen = "#36C750"
 private let androidGreenSecondary = "#83B01A"
-private let newsNavBackground = "#2F3444"
-private let newsScreenBackground = "#2E3342"
-private let newsRowBackground = "#33394A"
+private let newsNavBackground = "#FFFFFF"
+private let newsScreenBackground = "#F6F7F7"
+private let newsRowBackground = "#FFFFFF"
 
 private extension Color {
     init(_ hex: String) {
@@ -478,7 +516,7 @@ final class BootstrapViewModel: ObservableObject {
         print("[TN-iOS] Loading news from: \(newsURL.absoluteString)")
 
         do {
-            let (data, response) = try await URLSession.shared.data(from: newsURL)
+            let (data, response) = try await requestDataWithFallbackIfNeeded(url: newsURL, destination: destination)
             if let http = response as? HTTPURLResponse {
                 print("[TN-iOS] News HTTP status: \(http.statusCode)")
             }
@@ -542,6 +580,24 @@ final class BootstrapViewModel: ObservableObject {
         }
 
         isLoadingNews = false
+    }
+
+    private func requestDataWithFallbackIfNeeded(url: URL, destination: MenuDestination) async throws -> (Data, URLResponse) {
+        let primary = try await URLSession.shared.data(from: url)
+
+        // Android "video" endpoint may require ".json" suffix in some environments.
+        if destination == .videos, !url.absoluteString.hasSuffix(".json") {
+            let primaryText = String(data: primary.0, encoding: .utf8)?.trimmingCharacters(in: .whitespacesAndNewlines) ?? ""
+            let looksLikeJSON = primaryText.hasPrefix("{") || primaryText.hasPrefix("[")
+            if primaryText.isEmpty || primaryText == "{}" || !looksLikeJSON {
+                if let fallbackURL = URL(string: url.absoluteString + ".json") {
+                    print("[TN-iOS] Videos fallback URL: \(fallbackURL.absoluteString)")
+                    return try await URLSession.shared.data(from: fallbackURL)
+                }
+            }
+        }
+
+        return primary
     }
 
     private func parseVideoRows(_ payload: Any) -> [NewsRow] {
