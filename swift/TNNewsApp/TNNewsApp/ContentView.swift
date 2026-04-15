@@ -463,7 +463,7 @@ struct HomeNewsFeedView: View {
                         .tag(index)
                     }
                 }
-                .frame(height: 320)
+                .frame(height: 265)
                 .tabViewStyle(.page(indexDisplayMode: .never))
 
                 if topStories.count > 1 {
@@ -505,11 +505,11 @@ private struct NewsSectionHeader: View {
     var body: some View {
         HStack(spacing: 8) {
             Text(title)
-                .font(.system(size: 31, weight: .heavy))
+                .font(.system(size: 20, weight: .heavy))
                 .foregroundStyle(.black)
             RoundedRectangle(cornerRadius: 3)
                 .fill(Color(androidGreen))
-                .frame(width: 56, height: 8)
+                .frame(width: 44, height: 7)
             Spacer()
         }
     }
@@ -521,26 +521,26 @@ private struct TopHeadlineCard: View {
     var body: some View {
         VStack(alignment: .leading, spacing: 8) {
             NewsThumbnail(urlString: item.imageURL)
-                .frame(height: 190)
+                .frame(height: 160)
                 .clipShape(RoundedRectangle(cornerRadius: 14, style: .continuous))
 
             Text(item.title)
-                .font(.system(size: 32, weight: .bold))
+                .font(.system(size: 17, weight: .semibold))
                 .foregroundStyle(.black)
-                .lineLimit(3)
+                .lineLimit(2)
 
             Text(item.summary.isEmpty ? item.date : item.summary)
-                .font(.system(size: 22))
+                .font(.system(size: 14))
                 .foregroundStyle(.gray)
                 .lineLimit(2)
 
             if !item.date.isEmpty {
                 Text(item.date)
-                    .font(.system(size: 20))
+                    .font(.system(size: 13))
                     .foregroundStyle(.secondary)
             }
         }
-        .padding(12)
+        .padding(10)
         .background(Color.white)
         .clipShape(RoundedRectangle(cornerRadius: 16, style: .continuous))
     }
@@ -552,17 +552,17 @@ private struct NewsFeedRowCard: View {
     var body: some View {
         VStack(alignment: .leading, spacing: 8) {
             NewsThumbnail(urlString: item.imageURL)
-                .frame(height: 190)
+                .frame(height: 165)
                 .clipShape(RoundedRectangle(cornerRadius: 16, style: .continuous))
 
             Text(item.title)
-                .font(.system(size: 30, weight: .bold))
+                .font(.system(size: 19, weight: .semibold))
                 .foregroundStyle(.black)
-                .lineLimit(3)
+                .lineLimit(2)
 
             if !item.summary.isEmpty {
                 Text(item.summary)
-                    .font(.system(size: 22))
+                    .font(.system(size: 14))
                     .foregroundStyle(.secondary)
                     .lineLimit(2)
             }
@@ -865,10 +865,12 @@ final class BootstrapViewModel: ObservableObject {
 
     private func normalizeDisplayText(_ text: String) -> String {
         text
+            .replacingOccurrences(of: "<[^>]+>", with: " ", options: .regularExpression)
             .replacingOccurrences(of: "&quot;", with: "\"")
             .replacingOccurrences(of: "&amp;", with: "&")
             .replacingOccurrences(of: "&#039;", with: "'")
             .replacingOccurrences(of: "&nbsp;", with: " ")
+            .replacingOccurrences(of: "\\s+", with: " ", options: .regularExpression)
             .trimmingCharacters(in: .whitespacesAndNewlines)
     }
 }
