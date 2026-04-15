@@ -431,7 +431,7 @@ struct LanguageSelectionSheet: View {
                 .padding(.horizontal, 16)
 
             Divider().padding(.top, 8)
-            ForEach(UiLanguage.allCases) { lang in
+            ForEach(Array(UiLanguage.allCases), id: \.self) { lang in
                 Button {
                     selectedLanguage = lang
                     dismiss()
