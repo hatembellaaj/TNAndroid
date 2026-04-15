@@ -5,8 +5,7 @@ struct ContentView: View {
     @State private var showSplash = true
     @State private var showMenu = false
     @State private var selectedLanguage: UiLanguage = .fr
-    @State private var selectedMenuLabel = ""
-    @State private var showMenuAlert = false
+    @State private var selectedDestination: MenuDestination = .news
 
     var body: some View {
         Group {
@@ -70,7 +69,7 @@ struct ContentView: View {
                             }
 
                             ToolbarItem(placement: .principal) {
-                                Text(selectedLanguage.newsTitle)
+                                Text(selectedLanguage.title(for: selectedDestination))
                                     .font(.custom("AvenirNext-DemiBold", size: 24))
                                     .foregroundStyle(.white)
                             }
@@ -91,19 +90,13 @@ struct ContentView: View {
                         .sheet(isPresented: $showMenu) {
                             LegacySideMenuView(
                                 selectedLanguage: $selectedLanguage,
-                                onSelectMenuItem: { itemLabel in
-                                    selectedMenuLabel = itemLabel
+                                onSelectMenuItem: { destination in
+                                    selectedDestination = destination
                                     showMenu = false
-                                    showMenuAlert = true
                                 },
                                 onClose: { showMenu = false }
                             )
                             .presentationDetents([.fraction(0.90)])
-                        }
-                        .alert("Menu", isPresented: $showMenuAlert) {
-                            Button("OK", role: .cancel) { }
-                        } message: {
-                            Text("Action '\(selectedMenuLabel)' à connecter.")
                         }
                     }
                     .tabItem { Label("Home", systemImage: "house") }
@@ -148,10 +141,13 @@ struct ContentView: View {
                 }
                 .tint(Color(androidGreen))
                 .task {
-                    await vm.loadAll(language: selectedLanguage)
+                    await vm.loadAll(language: selectedLanguage, destination: selectedDestination)
                 }
                 .onChange(of: selectedLanguage) { _, newLanguage in
-                    Task { await vm.loadAll(language: newLanguage) }
+                    Task { await vm.loadAll(language: newLanguage, destination: selectedDestination) }
+                }
+                .onChange(of: selectedDestination) { _, newDestination in
+                    Task { await vm.loadAll(language: selectedLanguage, destination: newDestination) }
                 }
             }
         }
@@ -172,13 +168,49 @@ enum UiLanguage: String, CaseIterable, Identifiable {
 
     var id: String { rawValue }
 
-    var newsInitURL: String {
+    func endpointURL(for destination: MenuDestination) -> String? {
         switch self {
-        case .fr: return "https://preprod.tunisienumerique.com/results.json"
-        case .ar: return "https://arabe.tunisienumerique.com/results.json"
-        case .en: return "https://news-tunisia.tunisienumerique.com/results.json"
+        case .fr:
+            switch destination {
+            case .news: return "https://preprod.tunisienumerique.com/results.json"
+            case .dossiers: return "https://jsondata.tunisienumerique.com/dossiers.json"
+            case .mostRead: return "https://www.tunisienumerique.com/jsondata/popular.json"
+            case .videos: return "https://preprod.tunisienumerique.com/jsondata/videotunisienumerique"
+            case .jokes: return "https://humour.tunisienumerique.com/hummor.json"
+            case .prayerTimes, .favorites, .settings, .about: return nil
+            }
+        case .ar:
+            switch destination {
+            case .news: return "https://arabe.tunisienumerique.com/results.json"
+            case .dossiers: return "https://arabe.tunisienumerique.com/dossiers.json"
+            case .mostRead: return "https://arabe.tunisienumerique.com/jsondata/popular.json"
+            case .videos: return "https://preprod.tunisienumerique.com/jsondata/videotunisienumerique"
+            case .jokes: return "https://humour.tunisienumerique.com/hummor.json"
+            case .prayerTimes, .favorites, .settings, .about: return nil
+            }
+        case .en:
+            switch destination {
+            case .news: return "https://news-tunisia.tunisienumerique.com/results.json"
+            case .dossiers: return "https://news-tunisia.tunisienumerique.com/jsondata/dossiers.json"
+            case .mostRead: return "https://news-tunisia.tunisienumerique.com/jsondata/popular.json"
+            case .videos: return "https://preprod.tunisienumerique.com/jsondata/videotunisienumerique"
+            case .jokes: return "https://humour.tunisienumerique.com/hummor.json"
+            case .prayerTimes, .favorites, .settings, .about: return nil
+            }
         }
     }
+}
+
+enum MenuDestination: CaseIterable {
+    case news
+    case dossiers
+    case mostRead
+    case videos
+    case jokes
+    case prayerTimes
+    case favorites
+    case settings
+    case about
 }
 
 private extension UiLanguage {
@@ -190,11 +222,35 @@ private extension UiLanguage {
         }
     }
 
-    var newsTitle: String {
-        switch self {
-        case .ar: return "الأخبار"
-        case .fr: return "Actualités"
-        case .en: return "News"
+    func title(for destination: MenuDestination) -> String {
+        switch (self, destination) {
+        case (.fr, .news): return "Actualités"
+        case (.fr, .dossiers): return "Dossiers"
+        case (.fr, .mostRead): return "Les plus lus"
+        case (.fr, .videos): return "Vidéos"
+        case (.fr, .jokes): return "Blagues"
+        case (.fr, .prayerTimes): return "Horaires de prière"
+        case (.fr, .favorites): return "Mes favoris"
+        case (.fr, .settings): return "Paramètres"
+        case (.fr, .about): return "Qui sommes-nous"
+        case (.en, .news): return "News"
+        case (.en, .dossiers): return "Files"
+        case (.en, .mostRead): return "Most read"
+        case (.en, .videos): return "Videos"
+        case (.en, .jokes): return "Jokes"
+        case (.en, .prayerTimes): return "Prayer times"
+        case (.en, .favorites): return "Favorites"
+        case (.en, .settings): return "Settings"
+        case (.en, .about): return "About us"
+        case (.ar, .news): return "الأخبار"
+        case (.ar, .dossiers): return "ملفات"
+        case (.ar, .mostRead): return "الاكثر قراءة"
+        case (.ar, .videos): return "فيديو"
+        case (.ar, .jokes): return "نكتة"
+        case (.ar, .prayerTimes): return "أوقات الصلاة"
+        case (.ar, .favorites): return "مفضلاتي"
+        case (.ar, .settings): return "الإعدادات"
+        case (.ar, .about): return "من نحن"
         }
     }
 
@@ -209,48 +265,21 @@ private extension UiLanguage {
 
 struct LegacySideMenuView: View {
     @Binding var selectedLanguage: UiLanguage
-    let onSelectMenuItem: (String) -> Void
+    let onSelectMenuItem: (MenuDestination) -> Void
     let onClose: () -> Void
 
-    private var items: [(label: String, icon: String)] {
-        switch selectedLanguage {
-        case .fr:
-            return [
-                ("Actualités", "newspaper"),
-                ("Dossiers", "folder"),
-                ("Les plus lus", "book"),
-                ("Vidéos", "play.circle"),
-                ("Blagues", "face.smiling"),
-                ("Horaires de prière", "moon.stars"),
-                ("Mes favoris", "heart"),
-                ("Paramètres", "gearshape"),
-                ("Qui sommes-nous", "info.circle")
-            ]
-        case .en:
-            return [
-                ("News", "newspaper"),
-                ("Files", "folder"),
-                ("Most read", "book"),
-                ("Videos", "play.circle"),
-                ("Jokes", "face.smiling"),
-                ("Prayer times", "moon.stars"),
-                ("Favorites", "heart"),
-                ("Settings", "gearshape"),
-                ("About us", "info.circle")
-            ]
-        case .ar:
-            return [
-                ("الأخبار", "newspaper"),
-                ("ملفات", "folder"),
-                ("الاكثر قراءة", "book"),
-                ("فيديو", "play.circle"),
-                ("نكتة", "face.smiling"),
-                ("أوقات الصلاة", "moon.stars"),
-                ("مفضلاتي", "heart"),
-                ("الإعدادات", "gearshape"),
-                ("من نحن", "info.circle")
-            ]
-        }
+    private var items: [(destination: MenuDestination, label: String, icon: String)] {
+        [
+            (.news, selectedLanguage.title(for: .news), "newspaper"),
+            (.dossiers, selectedLanguage.title(for: .dossiers), "folder"),
+            (.mostRead, selectedLanguage.title(for: .mostRead), "book"),
+            (.videos, selectedLanguage.title(for: .videos), "play.circle"),
+            (.jokes, selectedLanguage.title(for: .jokes), "face.smiling"),
+            (.prayerTimes, selectedLanguage.title(for: .prayerTimes), "moon.stars"),
+            (.favorites, selectedLanguage.title(for: .favorites), "heart"),
+            (.settings, selectedLanguage.title(for: .settings), "gearshape"),
+            (.about, selectedLanguage.title(for: .about), "info.circle")
+        ]
     }
 
     var body: some View {
@@ -288,9 +317,9 @@ struct LegacySideMenuView: View {
 
                 ScrollView {
                     VStack(spacing: 18) {
-                        ForEach(items, id: \.label) { item in
+                        ForEach(items, id: \.destination) { item in
                             Button {
-                                onSelectMenuItem(item.label)
+                                onSelectMenuItem(item.destination)
                             } label: {
                                 HStack {
                                     Image(systemName: item.icon)
@@ -431,16 +460,18 @@ final class BootstrapViewModel: ObservableObject {
     @Published var newsError: String?
     @Published var prayerError: String?
 
-    func loadAll(language: UiLanguage) async {
-        await loadNews(language: language)
+    func loadAll(language: UiLanguage, destination: MenuDestination) async {
+        await loadNews(language: language, destination: destination)
         disablePrayersTemporarily()
     }
 
-    func loadNews(language: UiLanguage) async {
+    func loadNews(language: UiLanguage, destination: MenuDestination) async {
         isLoadingNews = true
         newsError = nil
-        guard let newsURL = URL(string: language.newsInitURL) else {
-            newsError = "URL news invalide"
+        guard let endpoint = language.endpointURL(for: destination),
+              let newsURL = URL(string: endpoint) else {
+            newsItems = []
+            newsError = "Section '\(language.title(for: destination))' en cours d'intégration."
             isLoadingNews = false
             return
         }
