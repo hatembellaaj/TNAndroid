@@ -483,7 +483,18 @@ final class BootstrapViewModel: ObservableObject {
                 print("[TN-iOS] News HTTP status: \(http.statusCode)")
             }
 
-            let json = try JSONSerialization.jsonObject(with: data) as? [String: Any]
+            let payload = try JSONSerialization.jsonObject(with: data)
+
+            if destination == .videos {
+                let rows = parseVideoRows(payload)
+                newsItems = rows
+                newsError = rows.isEmpty ? "Aucune vidéo disponible." : nil
+                isLoadingNews = false
+                print("[TN-iOS] Videos loaded count: \(rows.count)")
+                return
+            }
+
+            let json = payload as? [String: Any]
             let arrays: [[String: Any]] =
                 (json?["data"] as? [[String: Any]]) ??
                 (json?["results"] as? [[String: Any]]) ??
@@ -531,6 +542,46 @@ final class BootstrapViewModel: ObservableObject {
         }
 
         isLoadingNews = false
+    }
+
+    private func parseVideoRows(_ payload: Any) -> [NewsRow] {
+        let youtubeBase = "https://www.youtube.com/watch?v="
+        let array: [[String: Any]]
+
+        if let dict = payload as? [String: Any],
+           let videos = dict["video"] as? [[String: Any]] {
+            array = videos
+        } else if let arr = payload as? [[String: Any]] {
+            array = arr
+        } else {
+            return []
+        }
+
+        return array.enumerated().map { idx, row in
+            let videoID = (row["id"] as? String) ?? String(idx)
+            let title = normalizeDisplayText(
+                (row["title"] as? String) ??
+                (row["titre"] as? String) ??
+                "Sans titre"
+            )
+            let date = normalizeDisplayText(
+                (row["date"] as? String) ??
+                (row["published"] as? String) ??
+                ""
+            )
+            let imageURL = (row["image"] as? String) ?? ""
+            let shareURL = youtubeBase + videoID
+
+            return NewsRow(
+                id: videoID,
+                title: title,
+                summary: date,
+                contentHTML: title,
+                date: date,
+                shareURL: shareURL,
+                imageURL: imageURL
+            )
+        }
     }
 
     func disablePrayersTemporarily() {
