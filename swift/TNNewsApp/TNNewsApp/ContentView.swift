@@ -440,6 +440,7 @@ struct LanguageSelectionSheet: View {
 
 struct HomeNewsFeedView: View {
     let newsItems: [BootstrapViewModel.NewsRow]
+    @State private var currentTopStoryIndex = 0
 
     private var topStories: [BootstrapViewModel.NewsRow] {
         Array(newsItems.prefix(8))
@@ -450,8 +451,8 @@ struct HomeNewsFeedView: View {
             VStack(alignment: .leading, spacing: 14) {
                 NewsSectionHeader(title: "A LA UNE")
 
-                TabView {
-                    ForEach(topStories) { item in
+                TabView(selection: $currentTopStoryIndex) {
+                    ForEach(Array(topStories.enumerated()), id: \.element.id) { index, item in
                         NavigationLink {
                             NewsHTMLDetailView(item: item)
                         } label: {
@@ -459,10 +460,23 @@ struct HomeNewsFeedView: View {
                         }
                         .buttonStyle(.plain)
                         .padding(.horizontal, 4)
+                        .tag(index)
                     }
                 }
                 .frame(height: 320)
-                .tabViewStyle(.page(indexDisplayMode: .always))
+                .tabViewStyle(.page(indexDisplayMode: .never))
+
+                if topStories.count > 1 {
+                    HStack(spacing: 7) {
+                        ForEach(0..<topStories.count, id: \.self) { index in
+                            Circle()
+                                .fill(index == currentTopStoryIndex ? Color(androidGreen) : Color.gray.opacity(0.35))
+                                .frame(width: 9, height: 9)
+                        }
+                    }
+                    .frame(maxWidth: .infinity)
+                    .padding(.top, -2)
+                }
 
                 NewsSectionHeader(title: "NEWS")
                     .padding(.top, 8)
