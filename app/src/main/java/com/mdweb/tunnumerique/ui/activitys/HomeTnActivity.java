@@ -12,7 +12,6 @@ import android.widget.Toast;
 import android.widget.LinearLayout;
 
 import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.fragment.app.Fragment;
@@ -44,7 +43,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
-public class HomeTnActivity extends AppCompatActivity {
+public class HomeTnActivity extends BaseActivity {
 
     private static final String TAG = "HomeActivity";
 
@@ -93,6 +92,9 @@ public class HomeTnActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.hometn_activity);
+        Log.d(TAG, "onCreate currentLang=" + SessionManager.getInstance().getCurrentLang(this)
+                + " locale=" + getResources().getConfiguration().locale
+                + " layoutDir=" + getResources().getConfiguration().getLayoutDirection());
 
         // Initialisation des vues
         initViews();
@@ -580,14 +582,17 @@ public class HomeTnActivity extends AppCompatActivity {
     private void loadLocalArticles() {
         allNewsList = new ArrayList<>();
         String currentLng = SessionManager.getInstance().getCurrentLang(this);
+        String sourceFile = Communication.FILE_NEWS_INIT;
 
         try {
             if (currentLng.equals(Constant.AR)) {
+                sourceFile = Communication.FILE_NEWS_INIT_AR;
                 allNewsList.addAll(new DataParser().getListFetchNews(
                         new Utils(this).getStringFromFile(Communication.FILE_NEWS_INIT_AR)
                 ));
                 Log.d(TAG, "📰 Articles chargés en ARABE: " + allNewsList.size());
             } else if (currentLng.equals(Constant.EN)) {
+                sourceFile = Communication.FILE_NEWS_INIT_EN;
                 allNewsList.addAll(new DataParser().getListFetchNews(
                         new Utils(this).getStringFromFile(Communication.FILE_NEWS_INIT_EN)
                 ));
@@ -597,6 +602,12 @@ public class HomeTnActivity extends AppCompatActivity {
                         new Utils(this).getStringFromFile(Communication.FILE_NEWS_INIT)
                 ));
                 Log.d(TAG, "📰 Articles chargés en FRANÇAIS: " + allNewsList.size());
+            }
+            Log.d(TAG, "loadLocalArticles currentLng=" + currentLng + " sourceFile=" + sourceFile);
+            if (!allNewsList.isEmpty()) {
+                Log.d(TAG, "Premier article title=" + allNewsList.get(0).getTitleNews());
+            } else {
+                Log.w(TAG, "Aucun article chargé pour la langue=" + currentLng);
             }
 
             // Afficher tous les articles dans NEWS
@@ -619,20 +630,26 @@ public class HomeTnActivity extends AppCompatActivity {
         Log.e("MENU_DEBUG", "🔥 loadCategoriesForMenu APPELÉE");
         Log.e("MENU_DEBUG", "════════════════════════════════");
         String currentLang = SessionManager.getInstance().getCurrentLang(this);
+        String sourceFile = Communication.FILE_NAME_CATEGORIES;
 
         try {
             List<com.mdweb.tunnumerique.data.model.Categories> categoriesListTemp;
 
             if (currentLang.equals(Constant.AR)) {
+                sourceFile = Communication.FILE_NAME_CATEGORIES_AR;
                 categoriesListTemp = new DataParser().getListCategories(
                         new Utils(this).getStringFromFile(Communication.FILE_NAME_CATEGORIES_AR), 0);
             } else if (currentLang.equals(Constant.EN)) {
+                sourceFile = Communication.FILE_NAME_CATEGORIES_EN;
                 categoriesListTemp = new DataParser().getListCategories(
                         new Utils(this).getStringFromFile(Communication.FILE_NAME_CATEGORIES_EN), 0);
             } else {
                 categoriesListTemp = new DataParser().getListCategories(
                         new Utils(this).getStringFromFile(Communication.FILE_NAME_CATEGORIES), 1);
             }
+            Log.d(TAG, "loadCategoriesForMenu currentLang=" + currentLang
+                    + " sourceFile=" + sourceFile
+                    + " count=" + categoriesListTemp.size());
 
             updateDrawerMenu(categoriesListTemp);
 
@@ -678,14 +695,17 @@ public class HomeTnActivity extends AppCompatActivity {
     private void loadDossiers() {
         dossiersList = new ArrayList<>();
         String currentLng = SessionManager.getInstance().getCurrentLang(this);
+        String sourceFile = Communication.FILE_NAME_DOSSIER;
 
         try {
             if (currentLng.equals(Constant.AR)) {
+                sourceFile = Communication.FILE_NAME_DOSSIER_AR;
                 dossiersList.addAll(new DataParser().getListDossier(
                         new Utils(this).getStringFromFile(Communication.FILE_NAME_DOSSIER_AR)
                 ));
                 Log.d(TAG, "📂 Dossiers chargés en ARABE: " + dossiersList.size());
             } else if (currentLng.equals(Constant.EN)) {
+                sourceFile = Communication.FILE_NAME_DOSSIER_EN;
                 dossiersList.addAll(new DataParser().getListDossier(
                         new Utils(this).getStringFromFile(Communication.FILE_NAME_DOSSIER_EN)
                 ));
@@ -696,6 +716,8 @@ public class HomeTnActivity extends AppCompatActivity {
                 ));
                 Log.d(TAG, "📂 Dossiers chargés en FRANÇAIS: " + dossiersList.size());
             }
+            Log.d(TAG, "loadDossiers currentLng=" + currentLng + " sourceFile=" + sourceFile
+                    + " count=" + dossiersList.size());
 
             setupDossierViewPager();
 
