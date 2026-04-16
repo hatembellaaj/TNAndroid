@@ -41,8 +41,10 @@ import com.mdweb.tunnumerique.tools.SessionManager;
 import com.mdweb.tunnumerique.tools.shared.Communication;
 import com.mdweb.tunnumerique.tools.shared.Constant;
 
+import java.text.Normalizer;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 
 public class HomeTnActivity extends AppCompatActivity {
 
@@ -414,20 +416,8 @@ public class HomeTnActivity extends AppCompatActivity {
         Log.d(TAG, "  Total articles: " + allNewsList.size());
         Log.d(TAG, "════════════════════════════════════════════");
 
-        // Normaliser le nom de catégorie
-        String normalizedCategory = categoryName.trim().toLowerCase();
-
-        // Variantes à tester
-        String[] variants = {
-                normalizedCategory,
-                normalizedCategory.replaceAll("\\s+", ""),      // Sans espaces
-                normalizedCategory.replaceAll("[\\s&_-]", "")   // Sans espaces, &, _, -
-        };
-
-        Log.d(TAG, "  Variantes testées:");
-        for (String v : variants) {
-            Log.d(TAG, "    - [" + v + "]");
-        }
+        String normalizedCategory = normalizeCategoryToken(categoryName);
+        Log.d(TAG, "  Catégorie normalisée: [" + normalizedCategory + "]");
 
         // Afficher quelques exemples de typeNews
         Log.d(TAG, "  Exemples de typeNews:");
@@ -444,27 +434,17 @@ public class HomeTnActivity extends AppCompatActivity {
                 continue;
             }
 
-            String normalizedNewsType = newsType.trim().toLowerCase();
-
-            // Tester toutes les variantes
+            String[] tokens = newsType.split(",");
             boolean matched = false;
-            for (String variant : variants) {
-                // Test 1: Égalité exacte
-                if (normalizedNewsType.equals(variant)) {
+            for (String token : tokens) {
+                String normalizedToken = normalizeCategoryToken(token);
+                if (normalizedToken.equals(normalizedCategory)
+                        || normalizedToken.contains(normalizedCategory)
+                        || normalizedCategory.contains(normalizedToken)) {
                     filtered.add(news);
                     matched = true;
                     if (matchCount < 3) {
-                        Log.d(TAG, "  ✅ Match [" + newsType + "] == [" + variant + "]");
-                    }
-                    break;
-                }
-
-                // Test 2: Contient
-                if (normalizedNewsType.contains(variant)) {
-                    filtered.add(news);
-                    matched = true;
-                    if (matchCount < 3) {
-                        Log.d(TAG, "  ✅ Match [" + newsType + "] contains [" + variant + "]");
+                        Log.d(TAG, "  ✅ Match token [" + normalizedToken + "] avec catégorie [" + normalizedCategory + "]");
                     }
                     break;
                 }
@@ -478,6 +458,15 @@ public class HomeTnActivity extends AppCompatActivity {
         Log.d(TAG, "════════════════════════════════════════════");
 
         return filtered;
+    }
+
+    private String normalizeCategoryToken(String value) {
+        if (value == null) return "";
+        String normalized = Normalizer.normalize(value, Normalizer.Form.NFD)
+                .replaceAll("\\p{M}+", "")
+                .toLowerCase(Locale.ROOT)
+                .trim();
+        return normalized.replaceAll("[^\\p{Alnum}]+", "");
     }
 
 
