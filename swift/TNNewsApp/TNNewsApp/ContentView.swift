@@ -778,6 +778,67 @@ private struct NewsCardActionsRow: View {
         }
         .allowsHitTesting(true)
     }
+
+    private func removeFavorite(_ id: String) {
+        favoriteItems.removeAll { $0.id == id }
+    }
+
+    private func share(_ item: BootstrapViewModel.NewsRow) {
+        let text = [item.title, item.shareURL].filter { !$0.isEmpty }.joined(separator: "\n")
+        guard let scene = UIApplication.shared.connectedScenes.first as? UIWindowScene,
+              let root = scene.windows.first?.rootViewController else { return }
+        let vc = UIActivityViewController(activityItems: [text], applicationActivities: nil)
+        root.present(vc, animated: true)
+    }
+}
+
+private enum FavoriteArticlesStorage {
+    private static let key = "tn_ios_favorite_articles_v1"
+
+    static func load() -> [BootstrapViewModel.NewsRow] {
+        guard let data = UserDefaults.standard.data(forKey: key),
+              let decoded = try? JSONDecoder().decode([BootstrapViewModel.NewsRow].self, from: data) else {
+            return []
+        }
+        return decoded
+    }
+
+    static func save(_ items: [BootstrapViewModel.NewsRow]) {
+        guard let data = try? JSONEncoder().encode(items) else { return }
+        UserDefaults.standard.set(data, forKey: key)
+    }
+}
+
+private struct NewsCardActionsRow: View {
+    let isFavorite: Bool
+    let onToggleFavorite: () -> Void
+    let onShare: () -> Void
+
+    var body: some View {
+        HStack {
+            Spacer()
+
+            Button(action: onToggleFavorite) {
+                Image(systemName: isFavorite ? "bookmark.fill" : "bookmark")
+                    .font(.system(size: 22, weight: .semibold))
+                    .foregroundStyle(isFavorite ? Color(androidGreen) : .gray)
+            }
+            .buttonStyle(.plain)
+            .contentShape(Rectangle())
+            .padding(4)
+
+            Button(action: onShare) {
+                Image(systemName: "square.and.arrow.up")
+                    .font(.system(size: 22, weight: .semibold))
+                    .foregroundStyle(.gray)
+            }
+            .buttonStyle(.plain)
+            .contentShape(Rectangle())
+            .padding(4)
+            .padding(.leading, 14)
+        }
+        .allowsHitTesting(true)
+    }
 }
 
 private struct NewsSectionHeader: View {
