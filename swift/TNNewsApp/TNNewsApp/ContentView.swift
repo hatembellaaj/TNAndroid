@@ -550,11 +550,10 @@ struct HomeNewsFeedView: View {
     }
 
     private var isHomeMode: Bool {
-        guard let filter = categoryFilter?.trimmingCharacters(in: .whitespacesAndNewlines),
-              !filter.isEmpty else {
+        guard let filter = categoryFilter?.trimmingCharacters(in: .whitespacesAndNewlines) else {
             return true
         }
-        return normalizedCategoryToken(filter) == normalizedCategoryToken("A la une")
+        return filter.isEmpty
     }
 
     var body: some View {
