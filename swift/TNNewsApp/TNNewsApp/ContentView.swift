@@ -273,7 +273,7 @@ struct LegacySideMenuView: View {
 
     private var categoryItems: [(label: String, filter: String?)] {
         [
-            ("A la une", nil),
+            ("A la une", "A la une"),
             ("Actualités", "Actualités"),
             ("Monde", "Monde"),
             ("Politique", "Politique"),
@@ -491,9 +491,17 @@ struct HomeNewsFeedView: View {
     @State private var currentTopStoryIndex = 0
 
     private var displayedNews: [BootstrapViewModel.NewsRow] {
+        if isHomeMode {
+            return filteredNews(for: "Actualités")
+        }
+
         guard let filter = categoryFilter?.trimmingCharacters(in: .whitespacesAndNewlines),
               !filter.isEmpty else { return newsItems }
 
+        return filteredNews(for: filter)
+    }
+
+    private func filteredNews(for filter: String) -> [BootstrapViewModel.NewsRow] {
         let normalizedFilter = normalizedCategoryToken(filter)
         let filterCandidates = expandedCategoryCandidates(from: normalizedFilter)
         return newsItems.filter { item in
@@ -537,11 +545,16 @@ struct HomeNewsFeedView: View {
     }
 
     private var topStories: [BootstrapViewModel.NewsRow] {
-        Array(displayedNews.prefix(8))
+        let featured = filteredNews(for: "A la une")
+        return Array(featured.prefix(8))
     }
 
     private var isHomeMode: Bool {
-        categoryFilter == nil
+        guard let filter = categoryFilter?.trimmingCharacters(in: .whitespacesAndNewlines),
+              !filter.isEmpty else {
+            return true
+        }
+        return normalizedCategoryToken(filter) == normalizedCategoryToken("A la une")
     }
 
     var body: some View {
@@ -578,7 +591,7 @@ struct HomeNewsFeedView: View {
                     }
                 }
 
-                NewsSectionHeader(title: isHomeMode ? "NEWS" : (categoryFilter ?? "NEWS").uppercased())
+                NewsSectionHeader(title: isHomeMode ? "ACTUALITÉS" : (categoryFilter ?? "ACTUALITÉS").uppercased())
                     .padding(.top, 8)
 
                 if displayedNews.isEmpty {
