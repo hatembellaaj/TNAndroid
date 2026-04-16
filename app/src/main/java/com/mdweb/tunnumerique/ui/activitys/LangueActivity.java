@@ -2,6 +2,7 @@ package com.mdweb.tunnumerique.ui.activitys;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
@@ -128,6 +129,7 @@ public class LangueActivity extends BaseActivity {
         // Sauvegarder la langue sélectionnée dans SessionManager
         SessionManager.getInstance().setCurrentLng(this, selectedLanguage);
         LocaleHelper.setLocale(this, selectedLanguage);
+        Log.d("LangueActivity", "confirmSelection selectedLanguage=" + selectedLanguage);
 
         // Afficher un message de confirmation
         String languageName = getLanguageName(selectedLanguage);
@@ -149,6 +151,7 @@ public class LangueActivity extends BaseActivity {
         if (savedLanguage == null || savedLanguage.isEmpty()) {
             savedLanguage = Constant.FR;
         }
+        Log.d("LangueActivity", "loadSavedLanguage -> " + savedLanguage);
         selectLanguage(savedLanguage);
     }
 

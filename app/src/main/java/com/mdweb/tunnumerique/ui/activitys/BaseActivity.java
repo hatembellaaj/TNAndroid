@@ -75,6 +75,7 @@ public class BaseActivity extends AppCompatActivity {
         Locale.setDefault(locale);
         Configuration config = resources.getConfiguration();
         config.fontScale = 1.10f;
+        Log.d("BaseActivity", "attachBaseContext lng=" + lng + " activity=" + base.getClass().getSimpleName());
 
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
@@ -88,6 +89,8 @@ public class BaseActivity extends AppCompatActivity {
             resources.updateConfiguration(config, resources.getDisplayMetrics());
         }
 
+        Log.d("BaseActivity", "final locale=" + base.getResources().getConfiguration().locale
+                + " layoutDir=" + base.getResources().getConfiguration().getLayoutDirection());
         super.attachBaseContext(base);
     }
 
