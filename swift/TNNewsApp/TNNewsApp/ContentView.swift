@@ -494,12 +494,12 @@ struct HomeNewsFeedView: View {
         guard let filter = categoryFilter?.trimmingCharacters(in: .whitespacesAndNewlines),
               !filter.isEmpty else { return newsItems }
 
-        let normalizedFilter = normalizedMatchToken(filter)
+        let normalizedFilter = normalizedCategoryToken(filter)
         let filterCandidates = expandedCategoryCandidates(from: normalizedFilter)
         return newsItems.filter { item in
             let tokens = item.category
                 .split(whereSeparator: { [",", ";", "|", "،"].contains($0) })
-                .map { normalizedMatchToken(String($0)) }
+                .map { normalizedCategoryToken(String($0)) }
                 .filter { !$0.isEmpty }
 
             return tokens.contains { token in
@@ -512,7 +512,7 @@ struct HomeNewsFeedView: View {
         }
     }
 
-    private func normalizedMatchToken(_ raw: String) -> String {
+    private func normalizedCategoryToken(_ raw: String) -> String {
         let cleaned = raw.folding(options: [.diacriticInsensitive, .caseInsensitive], locale: .current)
         return cleaned
             .replacingOccurrences(of: "[^\\p{L}\\p{N}]+", with: "", options: .regularExpression)
@@ -534,14 +534,6 @@ struct HomeNewsFeedView: View {
         }
 
         return Array(values)
-    }
-
-    private func normalizedMatchToken(_ raw: String) -> String {
-        let cleaned = raw.folding(options: [.diacriticInsensitive, .caseInsensitive], locale: .current)
-        return cleaned
-            .replacingOccurrences(of: "[^\\p{L}\\p{N}]+", with: "", options: .regularExpression)
-            .lowercased()
-            .trimmingCharacters(in: .whitespacesAndNewlines)
     }
 
     private var topStories: [BootstrapViewModel.NewsRow] {
