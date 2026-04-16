@@ -79,10 +79,12 @@ public class BaseActivity extends AppCompatActivity {
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
             config.setLocale(locale);
+            config.setLayoutDirection(locale);
             base = base.createConfigurationContext(config);
         }
         else {
             config.locale = locale;
+            config.setLayoutDirection(locale);
             resources.updateConfiguration(config, resources.getDisplayMetrics());
         }
 
