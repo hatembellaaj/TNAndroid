@@ -72,6 +72,16 @@ public class DossierSliderAdapter extends RecyclerView.Adapter<DossierSliderAdap
             holder.title.setVisibility(View.VISIBLE);
         }
 
+        if (holder.author != null) {
+            String author = dossier.getAuthorNameNews();
+            if (author != null && !author.trim().isEmpty()) {
+                holder.author.setText("Par " + author.trim());
+                holder.author.setVisibility(View.VISIBLE);
+            } else {
+                holder.author.setVisibility(View.GONE);
+            }
+        }
+
         // ✅ DATE formatée "9 Novembre 2025"
         if (holder.date != null) {
             String rawDate = dossier.getDateNews(); // ← adaptez si le getter est différent
@@ -127,12 +137,12 @@ public class DossierSliderAdapter extends RecyclerView.Adapter<DossierSliderAdap
                 if (existingNews != null) {
                     holder.bookmark.setImageResource(R.drawable.ic_bookmark_filled);
                 } else {
-                    holder.bookmark.setImageResource(R.drawable.icon_save_r);
+                    holder.bookmark.setImageResource(R.drawable.ic_bookmark_outline);
                 }
 
             } catch (Exception e) {
                 android.util.Log.e("DossierSliderAdapter", "❌ Erreur vérification favoris: " + e.getMessage());
-                holder.bookmark.setImageResource(R.drawable.icon_save_r);
+                holder.bookmark.setImageResource(R.drawable.ic_bookmark_outline);
             }
 
             holder.bookmark.setOnClickListener(v -> {
@@ -148,7 +158,7 @@ public class DossierSliderAdapter extends RecyclerView.Adapter<DossierSliderAdap
                         if (existingNews != null) {
                             holder.bookmark.setImageResource(R.drawable.ic_bookmark_filled);
                         } else {
-                            holder.bookmark.setImageResource(R.drawable.icon_save_r);
+                            holder.bookmark.setImageResource(R.drawable.ic_bookmark_outline);
                         }
                     } catch (Exception e) {
                         android.util.Log.e("DossierSliderAdapter", "❌ Erreur mise à jour icône: " + e.getMessage());
@@ -277,6 +287,7 @@ public class DossierSliderAdapter extends RecyclerView.Adapter<DossierSliderAdap
     static class DossierViewHolder extends RecyclerView.ViewHolder {
         ImageView image;
         TextView title;
+        TextView author;
         TextView date; // ✅ Ajouté
         ImageView bookmark;
         ImageView share;
@@ -286,6 +297,7 @@ public class DossierSliderAdapter extends RecyclerView.Adapter<DossierSliderAdap
             super(itemView);
             image = itemView.findViewById(R.id.dossierImage);
             title = itemView.findViewById(R.id.dossierTitle);
+            author = itemView.findViewById(R.id.dossierAuthor);
             date = itemView.findViewById(R.id.dossierDate); // ✅ Ajouté
             bookmark = itemView.findViewById(R.id.dossierBookmark);
             share = itemView.findViewById(R.id.dossierShare);
