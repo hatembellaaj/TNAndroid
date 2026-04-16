@@ -190,46 +190,47 @@ public class DataParser {
             JSONObject x = new JSONObject(response);
             JSONArray jsonArray = x.getJSONArray("news");
             for (int i = 0; i < jsonArray.length(); i++) {
-                JSONObject _jsonObject = jsonArray.getJSONObject(i);
+                try {
+                    JSONObject _jsonObject = jsonArray.getJSONObject(i);
 
-                News news = new News();
-                news.setIdNews(_jsonObject.getString("News_ID"));
-                news.setTitleNews(_jsonObject.getString("News_Titre"));
-                news.setImageUrlNews(_jsonObject.getString("News_Url_Image"));
-                news.setImageNameNews(_jsonObject.getString("News_Name_Image"));
-                news.setImageUrlDetailsNews(_jsonObject.getString("News_Url_Image_Details"));
-                news.setImageNameDetailsNews(_jsonObject.getString("News_Name_Image_Details"));
-                news.setShareUrlNews(_jsonObject.getString("News_Url_Partage"));
-                if (_jsonObject.has("News_Format_Date")) {
-                    news.setDateNews(_jsonObject.getString("News_Format_Date"));
-                } else {
-                    news.setDateNews(_jsonObject.getString("News_Date"));
-                }
-                if (_jsonObject.has("News_Url_audio")) {
-                    news.setUrlAudioNews(_jsonObject.getString("News_Url_audio"));
-                } else {
-                    news.setUrlAudioNews("");
-                }
-                news.setDescriptionNews(_jsonObject.getString("News_Description"));
-                news.setContenuNews(_jsonObject.getString("News_Contenu"));
-                if (_jsonObject.has("Dark_Mode")) {
-                    news.setDark_Mode(_jsonObject.getString("Dark_Mode"));
-                }
-                if (_jsonObject.has("News_commentaire_android"))
-                    news.setNews_commentaire_android(_jsonObject.getString("News_commentaire_android"));
-                news.setTypeNews(_jsonObject.getString("News_list_category"));
-                news.setAuthorNameNews(_jsonObject.getString("News_Auteur_Nom"));
-                news.setArtOrPubOrVid(Constant.isArticle);
-                news.setKeyWordsNews(_jsonObject.getString("News_Liste_Mot_Cle"));
+                    News news = new News();
+                    news.setIdNews(_jsonObject.optString("News_ID", ""));
+                    news.setTitleNews(_jsonObject.optString("News_Titre", ""));
+                    news.setImageUrlNews(_jsonObject.optString("News_Url_Image", ""));
+                    news.setImageNameNews(_jsonObject.optString("News_Name_Image", ""));
+                    news.setImageUrlDetailsNews(_jsonObject.optString("News_Url_Image_Details", ""));
+                    news.setImageNameDetailsNews(_jsonObject.optString("News_Name_Image_Details", ""));
+                    news.setShareUrlNews(_jsonObject.optString("News_Url_Partage", ""));
+                    if (_jsonObject.has("News_Format_Date")) {
+                        news.setDateNews(_jsonObject.optString("News_Format_Date", ""));
+                    } else {
+                        news.setDateNews(_jsonObject.optString("News_Date", ""));
+                    }
+                    news.setUrlAudioNews(_jsonObject.optString("News_Url_audio", ""));
+                    news.setDescriptionNews(_jsonObject.optString("News_Description", ""));
+                    news.setContenuNews(_jsonObject.optString("News_Contenu", ""));
+                    if (_jsonObject.has("Dark_Mode")) {
+                        news.setDark_Mode(_jsonObject.optString("Dark_Mode", ""));
+                    }
+                    if (_jsonObject.has("News_commentaire_android")) {
+                        news.setNews_commentaire_android(_jsonObject.optString("News_commentaire_android", ""));
+                    }
+                    news.setTypeNews(_jsonObject.optString("News_list_category", ""));
+                    news.setAuthorNameNews(_jsonObject.optString("News_Auteur_Nom", ""));
+                    news.setArtOrPubOrVid(Constant.isArticle);
+                    news.setKeyWordsNews(_jsonObject.optString("News_Liste_Mot_Cle", ""));
 
-                // ✅ is_paywall
-                if (_jsonObject.has("is_paywall")) {
-                    news.setPaywall(_jsonObject.getBoolean("is_paywall"));
-                } else {
-                    news.setPaywall(false);
-                }
+                    // ✅ is_paywall
+                    if (_jsonObject.has("is_paywall")) {
+                        news.setPaywall(_jsonObject.optBoolean("is_paywall", false));
+                    } else {
+                        news.setPaywall(false);
+                    }
 
-                newsList.add(news);
+                    newsList.add(news);
+                } catch (Exception itemException) {
+                    Log.w("DataParser", "Skipping malformed news item at index " + i + ": " + itemException.getMessage());
+                }
             }
         } catch (JSONException e) {
             e.printStackTrace();
