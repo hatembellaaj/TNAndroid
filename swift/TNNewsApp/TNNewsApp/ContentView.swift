@@ -7,6 +7,7 @@ struct ContentView: View {
     @State private var showLanguagePicker = false
     @State private var selectedLanguage: UiLanguage = .fr
     @State private var selectedDestination: MenuDestination = .news
+    @State private var selectedCategoryFilter: String? = nil
 
     var body: some View {
         Group {
@@ -21,7 +22,10 @@ struct ContentView: View {
                             } else if let error = vm.newsError {
                                 Text(error).foregroundStyle(.red)
                             } else {
-                                HomeNewsFeedView(newsItems: vm.newsItems)
+                                HomeNewsFeedView(
+                                    newsItems: vm.newsItems,
+                                    categoryFilter: selectedCategoryFilter
+                                )
                             }
                         }
                         .scrollContentBackground(.hidden)
@@ -70,6 +74,7 @@ struct ContentView: View {
                                     LegacySideMenuView(
                                         selectedLanguage: $selectedLanguage,
                                         selectedDestination: $selectedDestination,
+                                        selectedCategoryFilter: $selectedCategoryFilter,
                                         onSelectMenuItem: { destination in
                                             selectedDestination = destination
                                             withAnimation(.easeInOut(duration: 0.2)) { showMenu = false }
@@ -132,6 +137,9 @@ struct ContentView: View {
                     Task { await vm.loadAll(language: newLanguage, destination: selectedDestination) }
                 }
                 .onChange(of: selectedDestination) { _, newDestination in
+                    if newDestination != .news {
+                        selectedCategoryFilter = nil
+                    }
                     Task { await vm.loadAll(language: selectedLanguage, destination: newDestination) }
                 }
             }
@@ -259,20 +267,21 @@ private extension UiLanguage {
 struct LegacySideMenuView: View {
     @Binding var selectedLanguage: UiLanguage
     @Binding var selectedDestination: MenuDestination
+    @Binding var selectedCategoryFilter: String?
     let onSelectMenuItem: (MenuDestination) -> Void
     let onClose: () -> Void
 
-    private var categoryItems: [(destination: MenuDestination, label: String)] {
+    private var categoryItems: [(label: String, filter: String?)] {
         [
-            (.news, "A la une"),
-            (.dossiers, "Monde"),
-            (.mostRead, "Politique"),
-            (.videos, "Economie"),
-            (.jokes, "Autos"),
-            (.prayerTimes, "Sport"),
-            (.favorites, "Tech & net"),
-            (.settings, "Société"),
-            (.about, "Recette")
+            ("A la une", nil),
+            ("Monde", "Monde"),
+            ("Politique", "Politique"),
+            ("Economie", "Economie"),
+            ("Autos", "Autos"),
+            ("Sport", "Sport"),
+            ("Tech & net", "Tech"),
+            ("Société", "Société"),
+            ("Recette", "Recette")
         ]
     }
 
@@ -312,12 +321,13 @@ struct LegacySideMenuView: View {
             VStack(spacing: 12) {
                 ForEach(categoryItems, id: \.label) { item in
                     Button {
-                        onSelectMenuItem(item.destination)
+                        selectedCategoryFilter = item.filter
+                        onSelectMenuItem(.news)
                     } label: {
                         HStack {
                             Text(item.label)
                                 .font(.system(size: 20, weight: .semibold))
-                                .foregroundStyle(item.destination == selectedDestination ? Color(androidGreen) : .black)
+                                .foregroundStyle(item.filter == selectedCategoryFilter ? Color(androidGreen) : .black)
                             Spacer()
                         }
                         .padding(.horizontal, 18)
@@ -325,7 +335,7 @@ struct LegacySideMenuView: View {
                         .background(Color("#ECEEEE"))
                         .overlay(
                             RoundedRectangle(cornerRadius: 16)
-                                .stroke(item.destination == selectedDestination ? Color(androidGreen) : Color.clear, lineWidth: 2)
+                                .stroke(item.filter == selectedCategoryFilter ? Color(androidGreen) : Color.clear, lineWidth: 2)
                         )
                         .clipShape(RoundedRectangle(cornerRadius: 16))
                     }
@@ -476,10 +486,23 @@ struct LanguageSelectionSheet: View {
 
 struct HomeNewsFeedView: View {
     let newsItems: [BootstrapViewModel.NewsRow]
+    let categoryFilter: String?
     @State private var currentTopStoryIndex = 0
 
+    private var displayedNews: [BootstrapViewModel.NewsRow] {
+        guard let filter = categoryFilter?.trimmingCharacters(in: .whitespacesAndNewlines),
+              !filter.isEmpty else { return newsItems }
+
+        let normalizedFilter = filter.lowercased()
+        let filtered = newsItems.filter { item in
+            item.category.lowercased().contains(normalizedFilter) ||
+            item.title.lowercased().contains(normalizedFilter)
+        }
+        return filtered.isEmpty ? newsItems : filtered
+    }
+
     private var topStories: [BootstrapViewModel.NewsRow] {
-        Array(newsItems.prefix(8))
+        Array(displayedNews.prefix(8))
     }
 
     var body: some View {
@@ -518,7 +541,7 @@ struct HomeNewsFeedView: View {
                     .padding(.top, 8)
 
                 VStack(spacing: 12) {
-                    ForEach(newsItems) { item in
+                    ForEach(displayedNews) { item in
                         NavigationLink {
                             NewsHTMLDetailView(item: item)
                         } label: {
@@ -719,6 +742,7 @@ final class BootstrapViewModel: ObservableObject {
     struct NewsRow: Identifiable {
         let id: String
         let title: String
+        let category: String
         let summary: String
         let contentHTML: String
         let date: String
@@ -793,6 +817,9 @@ final class BootstrapViewModel: ObservableObject {
                 let rawSummary = pickString(row, keys: [
                     "News_Description", "description", "resume", "summary"
                 ]) ?? ""
+                let rawCategory = pickString(row, keys: [
+                    "News_Categorie", "categorie", "category", "rubrique", "category_name"
+                ]) ?? ""
                 let rawContent = pickString(row, keys: [
                     "News_Contenu", "content", "contenu", "News_commentaire_android"
                 ]) ?? rawSummary
@@ -806,6 +833,7 @@ final class BootstrapViewModel: ObservableObject {
                 return NewsRow(
                     id: id,
                     title: title,
+                    category: normalizeDisplayText(rawCategory),
                     summary: summary,
                     contentHTML: rawContent,
                     date: normalizeDisplayText(date),
@@ -876,6 +904,7 @@ final class BootstrapViewModel: ObservableObject {
             return NewsRow(
                 id: videoID,
                 title: title,
+                category: "",
                 summary: date,
                 contentHTML: title,
                 date: date,
