@@ -55,6 +55,7 @@ struct HomeView: View {
                 await vmHolder.vm.load(language: settings.selectedLanguage)
                 refreshFavorites()
             }
+            .onAppear(perform: refreshFavorites)
         }
     }
 
