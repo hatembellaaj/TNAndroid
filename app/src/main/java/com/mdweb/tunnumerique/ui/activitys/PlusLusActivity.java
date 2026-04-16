@@ -1,8 +1,6 @@
 package com.mdweb.tunnumerique.ui.activitys;
 
 import android.content.Intent;
-import android.graphics.Color;
-import android.content.res.ColorStateList;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -314,33 +312,6 @@ public class PlusLusActivity extends AppCompatActivity {
     private void setupBottomNavigation() {
         bottomNavigationView.setSelectedItemId(R.id.nav_top24);
 
-        // Couleurs icône : vert si sélectionné, gris sinon (identique à HomeTnActivity)
-        ColorStateList iconColors = new ColorStateList(
-                new int[][]{
-                        new int[]{android.R.attr.state_checked},
-                        new int[]{}
-                },
-                new int[]{
-                        Color.parseColor("#88BD2E"),
-                        Color.parseColor("#AAAAAA")
-                }
-        );
-
-        // Couleurs texte : blanc si sélectionné, gris sinon
-        ColorStateList textColors = new ColorStateList(
-                new int[][]{
-                        new int[]{android.R.attr.state_checked},
-                        new int[]{}
-                },
-                new int[]{
-                        Color.WHITE,
-                        Color.parseColor("#AAAAAA")
-                }
-        );
-
-        bottomNavigationView.setItemIconTintList(iconColors);
-        bottomNavigationView.setItemTextColor(textColors);
-
         bottomNavigationView.setOnItemSelectedListener(item -> {
             int itemId = item.getItemId();
 
@@ -356,8 +327,7 @@ public class PlusLusActivity extends AppCompatActivity {
                 return true;
 
             } else if (itemId == R.id.nav_enregistres) {
-                Intent intent = new Intent(PlusLusActivity.this, MainActivity.class);
-                intent.putExtra("FRAGMENT_TO_LOAD", "favoris");
+                Intent intent = new Intent(PlusLusActivity.this, FavorisActivity.class);
                 startActivity(intent);
                 return true;
 
