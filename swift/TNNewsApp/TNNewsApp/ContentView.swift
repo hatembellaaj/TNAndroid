@@ -8,13 +8,14 @@ struct ContentView: View {
     @State private var selectedLanguage: UiLanguage = .fr
     @State private var selectedDestination: MenuDestination = .news
     @State private var selectedCategoryFilter: String? = nil
+    @State private var selectedTab = 0
 
     var body: some View {
         Group {
             if showSplash {
                 AndroidStyleSplashView()
             } else {
-                TabView {
+                TabView(selection: $selectedTab) {
                     NavigationStack {
                         Group {
                             if vm.isLoadingNews {
@@ -90,6 +91,7 @@ struct ContentView: View {
                         }
                     }
                     .tabItem { Label("Home", systemImage: "house") }
+                    .tag(0)
 
                     NavigationStack {
                         Group {
@@ -115,6 +117,7 @@ struct ContentView: View {
                         .navigationTitle("Prières")
                     }
                     .tabItem { Label("Prières", systemImage: "clock") }
+                    .tag(1)
 
                     NavigationStack {
                         Text("Favoris (intégration complète après target membership)")
@@ -122,12 +125,14 @@ struct ContentView: View {
                             .navigationTitle("Favoris")
                     }
                     .tabItem { Label("Favoris", systemImage: "bookmark") }
+                    .tag(2)
 
                     NavigationStack {
                         Text("Paramètres")
                             .navigationTitle("Paramètres")
                     }
                     .tabItem { Label("Paramètres", systemImage: "gearshape") }
+                    .tag(3)
                 }
                 .tint(Color(androidGreen))
                 .task {
@@ -141,6 +146,12 @@ struct ContentView: View {
                         selectedCategoryFilter = nil
                     }
                     Task { await vm.loadAll(language: selectedLanguage, destination: newDestination) }
+                }
+                .onChange(of: selectedTab) { _, newTab in
+                    guard newTab == 0 else { return }
+                    selectedCategoryFilter = nil
+                    selectedDestination = .news
+                    Task { await vm.loadAll(language: selectedLanguage, destination: .news) }
                 }
             }
         }
@@ -550,11 +561,10 @@ struct HomeNewsFeedView: View {
     }
 
     private var isHomeMode: Bool {
-        guard let filter = categoryFilter?.trimmingCharacters(in: .whitespacesAndNewlines),
-              !filter.isEmpty else {
+        guard let filter = categoryFilter?.trimmingCharacters(in: .whitespacesAndNewlines) else {
             return true
         }
-        return normalizedCategoryToken(filter) == normalizedCategoryToken("A la une")
+        return filter.isEmpty
     }
 
     var body: some View {
