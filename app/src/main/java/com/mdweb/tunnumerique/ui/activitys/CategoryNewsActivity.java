@@ -41,6 +41,7 @@ public class CategoryNewsActivity extends AppCompatActivity {
 
     public static final String EXTRA_CATEGORY_NAME = "CATEGORY_NAME";
     public static final String EXTRA_CATEGORY_ID   = "CATEGORY_ID";
+    public static final String EXTRA_IS_ALAUNE     = "IS_ALAUNE";
 
     // ── Header ──
     private ImageView menuIcon;
@@ -68,6 +69,7 @@ public class CategoryNewsActivity extends AppCompatActivity {
     // Catégorie courante
     private String currentCategoryName = "";
     private String currentCategoryId = "";
+    private boolean isAlaUnePage = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -82,6 +84,16 @@ public class CategoryNewsActivity extends AppCompatActivity {
         // Intent extras
         String categoryName = getIntent().getStringExtra(EXTRA_CATEGORY_NAME);
         String categoryId = getIntent().getStringExtra(EXTRA_CATEGORY_ID);
+        isAlaUnePage = getIntent().getBooleanExtra(EXTRA_IS_ALAUNE, false);
+
+        if (isAlaUnePage) {
+            currentCategoryName = "A la une";
+            currentCategoryId = "alaune";
+            toolbarTitle.setText("A la une");
+            loadAndDisplay("", "");
+            return;
+        }
+
         if (categoryName == null) categoryName = "";
         if (categoryId == null) categoryId = "";
         currentCategoryName = categoryName;
@@ -284,6 +296,11 @@ public class CategoryNewsActivity extends AppCompatActivity {
 
         menuAdapter.notifyDataSetChanged();
 
+        if (isAlaUnePage) {
+            menuAdapter.setSelectedPosition(0);
+            return;
+        }
+
         // Surligner la catégorie courante dans le menu
         for (int i = 0; i < menuItemsList.size(); i++) {
             if (menuItemsList.get(i).getTitle().equalsIgnoreCase(currentCategoryName)) {
@@ -297,11 +314,14 @@ public class CategoryNewsActivity extends AppCompatActivity {
         drawerLayout.closeDrawer(GravityCompat.START);
 
         if (item.getId().equals("alaune")) {
-            // Retour à HomeTnActivity
-            Intent intent = new Intent(CategoryNewsActivity.this, HomeTnActivity.class);
-            intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
-            startActivity(intent);
-            finish();
+            if (!isAlaUnePage) {
+                Intent intent = new Intent(CategoryNewsActivity.this, CategoryNewsActivity.class);
+                intent.putExtra(CategoryNewsActivity.EXTRA_IS_ALAUNE, true);
+                intent.putExtra(CategoryNewsActivity.EXTRA_CATEGORY_NAME, "A la une");
+                intent.putExtra(CategoryNewsActivity.EXTRA_CATEGORY_ID, "alaune");
+                startActivity(intent);
+                finish();
+            }
             return;
         }
 
