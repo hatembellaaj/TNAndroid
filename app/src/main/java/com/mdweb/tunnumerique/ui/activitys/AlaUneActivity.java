@@ -35,12 +35,9 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Set;
 
-public class CategoryNewsActivity extends AppCompatActivity {
+public class AlaUneActivity extends AppCompatActivity {
 
-    private static final String TAG = "CategoryNewsActivity";
-
-    public static final String EXTRA_CATEGORY_NAME = "CATEGORY_NAME";
-    public static final String EXTRA_CATEGORY_ID   = "CATEGORY_ID";
+    private static final String TAG = "AlaUneActivity";
 
     // ── Header ──
     private ImageView menuIcon;
@@ -65,9 +62,6 @@ public class CategoryNewsActivity extends AppCompatActivity {
     private List<News> allNewsList = new ArrayList<>();
     private final Set<String> availableNormalizedCategories = new LinkedHashSet<>();
 
-    // Catégorie courante
-    private String currentCategoryName = "";
-    private String currentCategoryId = "";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -79,17 +73,8 @@ public class CategoryNewsActivity extends AppCompatActivity {
         setupDrawer();
         setupBottomNavigation();
 
-        // Intent extras
-        String categoryName = getIntent().getStringExtra(EXTRA_CATEGORY_NAME);
-        String categoryId = getIntent().getStringExtra(EXTRA_CATEGORY_ID);
-
-        if (categoryName == null) categoryName = "";
-        if (categoryId == null) categoryId = "";
-        currentCategoryName = categoryName;
-        currentCategoryId = categoryId;
-
-        toolbarTitle.setText(capitalize(categoryName));
-        loadAndDisplay(categoryName, categoryId);
+        toolbarTitle.setText("A la une");
+        loadAndDisplay("", "");
     }
 
     // ════════════════════════════════════════════════════════
@@ -120,7 +105,7 @@ public class CategoryNewsActivity extends AppCompatActivity {
 
         updateLanguageButton();
         languageButton.setOnClickListener(v -> {
-            Intent intent = new Intent(CategoryNewsActivity.this, LangueActivity.class);
+            Intent intent = new Intent(AlaUneActivity.this, LangueActivity.class);
             startActivity(intent);
         });
     }
@@ -149,26 +134,26 @@ public class CategoryNewsActivity extends AppCompatActivity {
 
             if (itemId == R.id.nav_home) {
                 // Retour à HomeTnActivity
-                Intent intent = new Intent(CategoryNewsActivity.this, HomeTnActivity.class);
+                Intent intent = new Intent(AlaUneActivity.this, HomeTnActivity.class);
                 intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
                 startActivity(intent);
                 finish();
                 return true;
 
             } else if (itemId == R.id.nav_horaires) {
-                Intent intent = new Intent(CategoryNewsActivity.this, MainActivity.class);
+                Intent intent = new Intent(AlaUneActivity.this, MainActivity.class);
                 intent.putExtra("FRAGMENT_TO_LOAD", "horaires");
                 startActivity(intent);
                 return true;
 
             } else if (itemId == R.id.nav_enregistres) {
-                Intent intent = new Intent(CategoryNewsActivity.this, MainActivity.class);
+                Intent intent = new Intent(AlaUneActivity.this, MainActivity.class);
                 intent.putExtra("FRAGMENT_TO_LOAD", "favoris");
                 startActivity(intent);
                 return true;
 
             } else if (itemId == R.id.nav_top24) {
-                Intent intent = new Intent(CategoryNewsActivity.this, MainActivity.class);
+                Intent intent = new Intent(AlaUneActivity.this, MainActivity.class);
                 intent.putExtra("FRAGMENT_TO_LOAD", "top24");
                 startActivity(intent);
                 return true;
@@ -285,27 +270,18 @@ public class CategoryNewsActivity extends AppCompatActivity {
 
         menuAdapter.notifyDataSetChanged();
 
-        // Surligner la catégorie courante dans le menu
-        for (int i = 0; i < menuItemsList.size(); i++) {
-            if (menuItemsList.get(i).getTitle().equalsIgnoreCase(currentCategoryName)) {
-                menuAdapter.setSelectedPosition(i);
-                break;
-            }
-        }
+        menuAdapter.setSelectedPosition(0);
     }
 
     private void onMenuItemClick(NavigationMenuAdapter.MenuItem item, int position) {
         drawerLayout.closeDrawer(GravityCompat.START);
 
         if (item.getId().equals("alaune")) {
-            Intent intent = new Intent(CategoryNewsActivity.this, AlaUneActivity.class);
-            startActivity(intent);
-            finish();
             return;
         }
 
         if (item.getId().equals("about")) {
-            Intent intent = new Intent(CategoryNewsActivity.this, HomeTnActivity.class);
+            Intent intent = new Intent(AlaUneActivity.this, HomeTnActivity.class);
             intent.putExtra("OPEN_FRAGMENT", "about");
             intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
             startActivity(intent);
@@ -313,7 +289,7 @@ public class CategoryNewsActivity extends AppCompatActivity {
         }
 
         if (item.getId().equals("settings")) {
-            Intent intent = new Intent(CategoryNewsActivity.this, HomeTnActivity.class);
+            Intent intent = new Intent(AlaUneActivity.this, HomeTnActivity.class);
             intent.putExtra("OPEN_FRAGMENT", "settings");
             intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
             startActivity(intent);
@@ -321,11 +297,14 @@ public class CategoryNewsActivity extends AppCompatActivity {
         }
 
         // Autre catégorie → recharger sur place
-        currentCategoryName = item.getTitle();
-        currentCategoryId = item.getId();
-        toolbarTitle.setText(capitalize(currentCategoryName));
-        menuAdapter.setSelectedPosition(position);
-        loadAndDisplay(currentCategoryName, currentCategoryId);
+        String categoryName = item.getTitle();
+        String categoryId = item.getId();
+
+        Intent intent = new Intent(AlaUneActivity.this, CategoryNewsActivity.class);
+        intent.putExtra(CategoryNewsActivity.EXTRA_CATEGORY_NAME, categoryName);
+        intent.putExtra(CategoryNewsActivity.EXTRA_CATEGORY_ID, categoryId);
+        startActivity(intent);
+        finish();
     }
 
     // ════════════════════════════════════════════════════════
