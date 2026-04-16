@@ -147,14 +147,12 @@ public class AlaUneActivity extends AppCompatActivity {
                 return true;
 
             } else if (itemId == R.id.nav_enregistres) {
-                Intent intent = new Intent(AlaUneActivity.this, MainActivity.class);
-                intent.putExtra("FRAGMENT_TO_LOAD", "favoris");
+                Intent intent = new Intent(AlaUneActivity.this, FavorisActivity.class);
                 startActivity(intent);
                 return true;
 
             } else if (itemId == R.id.nav_top24) {
-                Intent intent = new Intent(AlaUneActivity.this, MainActivity.class);
-                intent.putExtra("FRAGMENT_TO_LOAD", "top24");
+                Intent intent = new Intent(AlaUneActivity.this, PlusLusActivity.class);
                 startActivity(intent);
                 return true;
             }
