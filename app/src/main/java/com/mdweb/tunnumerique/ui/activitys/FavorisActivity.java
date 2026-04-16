@@ -198,12 +198,35 @@ public class FavorisActivity extends AppCompatActivity implements View.OnClickLi
     // ────────────────────────────────────────────────
 
     private void setupBottomNav() {
+        bottomNavigationView.setSelectedItemId(R.id.nav_enregistres);
+
         bottomNavigationView.setOnItemSelectedListener(item -> {
-            // Gérer la navigation selon le menu
-            // Exemple : retourner à MainActivity sur certains items
             int itemId = item.getItemId();
-            // Adapte selon tes items de menu
-            return true;
+
+            if (itemId == R.id.nav_home) {
+                Intent intent = new Intent(FavorisActivity.this, HomeTnActivity.class);
+                intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
+                startActivity(intent);
+                finish();
+                return true;
+
+            } else if (itemId == R.id.nav_horaires) {
+                Intent intent = new Intent(FavorisActivity.this, MainActivity.class);
+                intent.putExtra("FRAGMENT_TO_LOAD", "horaires");
+                startActivity(intent);
+                return true;
+
+            } else if (itemId == R.id.nav_enregistres) {
+                // Déjà sur cette page
+                return true;
+
+            } else if (itemId == R.id.nav_top24) {
+                Intent intent = new Intent(FavorisActivity.this, PlusLusActivity.class);
+                startActivity(intent);
+                return true;
+            }
+
+            return false;
         });
     }
 
