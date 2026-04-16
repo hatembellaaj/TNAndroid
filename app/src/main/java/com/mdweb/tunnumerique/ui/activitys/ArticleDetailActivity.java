@@ -9,6 +9,8 @@ import android.widget.LinearLayout;
 import android.widget.SeekBar;
 import android.widget.TextView;
 import android.widget.Toast;
+import android.webkit.WebSettings;
+import android.webkit.WebView;
 
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -21,7 +23,6 @@ import com.mdweb.tunnumerique.tools.shared.Constant;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
-import android.text.Html;
 
 public class ArticleDetailActivity extends AppCompatActivity {
 
@@ -39,7 +40,7 @@ public class ArticleDetailActivity extends AppCompatActivity {
     private TextView articleTime;
     private TextView msgAbonne;
 
-    private TextView articleContent;
+    private WebView articleContentWebView;
 
     // ✅ Badge Premium
     private LinearLayout premiumBadgeContainer;
@@ -84,7 +85,7 @@ public class ArticleDetailActivity extends AppCompatActivity {
         articleTitle = findViewById(R.id.article_title);
         msgAbonne = findViewById(R.id.msg_abonne);
         articleTime = findViewById(R.id.article_time);
-        articleContent = findViewById(R.id.article_content);
+        articleContentWebView = findViewById(R.id.article_content_webview);
 
         // ✅ Badge Premium
         premiumBadgeContainer = findViewById(R.id.premium_badge_container);
@@ -135,7 +136,7 @@ public class ArticleDetailActivity extends AppCompatActivity {
         // =========================================
         if (currentNews.isPaywall()) {
             premiumBadgeContainer.setVisibility(View.VISIBLE);
-            articleContent.setVisibility(View.GONE);
+            articleContentWebView.setVisibility(View.GONE);
             audioPlayerContainer.setVisibility(View.GONE);
             msgAbonne.setVisibility(View.VISIBLE);
 
@@ -148,7 +149,7 @@ public class ArticleDetailActivity extends AppCompatActivity {
 
         } else {
             premiumBadgeContainer.setVisibility(View.GONE);
-            articleContent.setVisibility(View.VISIBLE);
+            articleContentWebView.setVisibility(View.VISIBLE);
             msgAbonne.setVisibility(View.GONE);
 
             if (currentNews.getTypeNews() != null && !currentNews.getTypeNews().isEmpty()) {
@@ -169,9 +170,13 @@ public class ArticleDetailActivity extends AppCompatActivity {
         // =========================================
         // Image de l'article
         // =========================================
-        if (currentNews.getImageUrlNews() != null && !currentNews.getImageUrlNews().isEmpty()) {
+        String imageUrl = currentNews.getImageUrlDetailsNews();
+        if (imageUrl == null || imageUrl.isEmpty()) {
+            imageUrl = currentNews.getImageUrlNews();
+        }
+        if (imageUrl != null && !imageUrl.isEmpty()) {
             Glide.with(this)
-                    .load(currentNews.getImageUrlNews())
+                    .load(imageUrl)
                     .placeholder(R.drawable.placeholder_image)
                     .error(R.drawable.placeholder_image)
                     .into(articleImage);
@@ -194,21 +199,41 @@ public class ArticleDetailActivity extends AppCompatActivity {
         // =========================================
         // Contenu HTML
         // =========================================
-        if (currentNews.getDescriptionNews() != null) {
-            if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.N) {
-                articleContent.setText(
-                        Html.fromHtml(currentNews.getDescriptionNews(), Html.FROM_HTML_MODE_LEGACY)
-                );
-            } else {
-                articleContent.setText(
-                        Html.fromHtml(currentNews.getDescriptionNews())
-                );
-            }
-
-            if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
-                articleContent.setJustificationMode(android.text.Layout.JUSTIFICATION_MODE_INTER_WORD);
-            }
+        configureContentWebView();
+        String contentHtml = currentNews.getContenuNews();
+        if (contentHtml == null || contentHtml.isEmpty()) {
+            contentHtml = currentNews.getDescriptionNews();
         }
+        if (contentHtml != null && !contentHtml.isEmpty()) {
+            articleContentWebView.loadDataWithBaseURL(
+                    "https://www.tunisienumerique.com",
+                    wrapArticleHtml(contentHtml),
+                    "text/html",
+                    "UTF-8",
+                    null
+            );
+        }
+    }
+
+    private void configureContentWebView() {
+        WebSettings settings = articleContentWebView.getSettings();
+        settings.setJavaScriptEnabled(true);
+        settings.setDomStorageEnabled(true);
+        settings.setLoadWithOverviewMode(true);
+        settings.setUseWideViewPort(true);
+        articleContentWebView.setVerticalScrollBarEnabled(false);
+        articleContentWebView.setHorizontalScrollBarEnabled(false);
+    }
+
+    private String wrapArticleHtml(String bodyHtml) {
+        return "<html><head><meta name='viewport' content='width=device-width, initial-scale=1.0' />"
+                + "<style>"
+                + "body{margin:0;padding:0;color:#212121;font-size:18px;line-height:1.6;font-family:sans-serif;}"
+                + "img,iframe,video{max-width:100%;height:auto;}"
+                + "table{max-width:100%!important;}"
+                + "</style></head><body>"
+                + bodyHtml
+                + "</body></html>";
     }
 
     private String formatPublicationTime(String dateStr) {

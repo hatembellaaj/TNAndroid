@@ -229,18 +229,14 @@
             </LinearLayout>
 
             <!-- ===== CONTENU ARTICLE ===== -->
-            <TextView
-                android:id="@+id/article_content"
+            <WebView
+                android:id="@+id/article_content_webview"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:textSize="15sp"
-                android:textColor="#FF212121"
-                android:lineSpacingExtra="6dp"
                 android:layout_marginStart="16dp"
                 android:layout_marginEnd="16dp"
                 android:visibility="gone"
-                android:layout_marginBottom="24dp"
-                android:fontFamily="sans-serif-bold" />
+                android:layout_marginBottom="24dp" />
             <TextView
                 android:id="@+id/msg_abonne"
                 android:layout_width="match_parent"
