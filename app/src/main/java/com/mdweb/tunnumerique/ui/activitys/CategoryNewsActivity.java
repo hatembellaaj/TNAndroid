@@ -367,9 +367,7 @@ public class CategoryNewsActivity extends AppCompatActivity {
             String[] tokens = type.split(",");
             for (String token : tokens) {
                 String normalizedToken = normalizeCategoryToken(token);
-                if (normalizedToken.equals(normalizedCategory)
-                        || normalizedToken.contains(normalizedCategory)
-                        || normalizedCategory.contains(normalizedToken)) {
+                if (categoriesMatch(normalizedCategory, normalizedToken)) {
                     filtered.add(news);
                     break;
                 }
@@ -381,11 +379,49 @@ public class CategoryNewsActivity extends AppCompatActivity {
 
     private String normalizeCategoryToken(String value) {
         if (value == null) return "";
-        String normalized = Normalizer.normalize(value, Normalizer.Form.NFD)
+        String normalized = decodeUnicodeEscapes(value);
+        normalized = Normalizer.normalize(normalized, Normalizer.Form.NFD)
                 .replaceAll("\\p{M}+", "")
                 .toLowerCase(Locale.ROOT)
                 .trim();
-        return normalized.replaceAll("[^\\p{Alnum}]+", "");
+        return normalized.replaceAll("[^\\p{L}\\p{N}]+", "");
+    }
+
+    private boolean categoriesMatch(String normalizedCategory, String normalizedToken) {
+        if (normalizedCategory == null || normalizedToken == null) return false;
+        if (normalizedCategory.isEmpty() || normalizedToken.isEmpty()) return false;
+
+        if (normalizedToken.equals(normalizedCategory)) {
+            return true;
+        }
+
+        if (normalizedCategory.length() < 3 || normalizedToken.length() < 3) {
+            return false;
+        }
+
+        return normalizedToken.contains(normalizedCategory)
+                || normalizedCategory.contains(normalizedToken);
+    }
+
+    private String decodeUnicodeEscapes(String value) {
+        StringBuilder result = new StringBuilder(value.length());
+
+        for (int i = 0; i < value.length(); i++) {
+            char current = value.charAt(i);
+            if (current == '\\' && i + 5 < value.length() && value.charAt(i + 1) == 'u') {
+                String hex = value.substring(i + 2, i + 6);
+                try {
+                    result.append((char) Integer.parseInt(hex, 16));
+                    i += 5;
+                    continue;
+                } catch (NumberFormatException ignored) {
+                    // Garde la chaîne d'origine si la séquence n'est pas valide.
+                }
+            }
+            result.append(current);
+        }
+
+        return result.toString();
     }
 
     // ════════════════════════════════════════════════════════
