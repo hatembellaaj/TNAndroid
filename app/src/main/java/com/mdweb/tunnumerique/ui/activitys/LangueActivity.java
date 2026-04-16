@@ -5,16 +5,15 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.Toast;
-import androidx.appcompat.app.AppCompatActivity;
 
 import com.mdweb.tunnumerique.R;
+import com.mdweb.tunnumerique.tools.LocaleHelper;
 import com.mdweb.tunnumerique.tools.SessionManager;
 import com.mdweb.tunnumerique.tools.shared.Constant;
 
-public class LangueActivity extends AppCompatActivity {
+public class LangueActivity extends BaseActivity {
 
     // Déclaration des vues
     private RelativeLayout optionArabic, optionEnglish, optionFrench;    private View radioArabic, radioEnglish;
@@ -127,9 +126,8 @@ public class LangueActivity extends AppCompatActivity {
      */
     private void confirmSelection() {
         // Sauvegarder la langue sélectionnée dans SessionManager
-       SessionManager.getInstance().setCurrentLng(this, selectedLanguage);
-
-        String lng = SessionManager.getInstance().getCurrentLang(this);
+        SessionManager.getInstance().setCurrentLng(this, selectedLanguage);
+        LocaleHelper.setLocale(this, selectedLanguage);
 
         // Afficher un message de confirmation
         String languageName = getLanguageName(selectedLanguage);
@@ -138,6 +136,7 @@ public class LangueActivity extends AppCompatActivity {
 
         // Naviguer vers l'activité principale
         Intent intent = new Intent(LangueActivity.this, HomeTnActivity.class);
+        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
         startActivity(intent);
         finish();
     }
@@ -147,6 +146,9 @@ public class LangueActivity extends AppCompatActivity {
      */
     private void loadSavedLanguage() {
         String savedLanguage = SessionManager.getInstance().getCurrentLang(this);
+        if (savedLanguage == null || savedLanguage.isEmpty()) {
+            savedLanguage = Constant.FR;
+        }
         selectLanguage(savedLanguage);
     }
 
