@@ -60,11 +60,7 @@ public class DataParser {
                 if (_jsonObject.has("Dark_Mode"))
                     news.setDark_Mode(_jsonObject.getString("Dark_Mode"));
                 news.setNews_commentaire_android("");
-                if (_jsonObject.has("News_list_category")) {
-                    news.setTypeNews(_jsonObject.getString("News_list_category"));
-                } else {
-                    news.setTypeNews("");
-                }
+                news.setTypeNews(extractNewsCategory(_jsonObject));
                 news.setAuthorNameNews(_jsonObject.getString("News_Auteur_Nom"));
                 news.setArtOrPubOrVid(Constant.isArticle);
                 news.setKeyWordsNews(_jsonObject.getString("News_Liste_Mot_Cle"));
@@ -215,7 +211,7 @@ public class DataParser {
                     if (_jsonObject.has("News_commentaire_android")) {
                         news.setNews_commentaire_android(_jsonObject.optString("News_commentaire_android", ""));
                     }
-                    news.setTypeNews(_jsonObject.optString("News_list_category", ""));
+                    news.setTypeNews(extractNewsCategory(_jsonObject));
                     news.setAuthorNameNews(_jsonObject.optString("News_Auteur_Nom", ""));
                     news.setArtOrPubOrVid(Constant.isArticle);
                     news.setKeyWordsNews(_jsonObject.optString("News_Liste_Mot_Cle", ""));
@@ -273,7 +269,7 @@ public class DataParser {
                     news.setDark_Mode(_jsonObject.getString("Dark_Mode"));
                 if (_jsonObject.has("News_commentaire_android"))
                     news.setNews_commentaire_android(_jsonObject.getString("News_commentaire_android"));
-                news.setTypeNews(_jsonObject.getString("News_list_category"));
+                news.setTypeNews(extractNewsCategory(_jsonObject));
                 news.setAuthorNameNews(_jsonObject.getString("authorNameNews"));
 
                 // ✅ is_paywall
@@ -326,11 +322,7 @@ public class DataParser {
                     news.setDark_Mode(_jsonObject.getString("Dark_Mode"));
                 if (_jsonObject.has("News_commentaire_android"))
                     news.setNews_commentaire_android(_jsonObject.getString("News_commentaire_android"));
-                if (_jsonObject.has("News_list_category")) {
-                    news.setTypeNews(_jsonObject.getString("News_list_category"));
-                } else {
-                    news.setTypeNews("");
-                }
+                news.setTypeNews(extractNewsCategory(_jsonObject));
                 news.setAuthorNameNews(_jsonObject.getString("News_Auteur_Nom"));
                 news.setArtOrPubOrVid(Constant.isArticle);
                 news.setKeyWordsNews(_jsonObject.getString("News_Liste_Mot_Cle"));
@@ -475,5 +467,48 @@ public class DataParser {
             Log.d("countries JsonArray", e.getMessage() + "");
         }
         return countriesArrayList;
+    }
+
+    private String extractNewsCategory(JSONObject jsonObject) {
+        String[] keys = new String[]{
+                "News_list_category",
+                "News_Categorie",
+                "News_category",
+                "categorie",
+                "category",
+                "rubrique",
+                "category_name"
+        };
+
+        for (String key : keys) {
+            String value = jsonObject.optString(key, "");
+            value = decodeUnicodeEscapes(value);
+            value = Html.fromHtml(value).toString().trim();
+            if (!value.isEmpty()) {
+                return value;
+            }
+        }
+        return "";
+    }
+
+    private String decodeUnicodeEscapes(String value) {
+        if (value == null || value.isEmpty()) return "";
+
+        StringBuilder result = new StringBuilder(value.length());
+        for (int i = 0; i < value.length(); i++) {
+            char current = value.charAt(i);
+            if (current == '\\' && i + 5 < value.length() && value.charAt(i + 1) == 'u') {
+                String hex = value.substring(i + 2, i + 6);
+                try {
+                    result.append((char) Integer.parseInt(hex, 16));
+                    i += 5;
+                    continue;
+                } catch (NumberFormatException ignored) {
+                    // Garde le texte d'origine si la séquence n'est pas valide.
+                }
+            }
+            result.append(current);
+        }
+        return result.toString();
     }
 }
