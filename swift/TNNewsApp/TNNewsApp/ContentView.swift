@@ -578,7 +578,7 @@ struct HomeNewsFeedView: View {
                     }
                 }
 
-                NewsSectionHeader(title: isHomeMode ? "NEWS" : (categoryFilter ?? "NEWS").uppercased())
+                NewsSectionHeader(title: isHomeMode ? "ACTUALITÉS" : (categoryFilter ?? "ACTUALITÉS").uppercased())
                     .padding(.top, 8)
 
                 if displayedNews.isEmpty {
