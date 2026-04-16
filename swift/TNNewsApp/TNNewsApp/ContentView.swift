@@ -374,18 +374,52 @@ struct LegacySideMenuView: View {
 
 struct TNCompactLogo: View {
     var body: some View {
-        HStack(spacing: 5) {
-            Text("T")
-                .font(.system(size: 22, weight: .heavy))
-                .foregroundStyle(.white)
-                .frame(width: 36, height: 36)
-                .background(Color(androidGreen))
-            Text("N")
-                .font(.system(size: 22, weight: .heavy))
-                .foregroundStyle(.white)
-                .frame(width: 36, height: 36)
-                .background(Color(androidGreen))
+        ZStack {
+            RoundedRectangle(cornerRadius: 12, style: .continuous)
+                .fill(Color(androidGreen))
+                .frame(width: 84, height: 52)
+
+            HStack(spacing: 5) {
+                logoLetter("T")
+                logoLetter("N")
+            }
         }
+    }
+
+    private func logoLetter(_ letter: String) -> some View {
+        Text(letter)
+            .font(.system(size: 24, weight: .heavy))
+            .foregroundStyle(Color(androidGreen))
+            .frame(width: 30, height: 32)
+            .background(
+                RoundedRectangle(cornerRadius: 5, style: .continuous)
+                    .fill(Color.white)
+            )
+            .shadow(color: .black.opacity(0.08), radius: 1, x: 0, y: 1)
+    }
+}
+
+struct TNLauncherLogoBadge: View {
+    var body: some View {
+        ZStack {
+            RoundedRectangle(cornerRadius: 22, style: .continuous)
+                .fill(Color(androidGreen))
+                .frame(width: 124, height: 124)
+
+            HStack(spacing: 8) {
+                launcherLetter("T")
+                launcherLetter("N")
+            }
+        }
+    }
+
+    private func launcherLetter(_ letter: String) -> some View {
+        Text(letter)
+            .font(.system(size: 46, weight: .black))
+            .foregroundStyle(Color(androidGreen))
+            .frame(width: 42, height: 50)
+            .background(.white)
+            .clipShape(RoundedRectangle(cornerRadius: 7, style: .continuous))
     }
 }
 
@@ -619,7 +653,7 @@ struct AndroidStyleSplashView: View {
                 .offset(x: -120, y: -260)
 
             VStack(spacing: 16) {
-                TNBrandWordmarkView()
+                TNLauncherLogoBadge()
 
                 Text("Chargement de données...")
                     .font(.footnote)
