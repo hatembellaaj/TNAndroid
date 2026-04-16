@@ -30,8 +30,10 @@ import com.mdweb.tunnumerique.ui.adapters.NavigationMenuAdapter;
 
 import java.text.Normalizer;
 import java.util.ArrayList;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Locale;
+import java.util.Set;
 
 public class CategoryNewsActivity extends AppCompatActivity {
 
@@ -61,9 +63,11 @@ public class CategoryNewsActivity extends AppCompatActivity {
     private RecyclerView newsRecyclerView;
     private CategoryNewsAdapter newsAdapter;
     private List<News> allNewsList = new ArrayList<>();
+    private final Set<String> availableNormalizedCategories = new LinkedHashSet<>();
 
     // Catégorie courante
     private String currentCategoryName = "";
+    private String currentCategoryId = "";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -77,11 +81,14 @@ public class CategoryNewsActivity extends AppCompatActivity {
 
         // Intent extras
         String categoryName = getIntent().getStringExtra(EXTRA_CATEGORY_NAME);
+        String categoryId = getIntent().getStringExtra(EXTRA_CATEGORY_ID);
         if (categoryName == null) categoryName = "";
+        if (categoryId == null) categoryId = "";
         currentCategoryName = categoryName;
+        currentCategoryId = categoryId;
 
         toolbarTitle.setText(capitalize(categoryName));
-        loadAndDisplay(categoryName);
+        loadAndDisplay(categoryName, categoryId);
     }
 
     // ════════════════════════════════════════════════════════
@@ -262,9 +269,13 @@ public class CategoryNewsActivity extends AppCompatActivity {
         menuItemsList.add(new NavigationMenuAdapter.MenuItem("A la une", "alaune", true));
 
         for (com.mdweb.tunnumerique.data.model.Categories category : categories) {
+            String categoryId = category.getTitleUrlCategories();
+            if (categoryId == null || categoryId.trim().isEmpty()) {
+                categoryId = category.getTitleCategories();
+            }
             menuItemsList.add(new NavigationMenuAdapter.MenuItem(
                     category.getTitleCategories(),
-                    category.getTitleCategories()
+                    categoryId
             ));
         }
 
@@ -312,16 +323,17 @@ public class CategoryNewsActivity extends AppCompatActivity {
 
         // Autre catégorie → recharger sur place
         currentCategoryName = item.getTitle();
+        currentCategoryId = item.getId();
         toolbarTitle.setText(capitalize(currentCategoryName));
         menuAdapter.setSelectedPosition(position);
-        loadAndDisplay(currentCategoryName);
+        loadAndDisplay(currentCategoryName, currentCategoryId);
     }
 
     // ════════════════════════════════════════════════════════
     // Chargement des articles
     // ════════════════════════════════════════════════════════
 
-    private void loadAndDisplay(String categoryName) {
+    private void loadAndDisplay(String categoryName, String categoryId) {
         allNewsList.clear();
         String currentLng = SessionManager.getInstance().getCurrentLang(this);
 
@@ -341,7 +353,8 @@ public class CategoryNewsActivity extends AppCompatActivity {
             Log.e(TAG, "Erreur chargement : " + e.getMessage());
         }
 
-        List<News> filtered = filterByCategory(categoryName);
+        buildAvailableCategoryIndex();
+        List<News> filtered = filterByCategory(categoryName, categoryId);
 
         if (filtered.isEmpty()) {
             Toast.makeText(this, "Aucun article pour " + categoryName, Toast.LENGTH_SHORT).show();
@@ -354,22 +367,25 @@ public class CategoryNewsActivity extends AppCompatActivity {
     // Filtre
     // ════════════════════════════════════════════════════════
 
-    private List<News> filterByCategory(String categoryName) {
+    private List<News> filterByCategory(String categoryName, String categoryId) {
         List<News> filtered = new ArrayList<>();
-        if (categoryName == null || categoryName.isEmpty()) return allNewsList;
+        if ((categoryName == null || categoryName.isEmpty())
+                && (categoryId == null || categoryId.isEmpty())) {
+            return allNewsList;
+        }
 
-        String normalizedCategory = normalizeCategoryToken(categoryName);
+        List<String> normalizedCandidates = buildCategoryCandidates(categoryName, categoryId);
+        Log.d(TAG, "Filter candidates = " + normalizedCandidates);
+        Log.d(TAG, "Available categories = " + availableNormalizedCategories);
 
         for (News news : allNewsList) {
             String type = news.getTypeNews();
             if (type == null || type.isEmpty()) continue;
 
-            String[] tokens = type.split(",");
+            String[] tokens = type.split("[,;|،]");
             for (String token : tokens) {
                 String normalizedToken = normalizeCategoryToken(token);
-                if (normalizedToken.equals(normalizedCategory)
-                        || normalizedToken.contains(normalizedCategory)
-                        || normalizedCategory.contains(normalizedToken)) {
+                if (matchesAnyCandidate(normalizedCandidates, normalizedToken)) {
                     filtered.add(news);
                     break;
                 }
@@ -381,11 +397,111 @@ public class CategoryNewsActivity extends AppCompatActivity {
 
     private String normalizeCategoryToken(String value) {
         if (value == null) return "";
-        String normalized = Normalizer.normalize(value, Normalizer.Form.NFD)
+        String normalized = decodeUnicodeEscapes(value);
+        normalized = Normalizer.normalize(normalized, Normalizer.Form.NFD)
                 .replaceAll("\\p{M}+", "")
                 .toLowerCase(Locale.ROOT)
                 .trim();
-        return normalized.replaceAll("[^\\p{Alnum}]+", "");
+        return normalized.replaceAll("[^\\p{L}\\p{N}]+", "");
+    }
+
+    private boolean categoriesMatch(String normalizedCategory, String normalizedToken) {
+        if (normalizedCategory == null || normalizedToken == null) return false;
+        if (normalizedCategory.isEmpty() || normalizedToken.isEmpty()) return false;
+
+        if (normalizedToken.equals(normalizedCategory)) {
+            return true;
+        }
+
+        if (normalizedCategory.length() < 3 || normalizedToken.length() < 3) {
+            return false;
+        }
+
+        return normalizedToken.contains(normalizedCategory)
+                || normalizedCategory.contains(normalizedToken);
+    }
+
+    private boolean matchesAnyCandidate(List<String> normalizedCandidates, String normalizedToken) {
+        if (normalizedToken == null || normalizedToken.isEmpty()) return false;
+        for (String candidate : normalizedCandidates) {
+            if (categoriesMatch(candidate, normalizedToken)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private List<String> buildCategoryCandidates(String categoryName, String categoryId) {
+        LinkedHashSet<String> candidates = new LinkedHashSet<>();
+
+        addCandidate(candidates, categoryName);
+        addCandidate(candidates, categoryId);
+
+        if (categoryId != null) {
+            String[] idParts = categoryId.split("[-_/]");
+            for (String part : idParts) {
+                addCandidate(candidates, part);
+            }
+        }
+
+        // Correspondances FR <-> AR les plus courantes.
+        if (containsCandidate(candidates, "actualites")) {
+            addCandidate(candidates, "اخبار");
+            addCandidate(candidates, "الاخبار");
+        } else if (containsCandidate(candidates, "اخبار") || containsCandidate(candidates, "الاخبار")) {
+            addCandidate(candidates, "actualites");
+            addCandidate(candidates, "actualite");
+        }
+
+        return new ArrayList<>(candidates);
+    }
+
+    private boolean containsCandidate(Set<String> candidates, String value) {
+        return candidates.contains(normalizeCategoryToken(value));
+    }
+
+    private void addCandidate(Set<String> candidates, String rawValue) {
+        String normalized = normalizeCategoryToken(rawValue);
+        if (!normalized.isEmpty()) {
+            candidates.add(normalized);
+        }
+    }
+
+    private void buildAvailableCategoryIndex() {
+        availableNormalizedCategories.clear();
+        for (News news : allNewsList) {
+            String type = news.getTypeNews();
+            if (type == null || type.isEmpty()) continue;
+
+            String[] tokens = type.split("[,;|،]");
+            for (String token : tokens) {
+                String normalized = normalizeCategoryToken(token);
+                if (!normalized.isEmpty()) {
+                    availableNormalizedCategories.add(normalized);
+                }
+            }
+        }
+    }
+
+    private String decodeUnicodeEscapes(String value) {
+        StringBuilder result = new StringBuilder(value.length());
+
+        for (int i = 0; i < value.length(); i++) {
+            char current = value.charAt(i);
+            if (current == '\\' && i + 5 < value.length() && value.charAt(i + 1) == 'u') {
+                String hex = value.substring(i + 2, i + 6);
+                try {
+                    result.append((char) Integer.parseInt(hex, 16));
+                    i += 5;
+                    continue;
+                } catch (NumberFormatException ignored) {
+                    // Garde la chaîne d'origine si la séquence n'est pas valide.
+                }
+            }
+            result.append(current);
+        }
+
+        return result.toString();
     }
 
     // ════════════════════════════════════════════════════════

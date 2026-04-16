@@ -493,11 +493,27 @@ struct HomeNewsFeedView: View {
         guard let filter = categoryFilter?.trimmingCharacters(in: .whitespacesAndNewlines),
               !filter.isEmpty else { return newsItems }
 
-        let normalizedFilter = filter.lowercased()
+        let normalizedFilter = normalizedMatchToken(filter)
         return newsItems.filter { item in
-            item.category.lowercased().contains(normalizedFilter) ||
-            item.title.lowercased().contains(normalizedFilter)
+            let tokens = item.category
+                .split(whereSeparator: { [",", ";", "|", "،"].contains($0) })
+                .map { normalizedMatchToken(String($0)) }
+                .filter { !$0.isEmpty }
+
+            return tokens.contains { token in
+                token == normalizedFilter ||
+                token.contains(normalizedFilter) ||
+                normalizedFilter.contains(token)
+            }
         }
+    }
+
+    private func normalizedMatchToken(_ raw: String) -> String {
+        let cleaned = raw.folding(options: [.diacriticInsensitive, .caseInsensitive], locale: .current)
+        return cleaned
+            .replacingOccurrences(of: "[^\\p{L}\\p{N}]+", with: "", options: .regularExpression)
+            .lowercased()
+            .trimmingCharacters(in: .whitespacesAndNewlines)
     }
 
     private var topStories: [BootstrapViewModel.NewsRow] {
@@ -831,7 +847,7 @@ final class BootstrapViewModel: ObservableObject {
                     "News_Description", "description", "resume", "summary"
                 ]) ?? ""
                 let rawCategory = pickString(row, keys: [
-                    "News_Categorie", "categorie", "category", "rubrique", "category_name"
+                    "News_list_category", "News_Categorie", "categorie", "category", "rubrique", "category_name"
                 ]) ?? ""
                 let rawContent = pickString(row, keys: [
                     "News_Contenu", "content", "contenu", "News_commentaire_android"
@@ -944,7 +960,7 @@ final class BootstrapViewModel: ObservableObject {
     }
 
     private func normalizeDisplayText(_ text: String) -> String {
-        text
+        decodeUnicodeEscapes(text)
             .replacingOccurrences(of: "<[^>]+>", with: " ", options: .regularExpression)
             .replacingOccurrences(of: "&quot;", with: "\"")
             .replacingOccurrences(of: "&amp;", with: "&")
@@ -952,6 +968,35 @@ final class BootstrapViewModel: ObservableObject {
             .replacingOccurrences(of: "&nbsp;", with: " ")
             .replacingOccurrences(of: "\\s+", with: " ", options: .regularExpression)
             .trimmingCharacters(in: .whitespacesAndNewlines)
+    }
+
+    private func decodeUnicodeEscapes(_ text: String) -> String {
+        var output = ""
+        var index = text.startIndex
+
+        while index < text.endIndex {
+            if text[index] == "\\",
+               text.index(index, offsetBy: 1, limitedBy: text.endIndex) != nil {
+                let uIndex = text.index(after: index)
+                if uIndex < text.endIndex, text[uIndex] == "u" {
+                    let start = text.index(uIndex, offsetBy: 1)
+                    let end = text.index(start, offsetBy: 4, limitedBy: text.endIndex) ?? text.endIndex
+                    if end <= text.endIndex, text.distance(from: start, to: end) == 4 {
+                        let hex = String(text[start..<end])
+                        if let value = UInt32(hex, radix: 16), let scalar = UnicodeScalar(value) {
+                            output.unicodeScalars.append(scalar)
+                            index = end
+                            continue
+                        }
+                    }
+                }
+            }
+
+            output.append(text[index])
+            index = text.index(after: index)
+        }
+
+        return output
     }
 }
 
