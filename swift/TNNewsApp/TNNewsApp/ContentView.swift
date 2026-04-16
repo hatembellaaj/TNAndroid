@@ -1,4 +1,5 @@
 import SwiftUI
+import UIKit
 
 struct ContentView: View {
     @StateObject private var vm = BootstrapViewModel()
@@ -9,6 +10,7 @@ struct ContentView: View {
     @State private var selectedDestination: MenuDestination = .news
     @State private var selectedCategoryFilter: String? = nil
     @State private var selectedTab = 0
+    @State private var favoriteItems: [BootstrapViewModel.NewsRow] = TNFavoriteArticlesStorage.load()
 
     var body: some View {
         Group {
@@ -25,7 +27,8 @@ struct ContentView: View {
                             } else {
                                 HomeNewsFeedView(
                                     newsItems: vm.newsItems,
-                                    categoryFilter: selectedCategoryFilter
+                                    categoryFilter: selectedCategoryFilter,
+                                    favoriteItems: $favoriteItems
                                 )
                             }
                         }
@@ -120,9 +123,7 @@ struct ContentView: View {
                     .tag(1)
 
                     NavigationStack {
-                        Text("Favoris (intégration complète après target membership)")
-                            .padding()
-                            .navigationTitle("Favoris")
+                        FavoritesNewsFeedView(favoriteItems: $favoriteItems)
                     }
                     .tabItem { Label("Favoris", systemImage: "bookmark") }
                     .tag(2)
@@ -152,6 +153,9 @@ struct ContentView: View {
                     selectedCategoryFilter = nil
                     selectedDestination = .news
                     Task { await vm.loadAll(language: selectedLanguage, destination: .news) }
+                }
+                .onChange(of: favoriteItems) { _, newValue in
+                    TNFavoriteArticlesStorage.save(newValue)
                 }
             }
         }
@@ -499,7 +503,10 @@ struct LanguageSelectionSheet: View {
 struct HomeNewsFeedView: View {
     let newsItems: [BootstrapViewModel.NewsRow]
     let categoryFilter: String?
+    @Binding var favoriteItems: [BootstrapViewModel.NewsRow]
     @State private var currentTopStoryIndex = 0
+    @State private var selectedItem: BootstrapViewModel.NewsRow?
+    private var favoriteIDs: Set<String> { Set(favoriteItems.map(\.id)) }
 
     private var displayedNews: [BootstrapViewModel.NewsRow] {
         if isHomeMode {
@@ -575,17 +582,25 @@ struct HomeNewsFeedView: View {
 
                     TabView(selection: $currentTopStoryIndex) {
                         ForEach(Array(topStories.enumerated()), id: \.element.id) { index, item in
-                            NavigationLink {
-                                NewsHTMLDetailView(item: item)
-                            } label: {
+                            VStack(spacing: 8) {
                                 TopHeadlineCard(item: item)
+                                    .contentShape(Rectangle())
+                                    .onTapGesture { selectedItem = item }
+                                    .zIndex(0)
+
+                                TNNewsCardActionsRow(
+                                    isFavorite: favoriteIDs.contains(item.id),
+                                    onToggleFavorite: { toggleFavorite(item) },
+                                    onShare: { share(item) }
+                                )
+                                .padding(.horizontal, 12)
+                                .zIndex(1)
                             }
-                            .buttonStyle(.plain)
                             .padding(.horizontal, 4)
                             .tag(index)
                         }
                     }
-                    .frame(height: 265)
+                    .frame(height: 315)
                     .tabViewStyle(.page(indexDisplayMode: .never))
 
                     if topStories.count > 1 {
@@ -613,12 +628,20 @@ struct HomeNewsFeedView: View {
                 } else {
                     VStack(spacing: 12) {
                         ForEach(displayedNews) { item in
-                            NavigationLink {
-                                NewsHTMLDetailView(item: item)
-                            } label: {
+                            VStack(spacing: 8) {
                                 NewsFeedRowCard(item: item)
+                                    .contentShape(Rectangle())
+                                    .onTapGesture { selectedItem = item }
+                                    .zIndex(0)
+
+                                TNNewsCardActionsRow(
+                                    isFavorite: favoriteIDs.contains(item.id),
+                                    onToggleFavorite: { toggleFavorite(item) },
+                                    onShare: { share(item) }
+                                )
+                                .padding(.horizontal, 12)
+                                .zIndex(1)
                             }
-                            .buttonStyle(.plain)
                         }
                     }
                 }
@@ -627,6 +650,133 @@ struct HomeNewsFeedView: View {
             .padding(.vertical, 8)
         }
         .background(Color(newsScreenBackground))
+        .navigationDestination(item: $selectedItem) { item in
+            NewsHTMLDetailView(item: item)
+        }
+    }
+
+    private func toggleFavorite(_ item: BootstrapViewModel.NewsRow) {
+        if let idx = favoriteItems.firstIndex(where: { $0.id == item.id }) {
+            favoriteItems.remove(at: idx)
+        } else {
+            favoriteItems.insert(item, at: 0)
+        }
+    }
+
+    private func share(_ item: BootstrapViewModel.NewsRow) {
+        let text = [item.title, item.shareURL].filter { !$0.isEmpty }.joined(separator: "\n")
+        guard let scene = UIApplication.shared.connectedScenes.first as? UIWindowScene,
+              let root = scene.windows.first?.rootViewController else { return }
+        let vc = UIActivityViewController(activityItems: [text], applicationActivities: nil)
+        root.present(vc, animated: true)
+    }
+}
+
+struct FavoritesNewsFeedView: View {
+    @Binding var favoriteItems: [BootstrapViewModel.NewsRow]
+    @State private var selectedItem: BootstrapViewModel.NewsRow?
+
+    var body: some View {
+        ScrollView {
+            VStack(alignment: .leading, spacing: 14) {
+                NewsSectionHeader(title: "FAVORIS")
+                    .padding(.top, 8)
+
+                if favoriteItems.isEmpty {
+                    Text("Aucun article en favoris pour le moment.")
+                        .font(.system(size: 15, weight: .medium))
+                        .foregroundStyle(.secondary)
+                        .padding(.horizontal, 8)
+                        .padding(.vertical, 10)
+                } else {
+                    VStack(spacing: 12) {
+                        ForEach(favoriteItems) { item in
+                            VStack(spacing: 8) {
+                                NewsFeedRowCard(item: item)
+                                    .contentShape(Rectangle())
+                                    .onTapGesture { selectedItem = item }
+                                    .zIndex(0)
+
+                                TNNewsCardActionsRow(
+                                    isFavorite: true,
+                                    onToggleFavorite: { removeFavorite(item.id) },
+                                    onShare: { share(item) }
+                                )
+                                .padding(.horizontal, 12)
+                                .zIndex(1)
+                            }
+                        }
+                    }
+                }
+            }
+            .padding(.horizontal, 12)
+            .padding(.vertical, 8)
+        }
+        .background(Color(newsScreenBackground))
+        .navigationDestination(item: $selectedItem) { item in
+            NewsHTMLDetailView(item: item)
+        }
+    }
+
+    private func removeFavorite(_ id: String) {
+        favoriteItems.removeAll { $0.id == id }
+    }
+
+    private func share(_ item: BootstrapViewModel.NewsRow) {
+        let text = [item.title, item.shareURL].filter { !$0.isEmpty }.joined(separator: "\n")
+        guard let scene = UIApplication.shared.connectedScenes.first as? UIWindowScene,
+              let root = scene.windows.first?.rootViewController else { return }
+        let vc = UIActivityViewController(activityItems: [text], applicationActivities: nil)
+        root.present(vc, animated: true)
+    }
+}
+
+private enum TNFavoriteArticlesStorage {
+    private static let key = "tn_ios_favorite_articles_v1"
+
+    static func load() -> [BootstrapViewModel.NewsRow] {
+        guard let data = UserDefaults.standard.data(forKey: key),
+              let decoded = try? JSONDecoder().decode([BootstrapViewModel.NewsRow].self, from: data) else {
+            return []
+        }
+        return decoded
+    }
+
+    static func save(_ items: [BootstrapViewModel.NewsRow]) {
+        guard let data = try? JSONEncoder().encode(items) else { return }
+        UserDefaults.standard.set(data, forKey: key)
+    }
+}
+
+private struct TNNewsCardActionsRow: View {
+    let isFavorite: Bool
+    let onToggleFavorite: () -> Void
+    let onShare: () -> Void
+
+    var body: some View {
+        HStack {
+            Spacer()
+
+            Button(action: onToggleFavorite) {
+                Image(systemName: isFavorite ? "bookmark.fill" : "bookmark")
+                    .font(.system(size: 22, weight: .semibold))
+                    .foregroundStyle(isFavorite ? Color(androidGreen) : .gray)
+            }
+            .buttonStyle(.plain)
+            .contentShape(Rectangle())
+            .padding(4)
+
+            Button(action: onShare) {
+                Image(systemName: "square.and.arrow.up")
+                    .font(.system(size: 22, weight: .semibold))
+                    .foregroundStyle(.gray)
+            }
+            .buttonStyle(.plain)
+            .contentShape(Rectangle())
+            .padding(4)
+            .padding(.leading, 14)
+        }
+        .allowsHitTesting(true)
     }
 }
 
@@ -811,7 +961,7 @@ private extension Color {
 
 @MainActor
 final class BootstrapViewModel: ObservableObject {
-    struct NewsRow: Identifiable {
+    struct NewsRow: Identifiable, Codable, Hashable {
         let id: String
         let title: String
         let category: String

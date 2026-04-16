@@ -116,14 +116,14 @@ public class NewsListAdapter extends RecyclerView.Adapter<NewsListAdapter.NewsVi
                     android.util.Log.d("NewsListAdapter", "💾 Article EN favoris: " + news.getIdNews());
                 } else {
                     // Pas en favoris → Icône vide
-                    holder.bookmark.setImageResource(R.drawable.icon_save_r);
+                    holder.bookmark.setImageResource(R.drawable.ic_bookmark_outline);
                     android.util.Log.d("NewsListAdapter", "💾 Article PAS en favoris: " + news.getIdNews());
                 }
 
             } catch (Exception e) {
                 android.util.Log.e("NewsListAdapter", "❌ Erreur vérification favoris: " + e.getMessage());
                 // Par défaut, icône vide
-                holder.bookmark.setImageResource(R.drawable.icon_save_r);
+                holder.bookmark.setImageResource(R.drawable.ic_bookmark_outline);
             }
 
             // ✅ CLIC SUR BOOKMARK → Callback vers l'Activity
@@ -145,7 +145,7 @@ public class NewsListAdapter extends RecyclerView.Adapter<NewsListAdapter.NewsVi
                             holder.bookmark.setImageResource(R.drawable.ic_bookmark_filled);
                         } else {
                             // N'est pas en favoris → Icône vide
-                            holder.bookmark.setImageResource(R.drawable.icon_save_r);
+                            holder.bookmark.setImageResource(R.drawable.ic_bookmark_outline);
                         }
                     } catch (Exception e) {
                         android.util.Log.e("NewsListAdapter", "❌ Erreur mise à jour icône: " + e.getMessage());
