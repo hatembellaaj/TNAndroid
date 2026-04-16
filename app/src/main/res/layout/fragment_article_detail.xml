@@ -1,7 +1,7 @@
-<FrameLayout android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
 
     <ScrollView
         android:id="@+id/scroll_view"
@@ -10,62 +10,101 @@
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:orientation="vertical"
+            android:layout_height="wrap_content"
             android:descendantFocusability="beforeDescendants"
-            android:focusableInTouchMode="true"
             android:focusable="true"
-            >
+            android:focusableInTouchMode="true"
+            android:orientation="vertical"
+            android:padding="12dp">
 
-            <ImageView
-                android:id="@+id/image_details"
+            <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="185dp"
-                android:fitsSystemWindows="true"
-                android:scaleType="centerCrop"
-                />
+                android:layout_height="wrap_content"
+                android:background="@drawable/article_detail_card_bg"
+                android:orientation="vertical"
+                android:paddingBottom="12dp">
 
-            <com.huawei.hms.ads.banner.BannerView
-                xmlns:hwads="http://schemas.android.com/apk/res-auto"
-                android:id="@+id/hw_banner_view"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                hwads:adId="l4yj9fiyhp"
-                android:visibility="gone"
-                hwads:bannerSize="BANNER_SIZE_320_100" >
-            </com.huawei.hms.ads.banner.BannerView>
+                <ImageView
+                    android:id="@+id/image_details"
+                    android:layout_width="match_parent"
+                    android:layout_height="220dp"
+                    android:fitsSystemWindows="true"
+                    android:scaleType="centerCrop" />
 
-            <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
-                android:id="@+id/webview_frame"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent">
+                <TextView
+                    android:id="@+id/txt_category"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="16dp"
+                    android:layout_marginTop="14dp"
+                    android:textColor="@color/green_color"
+                    android:textSize="16sp"
+                    android:textStyle="bold" />
 
-                <!-- description news -->
-                <WebView
-                    android:id="@+id/details_article"
+                <TextView
+                    android:id="@+id/txt_title"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    />
+                    android:layout_marginStart="16dp"
+                    android:layout_marginTop="8dp"
+                    android:layout_marginEnd="16dp"
+                    android:textColor="@color/black_color"
+                    android:textSize="28sp"
+                    android:textStyle="bold" />
 
-            </FrameLayout>
+                <TextView
+                    android:id="@+id/txt_date"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="16dp"
+                    android:layout_marginTop="8dp"
+                    android:layout_marginEnd="16dp"
+                    android:textColor="@color/text_color_off"
+                    android:textSize="16sp" />
+
+                <com.huawei.hms.ads.banner.BannerView
+                    xmlns:hwads="http://schemas.android.com/apk/res-auto"
+                    android:id="@+id/hw_banner_view"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="12dp"
+                    android:visibility="gone"
+                    hwads:adId="l4yj9fiyhp"
+                    hwads:bannerSize="BANNER_SIZE_320_100" />
+
+                <FrameLayout
+                    android:id="@+id/webview_frame"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="10dp">
+
+                    <WebView
+                        android:id="@+id/details_article"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content" />
+
+                </FrameLayout>
+
+            </LinearLayout>
 
         </LinearLayout>
 
     </ScrollView>
+
     <com.google.android.material.floatingactionbutton.FloatingActionButton
-        app:fabCustomSize="60dp"
         android:id="@+id/play_mp3"
+        app:fabCustomSize="60dp"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center|end"
         android:layout_margin="16dp"
-        android:visibility="gone"
         android:src="@drawable/ic_icon_play"
+        android:visibility="gone"
         app:layout_anchorGravity="bottom|right|end" />
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
-        app:fabCustomSize="60dp"
         android:id="@+id/fab"
+        app:fabCustomSize="60dp"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="bottom|end"
