@@ -69,6 +69,7 @@ struct ContentView: View {
 
                                     LegacySideMenuView(
                                         selectedLanguage: $selectedLanguage,
+                                        selectedDestination: $selectedDestination,
                                         onSelectMenuItem: { destination in
                                             selectedDestination = destination
                                             withAnimation(.easeInOut(duration: 0.2)) { showMenu = false }
@@ -257,6 +258,7 @@ private extension UiLanguage {
 
 struct LegacySideMenuView: View {
     @Binding var selectedLanguage: UiLanguage
+    @Binding var selectedDestination: MenuDestination
     let onSelectMenuItem: (MenuDestination) -> Void
     let onClose: () -> Void
 
@@ -315,7 +317,7 @@ struct LegacySideMenuView: View {
                         HStack {
                             Text(item.label)
                                 .font(.system(size: 20, weight: .semibold))
-                                .foregroundStyle(item.destination == .news ? Color(androidGreen) : .black)
+                                .foregroundStyle(item.destination == selectedDestination ? Color(androidGreen) : .black)
                             Spacer()
                         }
                         .padding(.horizontal, 18)
@@ -323,7 +325,7 @@ struct LegacySideMenuView: View {
                         .background(Color("#ECEEEE"))
                         .overlay(
                             RoundedRectangle(cornerRadius: 16)
-                                .stroke(item.destination == .news ? Color(androidGreen) : Color.clear, lineWidth: 2)
+                                .stroke(item.destination == selectedDestination ? Color(androidGreen) : Color.clear, lineWidth: 2)
                         )
                         .clipShape(RoundedRectangle(cornerRadius: 16))
                     }
@@ -774,10 +776,12 @@ final class BootstrapViewModel: ObservableObject {
             }
 
             let json = payload as? [String: Any]
+            let rootArray = payload as? [[String: Any]]
             let arrays: [[String: Any]] =
                 (json?["data"] as? [[String: Any]]) ??
                 (json?["results"] as? [[String: Any]]) ??
-                (json?["news"] as? [[String: Any]]) ?? []
+                (json?["news"] as? [[String: Any]]) ??
+                rootArray ?? []
 
             let mapped = arrays.enumerated().map { idx, row in
                 let id = pickString(row, keys: ["News_ID", "id", "id_news", "idNews"]) ??
