@@ -274,6 +274,7 @@ struct LegacySideMenuView: View {
     private var categoryItems: [(label: String, filter: String?)] {
         [
             ("A la une", nil),
+            ("Actualités", "Actualités"),
             ("Monde", "Monde"),
             ("Politique", "Politique"),
             ("Economie", "Economie"),
@@ -494,6 +495,7 @@ struct HomeNewsFeedView: View {
               !filter.isEmpty else { return newsItems }
 
         let normalizedFilter = normalizedMatchToken(filter)
+        let filterCandidates = expandedCategoryCandidates(from: normalizedFilter)
         return newsItems.filter { item in
             let tokens = item.category
                 .split(whereSeparator: { [",", ";", "|", "،"].contains($0) })
@@ -501,11 +503,37 @@ struct HomeNewsFeedView: View {
                 .filter { !$0.isEmpty }
 
             return tokens.contains { token in
-                token == normalizedFilter ||
-                token.contains(normalizedFilter) ||
-                normalizedFilter.contains(token)
+                filterCandidates.contains { candidate in
+                    token == candidate ||
+                    token.contains(candidate) ||
+                    candidate.contains(token)
+                }
             }
         }
+    }
+
+    private func normalizedMatchToken(_ raw: String) -> String {
+        let cleaned = raw.folding(options: [.diacriticInsensitive, .caseInsensitive], locale: .current)
+        return cleaned
+            .replacingOccurrences(of: "[^\\p{L}\\p{N}]+", with: "", options: .regularExpression)
+            .lowercased()
+            .trimmingCharacters(in: .whitespacesAndNewlines)
+    }
+
+    private func expandedCategoryCandidates(from normalizedFilter: String) -> [String] {
+        guard !normalizedFilter.isEmpty else { return [] }
+        var values: Set<String> = [normalizedFilter]
+
+        switch normalizedFilter {
+        case "news", "actualites", "actualite":
+            values.formUnion(["news", "actualites", "actualite", "اخبار", "الاخبار"])
+        case "اخبار", "الاخبار":
+            values.formUnion(["news", "actualites", "actualite", "اخبار", "الاخبار"])
+        default:
+            break
+        }
+
+        return Array(values)
     }
 
     private func normalizedMatchToken(_ raw: String) -> String {
