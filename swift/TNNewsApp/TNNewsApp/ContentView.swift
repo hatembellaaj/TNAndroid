@@ -123,37 +123,7 @@ struct ContentView: View {
                     .tag(1)
 
                     NavigationStack {
-                        Group {
-                            if favoriteItems.isEmpty {
-                                Text("Aucun article en favoris pour le moment.")
-                                    .foregroundStyle(.secondary)
-                                    .padding()
-                            } else {
-                                List {
-                                    ForEach(favoriteItems) { item in
-                                        NavigationLink {
-                                            NewsHTMLDetailView(item: item)
-                                        } label: {
-                                            VStack(alignment: .leading, spacing: 4) {
-                                                Text(item.title)
-                                                    .font(.headline)
-                                                    .lineLimit(2)
-                                                if !item.date.isEmpty {
-                                                    Text(item.date)
-                                                        .font(.caption)
-                                                        .foregroundStyle(.secondary)
-                                                }
-                                            }
-                                        }
-                                    }
-                                    .onDelete { indexSet in
-                                        favoriteItems.remove(atOffsets: indexSet)
-                                    }
-                                }
-                                .listStyle(.plain)
-                            }
-                        }
-                        .navigationTitle("Favoris")
+                        FavoritesNewsFeedView(favoriteItems: $favoriteItems)
                     }
                     .tabItem { Label("Favoris", systemImage: "bookmark") }
                     .tag(2)
@@ -689,6 +659,62 @@ struct HomeNewsFeedView: View {
         } else {
             favoriteItems.insert(item, at: 0)
         }
+    }
+
+    private func share(_ item: BootstrapViewModel.NewsRow) {
+        let text = [item.title, item.shareURL].filter { !$0.isEmpty }.joined(separator: "\n")
+        guard let scene = UIApplication.shared.connectedScenes.first as? UIWindowScene,
+              let root = scene.windows.first?.rootViewController else { return }
+        let vc = UIActivityViewController(activityItems: [text], applicationActivities: nil)
+        root.present(vc, animated: true)
+    }
+}
+
+struct FavoritesNewsFeedView: View {
+    @Binding var favoriteItems: [BootstrapViewModel.NewsRow]
+
+    var body: some View {
+        ScrollView {
+            VStack(alignment: .leading, spacing: 14) {
+                NewsSectionHeader(title: "FAVORIS")
+                    .padding(.top, 8)
+
+                if favoriteItems.isEmpty {
+                    Text("Aucun article en favoris pour le moment.")
+                        .font(.system(size: 15, weight: .medium))
+                        .foregroundStyle(.secondary)
+                        .padding(.horizontal, 8)
+                        .padding(.vertical, 10)
+                } else {
+                    VStack(spacing: 12) {
+                        ForEach(favoriteItems) { item in
+                            VStack(spacing: 8) {
+                                NavigationLink {
+                                    NewsHTMLDetailView(item: item)
+                                } label: {
+                                    NewsFeedRowCard(item: item)
+                                }
+                                .buttonStyle(.plain)
+
+                                NewsCardActionsRow(
+                                    isFavorite: true,
+                                    onToggleFavorite: { removeFavorite(item.id) },
+                                    onShare: { share(item) }
+                                )
+                                .padding(.horizontal, 12)
+                            }
+                        }
+                    }
+                }
+            }
+            .padding(.horizontal, 12)
+            .padding(.vertical, 8)
+        }
+        .background(Color(newsScreenBackground))
+    }
+
+    private func removeFavorite(_ id: String) {
+        favoriteItems.removeAll { $0.id == id }
     }
 
     private func share(_ item: BootstrapViewModel.NewsRow) {
