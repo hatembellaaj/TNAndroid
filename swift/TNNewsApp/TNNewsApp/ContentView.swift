@@ -588,6 +588,7 @@ struct HomeNewsFeedView: View {
                                     TopHeadlineCard(item: item)
                                 }
                                 .buttonStyle(.plain)
+                                .zIndex(0)
 
                                 NewsCardActionsRow(
                                     isFavorite: favoriteIDs.contains(item.id),
@@ -595,6 +596,7 @@ struct HomeNewsFeedView: View {
                                     onShare: { share(item) }
                                 )
                                 .padding(.horizontal, 12)
+                                .zIndex(1)
                             }
                             .padding(.horizontal, 4)
                             .tag(index)
@@ -635,6 +637,7 @@ struct HomeNewsFeedView: View {
                                     NewsFeedRowCard(item: item)
                                 }
                                 .buttonStyle(.plain)
+                                .zIndex(0)
 
                                 NewsCardActionsRow(
                                     isFavorite: favoriteIDs.contains(item.id),
@@ -642,6 +645,7 @@ struct HomeNewsFeedView: View {
                                     onShare: { share(item) }
                                 )
                                 .padding(.horizontal, 12)
+                                .zIndex(1)
                             }
                         }
                     }
@@ -695,6 +699,7 @@ struct FavoritesNewsFeedView: View {
                                     NewsFeedRowCard(item: item)
                                 }
                                 .buttonStyle(.plain)
+                                .zIndex(0)
 
                                 NewsCardActionsRow(
                                     isFavorite: true,
@@ -702,6 +707,7 @@ struct FavoritesNewsFeedView: View {
                                     onShare: { share(item) }
                                 )
                                 .padding(.horizontal, 12)
+                                .zIndex(1)
                             }
                         }
                     }
@@ -758,6 +764,8 @@ private struct NewsCardActionsRow: View {
                     .foregroundStyle(isFavorite ? Color(androidGreen) : .gray)
             }
             .buttonStyle(.plain)
+            .contentShape(Rectangle())
+            .padding(4)
 
             Button(action: onShare) {
                 Image(systemName: "square.and.arrow.up")
@@ -765,8 +773,11 @@ private struct NewsCardActionsRow: View {
                     .foregroundStyle(.gray)
             }
             .buttonStyle(.plain)
+            .contentShape(Rectangle())
+            .padding(4)
             .padding(.leading, 14)
         }
+        .allowsHitTesting(true)
     }
 }
 
