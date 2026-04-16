@@ -12,7 +12,6 @@ import android.widget.Toast;
 import android.widget.LinearLayout;
 
 import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.fragment.app.Fragment;
@@ -44,7 +43,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
-public class HomeTnActivity extends AppCompatActivity {
+public class HomeTnActivity extends BaseActivity {
 
     private static final String TAG = "HomeActivity";
 
