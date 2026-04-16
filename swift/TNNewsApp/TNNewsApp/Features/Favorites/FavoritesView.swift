@@ -8,8 +8,29 @@ struct FavoritesView: View {
         NavigationStack {
             List {
                 ForEach(vmHolder.vm.items) { item in
-                    NavigationLink(value: item) {
-                        Text(item.title)
+                    HStack(alignment: .top, spacing: 12) {
+                        NavigationLink(value: item) {
+                            Text(item.title)
+                        }
+                        .buttonStyle(.plain)
+
+                        Spacer(minLength: 8)
+
+                        HStack(spacing: 14) {
+                            Button(action: { vmHolder.vm.remove(item.id) }) {
+                                Image(systemName: "bookmark.fill")
+                                    .font(.title3)
+                                    .foregroundStyle(.green)
+                            }
+                            .buttonStyle(.plain)
+
+                            ShareLink(item: [item.title, item.shareURL].compactMap { $0 }.joined(separator: "\n")) {
+                                Image(systemName: "square.and.arrow.up")
+                                    .font(.title3)
+                                    .foregroundStyle(.gray)
+                            }
+                            .buttonStyle(.plain)
+                        }
                     }
                 }
                 .onDelete { indexSet in

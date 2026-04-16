@@ -85,10 +85,10 @@ public class CategoryNewsAdapter extends RecyclerView.Adapter<CategoryNewsAdapte
             FavorisDataBase db = FavorisDataBase.getInstance(context);
             News existing = db.getNews(news.getIdNews(), news.getArtOrPubOrVid());
             holder.bookmark.setImageResource(
-                    existing != null ? R.drawable.ic_bookmark_filled : R.drawable.icon_save_r
+                    existing != null ? R.drawable.ic_bookmark_filled : R.drawable.ic_bookmark_outline
             );
         } catch (Exception e) {
-            holder.bookmark.setImageResource(R.drawable.icon_save_r);
+            holder.bookmark.setImageResource(R.drawable.ic_bookmark_outline);
         }
 
         holder.bookmark.setOnClickListener(v -> {
@@ -99,7 +99,7 @@ public class CategoryNewsAdapter extends RecyclerView.Adapter<CategoryNewsAdapte
                     FavorisDataBase db = FavorisDataBase.getInstance(context);
                     News existing = db.getNews(news.getIdNews(), news.getArtOrPubOrVid());
                     holder.bookmark.setImageResource(
-                            existing != null ? R.drawable.ic_bookmark_filled : R.drawable.icon_save_r
+                            existing != null ? R.drawable.ic_bookmark_filled : R.drawable.ic_bookmark_outline
                     );
                 } catch (Exception ignored) {}
             }
