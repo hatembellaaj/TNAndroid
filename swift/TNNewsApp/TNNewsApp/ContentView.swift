@@ -1,4 +1,5 @@
 import SwiftUI
+import UIKit
 
 struct ContentView: View {
     @StateObject private var vm = BootstrapViewModel()
@@ -500,6 +501,7 @@ struct HomeNewsFeedView: View {
     let newsItems: [BootstrapViewModel.NewsRow]
     let categoryFilter: String?
     @State private var currentTopStoryIndex = 0
+    @State private var favoriteIDs: Set<String> = Set(UserDefaults.standard.stringArray(forKey: "tn_ios_favorites_ids") ?? [])
 
     private var displayedNews: [BootstrapViewModel.NewsRow] {
         if isHomeMode {
@@ -575,17 +577,26 @@ struct HomeNewsFeedView: View {
 
                     TabView(selection: $currentTopStoryIndex) {
                         ForEach(Array(topStories.enumerated()), id: \.element.id) { index, item in
-                            NavigationLink {
-                                NewsHTMLDetailView(item: item)
-                            } label: {
-                                TopHeadlineCard(item: item)
+                            VStack(spacing: 8) {
+                                NavigationLink {
+                                    NewsHTMLDetailView(item: item)
+                                } label: {
+                                    TopHeadlineCard(item: item)
+                                }
+                                .buttonStyle(.plain)
+
+                                NewsCardActionsRow(
+                                    isFavorite: favoriteIDs.contains(item.id),
+                                    onToggleFavorite: { toggleFavorite(item.id) },
+                                    onShare: { share(item) }
+                                )
+                                .padding(.horizontal, 12)
                             }
-                            .buttonStyle(.plain)
                             .padding(.horizontal, 4)
                             .tag(index)
                         }
                     }
-                    .frame(height: 265)
+                    .frame(height: 315)
                     .tabViewStyle(.page(indexDisplayMode: .never))
 
                     if topStories.count > 1 {
@@ -613,12 +624,21 @@ struct HomeNewsFeedView: View {
                 } else {
                     VStack(spacing: 12) {
                         ForEach(displayedNews) { item in
-                            NavigationLink {
-                                NewsHTMLDetailView(item: item)
-                            } label: {
-                                NewsFeedRowCard(item: item)
+                            VStack(spacing: 8) {
+                                NavigationLink {
+                                    NewsHTMLDetailView(item: item)
+                                } label: {
+                                    NewsFeedRowCard(item: item)
+                                }
+                                .buttonStyle(.plain)
+
+                                NewsCardActionsRow(
+                                    isFavorite: favoriteIDs.contains(item.id),
+                                    onToggleFavorite: { toggleFavorite(item.id) },
+                                    onShare: { share(item) }
+                                )
+                                .padding(.horizontal, 12)
                             }
-                            .buttonStyle(.plain)
                         }
                     }
                 }
@@ -627,6 +647,50 @@ struct HomeNewsFeedView: View {
             .padding(.vertical, 8)
         }
         .background(Color(newsScreenBackground))
+    }
+
+    private func toggleFavorite(_ id: String) {
+        if favoriteIDs.contains(id) {
+            favoriteIDs.remove(id)
+        } else {
+            favoriteIDs.insert(id)
+        }
+        UserDefaults.standard.set(Array(favoriteIDs), forKey: "tn_ios_favorites_ids")
+    }
+
+    private func share(_ item: BootstrapViewModel.NewsRow) {
+        let text = [item.title, item.shareURL].filter { !$0.isEmpty }.joined(separator: "\n")
+        guard let scene = UIApplication.shared.connectedScenes.first as? UIWindowScene,
+              let root = scene.windows.first?.rootViewController else { return }
+        let vc = UIActivityViewController(activityItems: [text], applicationActivities: nil)
+        root.present(vc, animated: true)
+    }
+}
+
+private struct NewsCardActionsRow: View {
+    let isFavorite: Bool
+    let onToggleFavorite: () -> Void
+    let onShare: () -> Void
+
+    var body: some View {
+        HStack {
+            Spacer()
+
+            Button(action: onToggleFavorite) {
+                Image(systemName: isFavorite ? "bookmark.fill" : "bookmark")
+                    .font(.system(size: 22, weight: .semibold))
+                    .foregroundStyle(isFavorite ? Color(androidGreen) : .gray)
+            }
+            .buttonStyle(.plain)
+
+            Button(action: onShare) {
+                Image(systemName: "square.and.arrow.up")
+                    .font(.system(size: 22, weight: .semibold))
+                    .foregroundStyle(.gray)
+            }
+            .buttonStyle(.plain)
+            .padding(.leading, 14)
+        }
     }
 }
 
