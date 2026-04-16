@@ -682,9 +682,13 @@ public class HomeTnActivity extends AppCompatActivity {
 
         // ✅ AJOUTER LES CATÉGORIES
         for (com.mdweb.tunnumerique.data.model.Categories category : categories) {
+            String categoryId = category.getTitleUrlCategories();
+            if (categoryId == null || categoryId.trim().isEmpty()) {
+                categoryId = category.getTitleCategories();
+            }
             menuItemsList.add(new NavigationMenuAdapter.MenuItem(
                     category.getTitleCategories(),
-                    category.getTitleCategories()
+                    categoryId
             ));
         }
 
