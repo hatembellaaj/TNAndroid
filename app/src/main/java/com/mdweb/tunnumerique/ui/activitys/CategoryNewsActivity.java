@@ -41,6 +41,7 @@ public class CategoryNewsActivity extends AppCompatActivity {
 
     public static final String EXTRA_CATEGORY_NAME = "CATEGORY_NAME";
     public static final String EXTRA_CATEGORY_ID   = "CATEGORY_ID";
+    public static final String EXTRA_IS_ALAUNE     = "IS_ALAUNE";
 
     // ── Header ──
     private ImageView menuIcon;
@@ -68,6 +69,7 @@ public class CategoryNewsActivity extends AppCompatActivity {
     // Catégorie courante
     private String currentCategoryName = "";
     private String currentCategoryId = "";
+    private boolean isAlaUnePage = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -284,6 +286,11 @@ public class CategoryNewsActivity extends AppCompatActivity {
         menuItemsList.add(new NavigationMenuAdapter.MenuItem("Paramètres", "settings"));
 
         menuAdapter.notifyDataSetChanged();
+
+        if (isAlaUnePage) {
+            menuAdapter.setSelectedPosition(0);
+            return;
+        }
 
         // Surligner la catégorie courante dans le menu
         for (int i = 0; i < menuItemsList.size(); i++) {
