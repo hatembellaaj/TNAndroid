@@ -44,7 +44,25 @@ struct Top24View: View {
                 await holder.vm.load(language: settings.selectedLanguage)
                 refreshFavorites()
             }
+            .onAppear(perform: refreshFavorites)
         }
+    }
+
+    private func refreshFavorites() {
+        favoriteIDs = Set(env.favoritesStore.all().map(\.id))
+    }
+
+    private func toggleFavorite(_ item: NewsItem) {
+        if env.favoritesStore.contains(newsID: item.id) {
+            env.favoritesStore.remove(newsID: item.id)
+        } else {
+            env.favoritesStore.add(item)
+        }
+        refreshFavorites()
+    }
+
+    private func shareText(for item: NewsItem) -> String {
+        [item.title, item.shareURL].compactMap { $0 }.joined(separator: "\n")
     }
 
     private func refreshFavorites() {
