@@ -14,16 +14,14 @@ import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.google.gson.Gson;
 import com.mdweb.tunnumerique.R;
 import com.mdweb.tunnumerique.data.model.News;
 import com.mdweb.tunnumerique.data.sqlite.FavorisDataBase;
 import com.mdweb.tunnumerique.tools.SessionManager;
 import com.mdweb.tunnumerique.tools.Utils;
-import com.mdweb.tunnumerique.tools.mdwebNetworkingLib.jsonRequest.LocalFilesManager;
 import com.mdweb.tunnumerique.tools.shared.Constant;
 import com.mdweb.tunnumerique.tools.style.ShareSN;
-import com.mdweb.tunnumerique.ui.activitys.DetailArticleFragment;
+import com.mdweb.tunnumerique.ui.activitys.ArticleDetailActivity;
 import com.mdweb.tunnumerique.ui.activitys.DetailsVideoActivity;
 import com.nostra13.universalimageloader.core.ImageLoader;
 
@@ -39,7 +37,6 @@ public class FavorisAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
     private ArrayList<News>     newsList;
     private Utils               utils;
     private LinearLayoutManager mLinearLayoutManager;
-    private LocalFilesManager   locallyFiles;
     private Handler             handler;
     private int                 type;
 
@@ -107,12 +104,8 @@ public class FavorisAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
                     intent.putExtra("Article", news);
                     intent.putExtra("type", type);
                 } else {
-                    intent = new Intent(context, DetailArticleFragment.class);
-                    String jsonNewsList = new Gson().toJson(newsList);
-                    locallyFiles = new LocalFilesManager(context);
-                    locallyFiles.saveLocallyFile("Monfile", jsonNewsList);
-                    intent.putExtra("type", type);
-                    intent.putExtra("position", position - 1);
+                    intent = new Intent(context, ArticleDetailActivity.class);
+                    intent.putExtra("news_object", news);
                 }
                 context.startActivity(intent);
             });
