@@ -536,6 +536,14 @@ struct HomeNewsFeedView: View {
         return Array(values)
     }
 
+    private func normalizedMatchToken(_ raw: String) -> String {
+        let cleaned = raw.folding(options: [.diacriticInsensitive, .caseInsensitive], locale: .current)
+        return cleaned
+            .replacingOccurrences(of: "[^\\p{L}\\p{N}]+", with: "", options: .regularExpression)
+            .lowercased()
+            .trimmingCharacters(in: .whitespacesAndNewlines)
+    }
+
     private var topStories: [BootstrapViewModel.NewsRow] {
         Array(displayedNews.prefix(8))
     }
