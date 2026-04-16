@@ -280,16 +280,9 @@ public class MainActivity extends BaseActivity
         switch (v.getId()) {
 
             case R.id.actualite:
-                deletFragmentCourant();
-                // selected fragment
-                fragment = new ActualiteFragment().newInstance(Constant.idArticle, false, false, false, getResources().getString(R.string.actualite_detail));
-                isActuality = true;
-
-                //   set title toolbar
-                titleToolbar.setText(getResources().getString(R.string.actualite_detail));
-                // execute the fragment
-                displayView();
-
+                Intent alaUneIntent = new Intent(MainActivity.this, AlaUneActivity.class);
+                startActivity(alaUneIntent);
+                drawer.closeDrawer(GravityCompat.START);
                 break;
             case R.id.dossiers:
                 deletFragmentCourant();

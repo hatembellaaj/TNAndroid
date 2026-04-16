@@ -74,7 +74,7 @@ public class AlaUneActivity extends AppCompatActivity {
         setupBottomNavigation();
 
         toolbarTitle.setText("A la une");
-        loadAndDisplay("", "");
+        loadAndDisplay("A la une", "alaune");
     }
 
     // ════════════════════════════════════════════════════════
@@ -277,6 +277,9 @@ public class AlaUneActivity extends AppCompatActivity {
         drawerLayout.closeDrawer(GravityCompat.START);
 
         if (item.getId().equals("alaune")) {
+            toolbarTitle.setText("A la une");
+            loadAndDisplay("A la une", "alaune");
+            menuAdapter.setSelectedPosition(0);
             return;
         }
 
