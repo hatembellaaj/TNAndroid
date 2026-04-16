@@ -28,8 +28,10 @@ import com.mdweb.tunnumerique.tools.shared.Constant;
 import com.mdweb.tunnumerique.ui.adapters.CategoryNewsAdapter;
 import com.mdweb.tunnumerique.ui.adapters.NavigationMenuAdapter;
 
+import java.text.Normalizer;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 
 public class CategoryNewsActivity extends AppCompatActivity {
 
@@ -356,20 +358,18 @@ public class CategoryNewsActivity extends AppCompatActivity {
         List<News> filtered = new ArrayList<>();
         if (categoryName == null || categoryName.isEmpty()) return allNewsList;
 
-        String normalized = categoryName.trim().toLowerCase();
-        String[] variants = {
-                normalized,
-                normalized.replaceAll("\\s+", ""),
-                normalized.replaceAll("[\\s&_-]", "")
-        };
+        String normalizedCategory = normalizeCategoryToken(categoryName);
 
         for (News news : allNewsList) {
             String type = news.getTypeNews();
             if (type == null || type.isEmpty()) continue;
 
-            String normalizedType = type.trim().toLowerCase();
-            for (String v : variants) {
-                if (normalizedType.equals(v) || normalizedType.contains(v)) {
+            String[] tokens = type.split(",");
+            for (String token : tokens) {
+                String normalizedToken = normalizeCategoryToken(token);
+                if (normalizedToken.equals(normalizedCategory)
+                        || normalizedToken.contains(normalizedCategory)
+                        || normalizedCategory.contains(normalizedToken)) {
                     filtered.add(news);
                     break;
                 }
@@ -377,6 +377,15 @@ public class CategoryNewsActivity extends AppCompatActivity {
         }
 
         return filtered;
+    }
+
+    private String normalizeCategoryToken(String value) {
+        if (value == null) return "";
+        String normalized = Normalizer.normalize(value, Normalizer.Form.NFD)
+                .replaceAll("\\p{M}+", "")
+                .toLowerCase(Locale.ROOT)
+                .trim();
+        return normalized.replaceAll("[^\\p{Alnum}]+", "");
     }
 
     // ════════════════════════════════════════════════════════
