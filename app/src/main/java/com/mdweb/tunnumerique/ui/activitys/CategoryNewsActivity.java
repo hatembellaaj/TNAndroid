@@ -30,8 +30,10 @@ import com.mdweb.tunnumerique.ui.adapters.NavigationMenuAdapter;
 
 import java.text.Normalizer;
 import java.util.ArrayList;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Locale;
+import java.util.Set;
 
 public class CategoryNewsActivity extends AppCompatActivity {
 
@@ -61,6 +63,7 @@ public class CategoryNewsActivity extends AppCompatActivity {
     private RecyclerView newsRecyclerView;
     private CategoryNewsAdapter newsAdapter;
     private List<News> allNewsList = new ArrayList<>();
+    private final Set<String> availableNormalizedCategories = new LinkedHashSet<>();
 
     // Catégorie courante
     private String currentCategoryName = "";
@@ -350,6 +353,7 @@ public class CategoryNewsActivity extends AppCompatActivity {
             Log.e(TAG, "Erreur chargement : " + e.getMessage());
         }
 
+        buildAvailableCategoryIndex();
         List<News> filtered = filterByCategory(categoryName, categoryId);
 
         if (filtered.isEmpty()) {
@@ -370,8 +374,9 @@ public class CategoryNewsActivity extends AppCompatActivity {
             return allNewsList;
         }
 
-        String normalizedCategory = normalizeCategoryToken(categoryName);
-        String normalizedCategoryId = normalizeCategoryToken(categoryId);
+        List<String> normalizedCandidates = buildCategoryCandidates(categoryName, categoryId);
+        Log.d(TAG, "Filter candidates = " + normalizedCandidates);
+        Log.d(TAG, "Available categories = " + availableNormalizedCategories);
 
         for (News news : allNewsList) {
             String type = news.getTypeNews();
@@ -380,8 +385,7 @@ public class CategoryNewsActivity extends AppCompatActivity {
             String[] tokens = type.split("[,;|،]");
             for (String token : tokens) {
                 String normalizedToken = normalizeCategoryToken(token);
-                if (categoriesMatch(normalizedCategory, normalizedToken)
-                        || categoriesMatch(normalizedCategoryId, normalizedToken)) {
+                if (matchesAnyCandidate(normalizedCandidates, normalizedToken)) {
                     filtered.add(news);
                     break;
                 }
@@ -415,6 +419,68 @@ public class CategoryNewsActivity extends AppCompatActivity {
 
         return normalizedToken.contains(normalizedCategory)
                 || normalizedCategory.contains(normalizedToken);
+    }
+
+    private boolean matchesAnyCandidate(List<String> normalizedCandidates, String normalizedToken) {
+        if (normalizedToken == null || normalizedToken.isEmpty()) return false;
+        for (String candidate : normalizedCandidates) {
+            if (categoriesMatch(candidate, normalizedToken)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private List<String> buildCategoryCandidates(String categoryName, String categoryId) {
+        LinkedHashSet<String> candidates = new LinkedHashSet<>();
+
+        addCandidate(candidates, categoryName);
+        addCandidate(candidates, categoryId);
+
+        if (categoryId != null) {
+            String[] idParts = categoryId.split("[-_/]");
+            for (String part : idParts) {
+                addCandidate(candidates, part);
+            }
+        }
+
+        // Correspondances FR <-> AR les plus courantes.
+        if (containsCandidate(candidates, "actualites")) {
+            addCandidate(candidates, "اخبار");
+            addCandidate(candidates, "الاخبار");
+        } else if (containsCandidate(candidates, "اخبار") || containsCandidate(candidates, "الاخبار")) {
+            addCandidate(candidates, "actualites");
+            addCandidate(candidates, "actualite");
+        }
+
+        return new ArrayList<>(candidates);
+    }
+
+    private boolean containsCandidate(Set<String> candidates, String value) {
+        return candidates.contains(normalizeCategoryToken(value));
+    }
+
+    private void addCandidate(Set<String> candidates, String rawValue) {
+        String normalized = normalizeCategoryToken(rawValue);
+        if (!normalized.isEmpty()) {
+            candidates.add(normalized);
+        }
+    }
+
+    private void buildAvailableCategoryIndex() {
+        availableNormalizedCategories.clear();
+        for (News news : allNewsList) {
+            String type = news.getTypeNews();
+            if (type == null || type.isEmpty()) continue;
+
+            String[] tokens = type.split("[,;|،]");
+            for (String token : tokens) {
+                String normalized = normalizeCategoryToken(token);
+                if (!normalized.isEmpty()) {
+                    availableNormalizedCategories.add(normalized);
+                }
+            }
+        }
     }
 
     private String decodeUnicodeEscapes(String value) {
