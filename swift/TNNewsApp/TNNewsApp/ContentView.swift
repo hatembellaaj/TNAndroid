@@ -505,6 +505,7 @@ struct HomeNewsFeedView: View {
     let categoryFilter: String?
     @Binding var favoriteItems: [BootstrapViewModel.NewsRow]
     @State private var currentTopStoryIndex = 0
+    @State private var selectedItem: BootstrapViewModel.NewsRow?
     private var favoriteIDs: Set<String> { Set(favoriteItems.map(\.id)) }
 
     private var displayedNews: [BootstrapViewModel.NewsRow] {
@@ -582,13 +583,10 @@ struct HomeNewsFeedView: View {
                     TabView(selection: $currentTopStoryIndex) {
                         ForEach(Array(topStories.enumerated()), id: \.element.id) { index, item in
                             VStack(spacing: 8) {
-                                NavigationLink {
-                                    NewsHTMLDetailView(item: item)
-                                } label: {
-                                    TopHeadlineCard(item: item)
-                                }
-                                .buttonStyle(.plain)
-                                .zIndex(0)
+                                TopHeadlineCard(item: item)
+                                    .contentShape(Rectangle())
+                                    .onTapGesture { selectedItem = item }
+                                    .zIndex(0)
 
                                 NewsCardActionsRow(
                                     isFavorite: favoriteIDs.contains(item.id),
@@ -631,13 +629,10 @@ struct HomeNewsFeedView: View {
                     VStack(spacing: 12) {
                         ForEach(displayedNews) { item in
                             VStack(spacing: 8) {
-                                NavigationLink {
-                                    NewsHTMLDetailView(item: item)
-                                } label: {
-                                    NewsFeedRowCard(item: item)
-                                }
-                                .buttonStyle(.plain)
-                                .zIndex(0)
+                                NewsFeedRowCard(item: item)
+                                    .contentShape(Rectangle())
+                                    .onTapGesture { selectedItem = item }
+                                    .zIndex(0)
 
                                 NewsCardActionsRow(
                                     isFavorite: favoriteIDs.contains(item.id),
@@ -655,6 +650,9 @@ struct HomeNewsFeedView: View {
             .padding(.vertical, 8)
         }
         .background(Color(newsScreenBackground))
+        .navigationDestination(item: $selectedItem) { item in
+            NewsHTMLDetailView(item: item)
+        }
     }
 
     private func toggleFavorite(_ item: BootstrapViewModel.NewsRow) {
@@ -676,6 +674,7 @@ struct HomeNewsFeedView: View {
 
 struct FavoritesNewsFeedView: View {
     @Binding var favoriteItems: [BootstrapViewModel.NewsRow]
+    @State private var selectedItem: BootstrapViewModel.NewsRow?
 
     var body: some View {
         ScrollView {
@@ -693,13 +692,10 @@ struct FavoritesNewsFeedView: View {
                     VStack(spacing: 12) {
                         ForEach(favoriteItems) { item in
                             VStack(spacing: 8) {
-                                NavigationLink {
-                                    NewsHTMLDetailView(item: item)
-                                } label: {
-                                    NewsFeedRowCard(item: item)
-                                }
-                                .buttonStyle(.plain)
-                                .zIndex(0)
+                                NewsFeedRowCard(item: item)
+                                    .contentShape(Rectangle())
+                                    .onTapGesture { selectedItem = item }
+                                    .zIndex(0)
 
                                 NewsCardActionsRow(
                                     isFavorite: true,
@@ -717,6 +713,70 @@ struct FavoritesNewsFeedView: View {
             .padding(.vertical, 8)
         }
         .background(Color(newsScreenBackground))
+        .navigationDestination(item: $selectedItem) { item in
+            NewsHTMLDetailView(item: item)
+        }
+    }
+
+    private func removeFavorite(_ id: String) {
+        favoriteItems.removeAll { $0.id == id }
+    }
+
+    private func share(_ item: BootstrapViewModel.NewsRow) {
+        let text = [item.title, item.shareURL].filter { !$0.isEmpty }.joined(separator: "\n")
+        guard let scene = UIApplication.shared.connectedScenes.first as? UIWindowScene,
+              let root = scene.windows.first?.rootViewController else { return }
+        let vc = UIActivityViewController(activityItems: [text], applicationActivities: nil)
+        root.present(vc, animated: true)
+    }
+}
+
+private enum FavoriteArticlesStorage {
+    private static let key = "tn_ios_favorite_articles_v1"
+
+    static func load() -> [BootstrapViewModel.NewsRow] {
+        guard let data = UserDefaults.standard.data(forKey: key),
+              let decoded = try? JSONDecoder().decode([BootstrapViewModel.NewsRow].self, from: data) else {
+            return []
+        }
+        return decoded
+    }
+
+    static func save(_ items: [BootstrapViewModel.NewsRow]) {
+        guard let data = try? JSONEncoder().encode(items) else { return }
+        UserDefaults.standard.set(data, forKey: key)
+    }
+}
+
+private struct NewsCardActionsRow: View {
+    let isFavorite: Bool
+    let onToggleFavorite: () -> Void
+    let onShare: () -> Void
+
+    var body: some View {
+        HStack {
+            Spacer()
+
+            Button(action: onToggleFavorite) {
+                Image(systemName: isFavorite ? "bookmark.fill" : "bookmark")
+                    .font(.system(size: 22, weight: .semibold))
+                    .foregroundStyle(isFavorite ? Color(androidGreen) : .gray)
+            }
+            .buttonStyle(.plain)
+            .contentShape(Rectangle())
+            .padding(4)
+
+            Button(action: onShare) {
+                Image(systemName: "square.and.arrow.up")
+                    .font(.system(size: 22, weight: .semibold))
+                    .foregroundStyle(.gray)
+            }
+            .buttonStyle(.plain)
+            .contentShape(Rectangle())
+            .padding(4)
+            .padding(.leading, 14)
+        }
+        .allowsHitTesting(true)
     }
 
     private func removeFavorite(_ id: String) {
