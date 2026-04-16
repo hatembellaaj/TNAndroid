@@ -64,6 +64,7 @@ public class CategoryNewsActivity extends AppCompatActivity {
 
     // Catégorie courante
     private String currentCategoryName = "";
+    private String currentCategoryId = "";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -77,11 +78,14 @@ public class CategoryNewsActivity extends AppCompatActivity {
 
         // Intent extras
         String categoryName = getIntent().getStringExtra(EXTRA_CATEGORY_NAME);
+        String categoryId = getIntent().getStringExtra(EXTRA_CATEGORY_ID);
         if (categoryName == null) categoryName = "";
+        if (categoryId == null) categoryId = "";
         currentCategoryName = categoryName;
+        currentCategoryId = categoryId;
 
         toolbarTitle.setText(capitalize(categoryName));
-        loadAndDisplay(categoryName);
+        loadAndDisplay(categoryName, categoryId);
     }
 
     // ════════════════════════════════════════════════════════
@@ -262,9 +266,13 @@ public class CategoryNewsActivity extends AppCompatActivity {
         menuItemsList.add(new NavigationMenuAdapter.MenuItem("A la une", "alaune", true));
 
         for (com.mdweb.tunnumerique.data.model.Categories category : categories) {
+            String categoryId = category.getTitleUrlCategories();
+            if (categoryId == null || categoryId.trim().isEmpty()) {
+                categoryId = category.getTitleCategories();
+            }
             menuItemsList.add(new NavigationMenuAdapter.MenuItem(
                     category.getTitleCategories(),
-                    category.getTitleCategories()
+                    categoryId
             ));
         }
 
@@ -312,16 +320,17 @@ public class CategoryNewsActivity extends AppCompatActivity {
 
         // Autre catégorie → recharger sur place
         currentCategoryName = item.getTitle();
+        currentCategoryId = item.getId();
         toolbarTitle.setText(capitalize(currentCategoryName));
         menuAdapter.setSelectedPosition(position);
-        loadAndDisplay(currentCategoryName);
+        loadAndDisplay(currentCategoryName, currentCategoryId);
     }
 
     // ════════════════════════════════════════════════════════
     // Chargement des articles
     // ════════════════════════════════════════════════════════
 
-    private void loadAndDisplay(String categoryName) {
+    private void loadAndDisplay(String categoryName, String categoryId) {
         allNewsList.clear();
         String currentLng = SessionManager.getInstance().getCurrentLang(this);
 
@@ -341,7 +350,7 @@ public class CategoryNewsActivity extends AppCompatActivity {
             Log.e(TAG, "Erreur chargement : " + e.getMessage());
         }
 
-        List<News> filtered = filterByCategory(categoryName);
+        List<News> filtered = filterByCategory(categoryName, categoryId);
 
         if (filtered.isEmpty()) {
             Toast.makeText(this, "Aucun article pour " + categoryName, Toast.LENGTH_SHORT).show();
@@ -354,22 +363,25 @@ public class CategoryNewsActivity extends AppCompatActivity {
     // Filtre
     // ════════════════════════════════════════════════════════
 
-    private List<News> filterByCategory(String categoryName) {
+    private List<News> filterByCategory(String categoryName, String categoryId) {
         List<News> filtered = new ArrayList<>();
-        if (categoryName == null || categoryName.isEmpty()) return allNewsList;
+        if ((categoryName == null || categoryName.isEmpty())
+                && (categoryId == null || categoryId.isEmpty())) {
+            return allNewsList;
+        }
 
         String normalizedCategory = normalizeCategoryToken(categoryName);
+        String normalizedCategoryId = normalizeCategoryToken(categoryId);
 
         for (News news : allNewsList) {
             String type = news.getTypeNews();
             if (type == null || type.isEmpty()) continue;
 
-            String[] tokens = type.split(",");
+            String[] tokens = type.split("[,;|،]");
             for (String token : tokens) {
                 String normalizedToken = normalizeCategoryToken(token);
-                if (normalizedToken.equals(normalizedCategory)
-                        || normalizedToken.contains(normalizedCategory)
-                        || normalizedCategory.contains(normalizedToken)) {
+                if (categoriesMatch(normalizedCategory, normalizedToken)
+                        || categoriesMatch(normalizedCategoryId, normalizedToken)) {
                     filtered.add(news);
                     break;
                 }
@@ -381,11 +393,49 @@ public class CategoryNewsActivity extends AppCompatActivity {
 
     private String normalizeCategoryToken(String value) {
         if (value == null) return "";
-        String normalized = Normalizer.normalize(value, Normalizer.Form.NFD)
+        String normalized = decodeUnicodeEscapes(value);
+        normalized = Normalizer.normalize(normalized, Normalizer.Form.NFD)
                 .replaceAll("\\p{M}+", "")
                 .toLowerCase(Locale.ROOT)
                 .trim();
-        return normalized.replaceAll("[^\\p{Alnum}]+", "");
+        return normalized.replaceAll("[^\\p{L}\\p{N}]+", "");
+    }
+
+    private boolean categoriesMatch(String normalizedCategory, String normalizedToken) {
+        if (normalizedCategory == null || normalizedToken == null) return false;
+        if (normalizedCategory.isEmpty() || normalizedToken.isEmpty()) return false;
+
+        if (normalizedToken.equals(normalizedCategory)) {
+            return true;
+        }
+
+        if (normalizedCategory.length() < 3 || normalizedToken.length() < 3) {
+            return false;
+        }
+
+        return normalizedToken.contains(normalizedCategory)
+                || normalizedCategory.contains(normalizedToken);
+    }
+
+    private String decodeUnicodeEscapes(String value) {
+        StringBuilder result = new StringBuilder(value.length());
+
+        for (int i = 0; i < value.length(); i++) {
+            char current = value.charAt(i);
+            if (current == '\\' && i + 5 < value.length() && value.charAt(i + 1) == 'u') {
+                String hex = value.substring(i + 2, i + 6);
+                try {
+                    result.append((char) Integer.parseInt(hex, 16));
+                    i += 5;
+                    continue;
+                } catch (NumberFormatException ignored) {
+                    // Garde la chaîne d'origine si la séquence n'est pas valide.
+                }
+            }
+            result.append(current);
+        }
+
+        return result.toString();
     }
 
     // ════════════════════════════════════════════════════════
