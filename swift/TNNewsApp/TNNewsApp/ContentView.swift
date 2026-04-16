@@ -1021,6 +1021,7 @@ final class BootstrapViewModel: ObservableObject {
 }
 
 struct NewsHTMLDetailView: View {
+    @Environment(\.dismiss) private var dismiss
     let item: BootstrapViewModel.NewsRow
 
     private var normalizedImageURL: URL? {
@@ -1032,63 +1033,88 @@ struct NewsHTMLDetailView: View {
     }
 
     var body: some View {
-        ScrollView {
-            VStack(alignment: .leading, spacing: 12) {
-                if let imageURL = normalizedImageURL {
-                    AsyncImage(url: imageURL) { phase in
-                        switch phase {
-                        case .empty:
-                            ZStack {
-                                RoundedRectangle(cornerRadius: 16)
-                                    .fill(Color.gray.opacity(0.12))
-                                ProgressView()
-                            }
-                            .frame(height: 220)
-                        case .success(let image):
-                            image
-                                .resizable()
-                                .scaledToFill()
+        VStack(spacing: 0) {
+            HStack {
+                Button(action: { dismiss() }) {
+                    Image(systemName: "chevron.left")
+                        .font(.system(size: 18, weight: .semibold))
+                        .foregroundStyle(Color(androidGreen))
+                        .frame(width: 44, height: 44)
+                }
+
+                Spacer()
+                TNCompactLogo()
+                Spacer()
+
+                Text("FR")
+                    .font(.system(size: 18, weight: .medium))
+                    .foregroundStyle(.secondary)
+                    .frame(width: 44, height: 44)
+            }
+            .padding(.horizontal, 12)
+            .padding(.vertical, 6)
+            .background(Color.white)
+
+            Divider()
+
+            ScrollView {
+                VStack(alignment: .leading, spacing: 12) {
+                    if let imageURL = normalizedImageURL {
+                        AsyncImage(url: imageURL) { phase in
+                            switch phase {
+                            case .empty:
+                                ZStack {
+                                    RoundedRectangle(cornerRadius: 16)
+                                        .fill(Color.gray.opacity(0.12))
+                                    ProgressView()
+                                }
                                 .frame(height: 220)
-                                .clipShape(RoundedRectangle(cornerRadius: 16, style: .continuous))
-                        case .failure(let error):
-                            ZStack {
-                                RoundedRectangle(cornerRadius: 16)
-                                    .fill(Color.gray.opacity(0.12))
-                                Image(systemName: "photo")
-                                    .foregroundStyle(.gray)
+                            case .success(let image):
+                                image
+                                    .resizable()
+                                    .scaledToFill()
+                                    .frame(height: 220)
+                                    .clipShape(RoundedRectangle(cornerRadius: 16, style: .continuous))
+                            case .failure(let error):
+                                ZStack {
+                                    RoundedRectangle(cornerRadius: 16)
+                                        .fill(Color.gray.opacity(0.12))
+                                    Image(systemName: "photo")
+                                        .foregroundStyle(.gray)
+                                }
+                                .frame(height: 220)
+                                .onAppear {
+                                    print("[TN-iOS][DetailHTML] image load failed id=\(item.id) raw=\(item.imageURL) normalized=\(imageURL.absoluteString) error=\(error.localizedDescription)")
+                                }
+                            @unknown default:
+                                EmptyView()
                             }
-                            .frame(height: 220)
-                            .onAppear {
-                                print("[TN-iOS][DetailHTML] image load failed id=\(item.id) raw=\(item.imageURL) normalized=\(imageURL.absoluteString) error=\(error.localizedDescription)")
-                            }
-                        @unknown default:
-                            EmptyView()
                         }
                     }
+
+                    Text(item.title)
+                        .font(.title3.bold())
+
+                    if !item.date.isEmpty {
+                        Text(item.date)
+                            .font(.footnote)
+                            .foregroundStyle(.secondary)
+                    }
+
+                    if let shareURL = normalizedShareURL {
+                        ShareLink("Partager", item: shareURL)
+                    }
+
+                    Divider()
+
+                    HTMLContentView(html: item.contentHTML)
                 }
-
-                Text(item.title)
-                    .font(.title3.bold())
-
-                if !item.date.isEmpty {
-                    Text(item.date)
-                        .font(.footnote)
-                        .foregroundStyle(.secondary)
-                }
-
-                if let shareURL = normalizedShareURL {
-                    ShareLink("Partager", item: shareURL)
-                }
-
-                Divider()
-
-                HTMLContentView(html: item.contentHTML)
+                .padding(.horizontal)
+                .padding(.vertical, 8)
             }
-            .padding(.horizontal)
-            .padding(.vertical, 8)
         }
-        .navigationTitle("Détail")
-        .navigationBarTitleDisplayMode(.inline)
+        .navigationBarBackButtonHidden(true)
+        .toolbar(.hidden, for: .navigationBar)
         .onAppear {
             print("[TN-iOS][DetailHTML] OPEN id=\(item.id) title=\(item.title)")
             print("[TN-iOS][DetailHTML] image raw=\(item.imageURL) normalized=\(normalizedImageURL?.absoluteString ?? "<invalid>")")
