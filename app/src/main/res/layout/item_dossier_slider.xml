@@ -54,6 +54,15 @@
                 android:paddingBottom="6dp"
                 android:ellipsize="end" />
 
+            <TextView
+                android:id="@+id/dossierAuthor"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="2dp"
+                android:text="Par Auteur"
+                android:textColor="#AAAAAA"
+                android:textSize="13sp" />
+
             <!-- Ligne: Date à gauche + Actions à droite -->
             <LinearLayout
                 android:layout_width="match_parent"
@@ -74,29 +83,25 @@
                 <!-- Container Save/Bookmark -->
                 <ImageView
                     android:id="@+id/dossierBookmark"
-                    android:layout_width="32dp"
-                    android:layout_height="32dp"
+                    android:layout_width="24dp"
+                    android:layout_height="24dp"
                     android:layout_marginEnd="8dp"
-                    android:padding="6dp"
-                    android:src="@drawable/icon_save_r"
+                    android:src="@drawable/ic_bookmark_outline"
                     android:contentDescription="Save"
                     android:clickable="true"
                     android:focusable="true"
-                    android:background="?attr/selectableItemBackgroundBorderless"
-                    app:tint="#AAAAAA" />
+                    android:background="?attr/selectableItemBackgroundBorderless" />
 
                 <!-- Container Partage -->
                 <ImageView
                     android:id="@+id/dossierShare"
-                    android:layout_width="32dp"
-                    android:layout_height="32dp"
-                    android:padding="6dp"
-                    android:src="@drawable/icon_partage_r"
+                    android:layout_width="24dp"
+                    android:layout_height="24dp"
+                    android:src="@drawable/ic_share_off"
                     android:contentDescription="Share"
                     android:clickable="true"
                     android:focusable="true"
-                    android:background="?attr/selectableItemBackgroundBorderless"
-                    app:tint="#AAAAAA" />
+                    android:background="?attr/selectableItemBackgroundBorderless" />
 
             </LinearLayout>
 

@@ -51,22 +51,20 @@
 
             <ImageView
                 android:id="@+id/slideBookmarkNews"
-                android:layout_width="20dp"
-                android:layout_height="20dp"
-                android:src="@drawable/icon_save_r"
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:src="@drawable/ic_bookmark_outline"
                 android:contentDescription="Bookmark"
-                android:background="?attr/selectableItemBackgroundBorderless"
-                app:tint="#AAAAAA" />
+                android:background="?attr/selectableItemBackgroundBorderless" />
 
             <ImageView
                 android:id="@+id/slideShareNews"
-                android:layout_width="20dp"
-                android:layout_height="20dp"
+                android:layout_width="24dp"
+                android:layout_height="24dp"
                 android:layout_marginStart="16dp"
                 android:background="?attr/selectableItemBackgroundBorderless"
                 android:contentDescription="Partager"
-                android:src="@drawable/icon_partage_r"
-                app:tint="#AAAAAA" />
+                android:src="@drawable/ic_share_off" />
 
         </LinearLayout>
 
