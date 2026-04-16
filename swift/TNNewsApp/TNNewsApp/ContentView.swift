@@ -494,60 +494,73 @@ struct HomeNewsFeedView: View {
               !filter.isEmpty else { return newsItems }
 
         let normalizedFilter = filter.lowercased()
-        let filtered = newsItems.filter { item in
+        return newsItems.filter { item in
             item.category.lowercased().contains(normalizedFilter) ||
             item.title.lowercased().contains(normalizedFilter)
         }
-        return filtered.isEmpty ? newsItems : filtered
     }
 
     private var topStories: [BootstrapViewModel.NewsRow] {
         Array(displayedNews.prefix(8))
     }
 
+    private var isHomeMode: Bool {
+        categoryFilter == nil
+    }
+
     var body: some View {
         ScrollView {
             VStack(alignment: .leading, spacing: 14) {
-                NewsSectionHeader(title: "A LA UNE")
+                if isHomeMode {
+                    NewsSectionHeader(title: "A LA UNE")
 
-                TabView(selection: $currentTopStoryIndex) {
-                    ForEach(Array(topStories.enumerated()), id: \.element.id) { index, item in
-                        NavigationLink {
-                            NewsHTMLDetailView(item: item)
-                        } label: {
-                            TopHeadlineCard(item: item)
-                        }
-                        .buttonStyle(.plain)
-                        .padding(.horizontal, 4)
-                        .tag(index)
-                    }
-                }
-                .frame(height: 265)
-                .tabViewStyle(.page(indexDisplayMode: .never))
-
-                if topStories.count > 1 {
-                    HStack(spacing: 7) {
-                        ForEach(0..<topStories.count, id: \.self) { index in
-                            Circle()
-                                .fill(index == currentTopStoryIndex ? Color(androidGreen) : Color.gray.opacity(0.35))
-                                .frame(width: 9, height: 9)
+                    TabView(selection: $currentTopStoryIndex) {
+                        ForEach(Array(topStories.enumerated()), id: \.element.id) { index, item in
+                            NavigationLink {
+                                NewsHTMLDetailView(item: item)
+                            } label: {
+                                TopHeadlineCard(item: item)
+                            }
+                            .buttonStyle(.plain)
+                            .padding(.horizontal, 4)
+                            .tag(index)
                         }
                     }
-                    .frame(maxWidth: .infinity)
-                    .padding(.top, -2)
+                    .frame(height: 265)
+                    .tabViewStyle(.page(indexDisplayMode: .never))
+
+                    if topStories.count > 1 {
+                        HStack(spacing: 7) {
+                            ForEach(0..<topStories.count, id: \.self) { index in
+                                Circle()
+                                    .fill(index == currentTopStoryIndex ? Color(androidGreen) : Color.gray.opacity(0.35))
+                                    .frame(width: 9, height: 9)
+                            }
+                        }
+                        .frame(maxWidth: .infinity)
+                        .padding(.top, -2)
+                    }
                 }
 
-                NewsSectionHeader(title: "NEWS")
+                NewsSectionHeader(title: isHomeMode ? "NEWS" : (categoryFilter ?? "NEWS").uppercased())
                     .padding(.top, 8)
 
-                VStack(spacing: 12) {
-                    ForEach(displayedNews) { item in
-                        NavigationLink {
-                            NewsHTMLDetailView(item: item)
-                        } label: {
-                            NewsFeedRowCard(item: item)
+                if displayedNews.isEmpty {
+                    Text("Aucun article trouvé pour cette rubrique.")
+                        .font(.system(size: 15, weight: .medium))
+                        .foregroundStyle(.secondary)
+                        .padding(.horizontal, 8)
+                        .padding(.vertical, 10)
+                } else {
+                    VStack(spacing: 12) {
+                        ForEach(displayedNews) { item in
+                            NavigationLink {
+                                NewsHTMLDetailView(item: item)
+                            } label: {
+                                NewsFeedRowCard(item: item)
+                            }
+                            .buttonStyle(.plain)
                         }
-                        .buttonStyle(.plain)
                     }
                 }
             }
