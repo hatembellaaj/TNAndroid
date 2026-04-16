@@ -48,6 +48,7 @@ import com.nostra13.universalimageloader.core.ImageLoader;
 
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
+import java.util.Locale;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -67,6 +68,9 @@ public class ArticleDetailFragment extends Fragment {
     private FrameLayout mContainer;
     private WebView mWebviewPop;
     private ImageView imageArticle;
+    private TextView txtCategory;
+    private TextView txtTitle;
+    private TextView txtDate;
     private long mLastClickTime = 0;
     //Add huawei banner
     BannerView huaweiBannerView;
@@ -118,6 +122,9 @@ public class ArticleDetailFragment extends Fragment {
             prepareAudio();
         }
         imageArticle = (ImageView) view.findViewById(R.id.image_details);
+        txtCategory = (TextView) view.findViewById(R.id.txt_category);
+        txtTitle = (TextView) view.findViewById(R.id.txt_title);
+        txtDate = (TextView) view.findViewById(R.id.txt_date);
         webviewDescription = (WebView) view.findViewById(R.id.details_article);
 
 
@@ -125,6 +132,9 @@ public class ArticleDetailFragment extends Fragment {
         positionScrollView = scrollView.getScrollY();
         // set title toolbar
         ImageLoader.getInstance().displayImage(news.getImageUrlDetailsNews(), imageArticle, utils.getImageLoaderOptionDetailsNews());
+        txtCategory.setText(news.getTypeNews() == null ? "" : news.getTypeNews().toUpperCase(Locale.ROOT));
+        txtTitle.setText(news.getTitleNews());
+        txtDate.setText(news.getDateNews());
       // check if  device  is huawei
             huaweiBannerView = view.findViewById(R.id.hw_banner_view);
             huaweiBannerView.setVisibility(View.VISIBLE);
@@ -233,7 +243,9 @@ public class ArticleDetailFragment extends Fragment {
         webviewDescription.getSettings().setSupportZoom(false);
         webviewDescription.getSettings().setBuiltInZoomControls(false);
         webviewDescription.setLayoutParams(new FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
-                ViewGroup.LayoutParams.MATCH_PARENT));
+                ViewGroup.LayoutParams.WRAP_CONTENT));
+        webviewDescription.setVerticalScrollBarEnabled(false);
+        webviewDescription.setHorizontalScrollBarEnabled(false);
         CookieManager.getInstance().setAcceptCookie(true);
         if (Build.VERSION.SDK_INT >= 21) {
             webviewDescription.getSettings().setMixedContentMode(WebSettings.MIXED_CONTENT_ALWAYS_ALLOW);
@@ -519,4 +531,3 @@ public class ArticleDetailFragment extends Fragment {
     }
 
 }
-

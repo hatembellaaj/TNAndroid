@@ -1023,30 +1023,87 @@ final class BootstrapViewModel: ObservableObject {
 struct NewsHTMLDetailView: View {
     let item: BootstrapViewModel.NewsRow
 
+    private var normalizedImageURL: URL? {
+        normalizedURL(from: item.imageURL)
+    }
+
+    private var normalizedShareURL: URL? {
+        normalizedURL(from: item.shareURL)
+    }
+
     var body: some View {
-        VStack(alignment: .leading, spacing: 10) {
-            Text(item.title)
-                .font(.title3.bold())
-                .padding(.horizontal)
-                .padding(.top, 8)
+        ScrollView {
+            VStack(alignment: .leading, spacing: 12) {
+                if let imageURL = normalizedImageURL {
+                    AsyncImage(url: imageURL) { phase in
+                        switch phase {
+                        case .empty:
+                            ZStack {
+                                RoundedRectangle(cornerRadius: 16)
+                                    .fill(Color.gray.opacity(0.12))
+                                ProgressView()
+                            }
+                            .frame(height: 220)
+                        case .success(let image):
+                            image
+                                .resizable()
+                                .scaledToFill()
+                                .frame(height: 220)
+                                .clipShape(RoundedRectangle(cornerRadius: 16, style: .continuous))
+                        case .failure(let error):
+                            ZStack {
+                                RoundedRectangle(cornerRadius: 16)
+                                    .fill(Color.gray.opacity(0.12))
+                                Image(systemName: "photo")
+                                    .foregroundStyle(.gray)
+                            }
+                            .frame(height: 220)
+                            .onAppear {
+                                print("[TN-iOS][DetailHTML] image load failed id=\(item.id) raw=\(item.imageURL) normalized=\(imageURL.absoluteString) error=\(error.localizedDescription)")
+                            }
+                        @unknown default:
+                            EmptyView()
+                        }
+                    }
+                }
 
-            if !item.date.isEmpty {
-                Text(item.date)
-                    .font(.footnote)
-                    .foregroundStyle(.secondary)
-                    .padding(.horizontal)
+                Text(item.title)
+                    .font(.title3.bold())
+
+                if !item.date.isEmpty {
+                    Text(item.date)
+                        .font(.footnote)
+                        .foregroundStyle(.secondary)
+                }
+
+                if let shareURL = normalizedShareURL {
+                    ShareLink("Partager", item: shareURL)
+                }
+
+                Divider()
+
+                HTMLContentView(html: item.contentHTML)
             }
-
-            if let url = URL(string: item.shareURL), !item.shareURL.isEmpty {
-                ShareLink("Partager", item: url)
-                    .padding(.horizontal)
-            }
-
-            Divider()
-            HTMLContentView(html: item.contentHTML)
+            .padding(.horizontal)
+            .padding(.vertical, 8)
         }
         .navigationTitle("Détail")
         .navigationBarTitleDisplayMode(.inline)
+        .onAppear {
+            print("[TN-iOS][DetailHTML] OPEN id=\(item.id) title=\(item.title)")
+            print("[TN-iOS][DetailHTML] image raw=\(item.imageURL) normalized=\(normalizedImageURL?.absoluteString ?? "<invalid>")")
+            print("[TN-iOS][DetailHTML] share raw=\(item.shareURL) normalized=\(normalizedShareURL?.absoluteString ?? "<invalid>")")
+            print("[TN-iOS][DetailHTML] html length=\(item.contentHTML.count)")
+        }
+    }
+
+    private func normalizedURL(from raw: String) -> URL? {
+        let trimmed = raw.trimmingCharacters(in: .whitespacesAndNewlines)
+        guard !trimmed.isEmpty else { return nil }
+        if let direct = URL(string: trimmed), direct.scheme != nil {
+            return direct
+        }
+        return URL(string: "https://\(trimmed)")
     }
 }
 
