@@ -116,7 +116,7 @@
                     <androidx.viewpager2.widget.ViewPager2
                         android:id="@+id/dossierViewPager"
                         android:layout_width="match_parent"
-                        android:layout_height="300dp"
+                        android:layout_height="340dp"
                         android:clipToPadding="false"
                         android:clipChildren="false"
                         android:paddingStart="16dp"

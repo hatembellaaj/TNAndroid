@@ -89,6 +89,7 @@
                 android:layout_height="24dp"
                 android:src="@drawable/ic_bookmark_outline"
                 android:contentDescription="Bookmark"
+                android:tint="#9E9E9E"
                 android:background="?attr/selectableItemBackgroundBorderless" />
 
             <!-- PARTAGE -->
@@ -99,6 +100,7 @@
                 android:layout_marginStart="16dp"
                 android:background="?attr/selectableItemBackgroundBorderless"
                 android:contentDescription="Partager"
+                android:tint="#9E9E9E"
                 android:src="@drawable/ic_share_off" />
 
         </LinearLayout>

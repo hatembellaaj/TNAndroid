@@ -2,18 +2,17 @@
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="wrap_content">
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="wrap_content"
         android:orientation="vertical">
 
         <!-- Image du dossier avec coins arrondis - MÊME STYLE QUE NEWS -->
         <androidx.cardview.widget.CardView
             android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_weight="1"
+            android:layout_height="190dp"
             app:cardCornerRadius="12dp"
             app:cardElevation="0dp"
             app:cardUseCompatPadding="false"
@@ -90,6 +89,7 @@
                     android:contentDescription="Save"
                     android:clickable="true"
                     android:focusable="true"
+                    android:tint="#9E9E9E"
                     android:background="?attr/selectableItemBackgroundBorderless" />
 
                 <!-- Container Partage -->
@@ -101,6 +101,7 @@
                     android:contentDescription="Share"
                     android:clickable="true"
                     android:focusable="true"
+                    android:tint="#9E9E9E"
                     android:background="?attr/selectableItemBackgroundBorderless" />
 
             </LinearLayout>
