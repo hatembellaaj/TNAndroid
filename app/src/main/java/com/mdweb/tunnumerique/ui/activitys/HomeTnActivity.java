@@ -316,10 +316,7 @@ public class HomeTnActivity extends AppCompatActivity {
 
         // ── "À LA UNE" → ouvre une page dédiée comme les catégories ────
         if (item.getId().equals("alaune")) {
-            Intent intent = new Intent(HomeTnActivity.this, CategoryNewsActivity.class);
-            intent.putExtra(CategoryNewsActivity.EXTRA_IS_ALAUNE, true);
-            intent.putExtra(CategoryNewsActivity.EXTRA_CATEGORY_NAME, "A la une");
-            intent.putExtra(CategoryNewsActivity.EXTRA_CATEGORY_ID, "alaune");
+            Intent intent = new Intent(HomeTnActivity.this, AlaUneActivity.class);
             startActivity(intent);
             return;
         }
