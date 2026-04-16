@@ -124,6 +124,8 @@
                 app:itemIconSize="22dp"
                 app:itemTextAppearance="@style/NavigationViewTextStyle"
                 app:itemIconPadding="2dp"
+                app:itemIconTint="@color/bottom_nav_color"
+                app:itemTextColor="@color/bottom_nav_color"
                 app:labelVisibilityMode="labeled"
                 app:menu="@menu/menu_bottom_navigation"/>
 
