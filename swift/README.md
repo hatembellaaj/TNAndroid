@@ -43,6 +43,7 @@ Le script génère des PNG non transparents au style TN, puis remplit:
 
 Ensuite dans Xcode, vérifie:
 - Target `TNNewsApp` -> `General` -> `App Icons and Launch Screen` -> `App Icon = AppIcon`
+- Fais un `Product > Clean Build Folder`, supprime l'ancienne app du simulateur/téléphone puis relance: l'icône affichée sur l'écran d'accueil sera le logo TN généré.
 
 ## Intégration Xcode
 - Conserver un seul fichier `@main`.

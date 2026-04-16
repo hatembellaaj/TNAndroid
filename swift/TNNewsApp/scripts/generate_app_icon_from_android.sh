@@ -67,28 +67,18 @@ NSGraphicsContext.saveGraphicsState()
 let ctx = NSGraphicsContext(bitmapImageRep: rep)!
 NSGraphicsContext.current = ctx
 
-// Canvas white (iOS icon alpha-safe background).
-NSColor.white.setFill()
-NSBezierPath(rect: NSRect(origin: .zero, size: canvasSize)).fill()
-
-// Green rounded square like Android launcher icon.
-let margin = CGFloat(size) * 0.09
-let iconRect = NSRect(x: margin, y: margin, width: CGFloat(size) - 2 * margin, height: CGFloat(size) - 2 * margin)
-let radius = CGFloat(size) * 0.20
+// Full-bleed green icon (iOS will mask corners on home screen).
+let iconRect = NSRect(origin: .zero, size: canvasSize)
+let radius = CGFloat(size) * 0.225
 let iconPath = NSBezierPath(roundedRect: iconRect, xRadius: radius, yRadius: radius)
 NSColor(calibratedRed: 64/255, green: 214/255, blue: 98/255, alpha: 1).setFill()
 iconPath.fill()
 
-// Subtle darker border.
-NSColor(calibratedRed: 45/255, green: 179/255, blue: 77/255, alpha: 1).setStroke()
-iconPath.lineWidth = max(2, CGFloat(size) * 0.02)
-iconPath.stroke()
-
 // White letter blocks ("T" and "N"), centered.
-let blockGap = CGFloat(size) * 0.05
-let blockWidth = CGFloat(size) * 0.25
-let blockHeight = CGFloat(size) * 0.36
-let blockY = CGFloat(size) * 0.34
+let blockGap = CGFloat(size) * 0.042
+let blockWidth = CGFloat(size) * 0.27
+let blockHeight = CGFloat(size) * 0.38
+let blockY = CGFloat(size) * 0.31
 let totalWidth = blockWidth * 2 + blockGap
 let startX = (CGFloat(size) - totalWidth) / 2
 
@@ -99,7 +89,7 @@ func drawLetterBlock(x: CGFloat, letter: String) {
     blockPath.fill()
 
     let attrs: [NSAttributedString.Key: Any] = [
-        .font: NSFont.systemFont(ofSize: CGFloat(size) * 0.23, weight: .heavy),
+        .font: NSFont.systemFont(ofSize: CGFloat(size) * 0.24, weight: .heavy),
         .foregroundColor: NSColor(calibratedRed: 72/255, green: 182/255, blue: 88/255, alpha: 1)
     ]
     let text = NSAttributedString(string: letter, attributes: attrs)
@@ -123,5 +113,5 @@ SWIFT
   echo "✅ generated $file (${size}x${size})"
 done
 
-echo "\nDone. Icons are generated with TN launcher style (green rounded square + TN letters)."
+echo "\nDone. Icons are generated for the phone home screen with TN launcher style."
 echo "Set App Icons Source to 'AppIcon' in Xcode target settings if needed."
