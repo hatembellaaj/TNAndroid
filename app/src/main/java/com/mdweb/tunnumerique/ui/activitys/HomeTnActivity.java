@@ -15,8 +15,6 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
-import android.content.res.ColorStateList;
-import android.graphics.Color;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -155,32 +153,7 @@ public class HomeTnActivity extends AppCompatActivity {
     private void setupBottomNavigation() {
         // Définir Home comme sélectionné par défaut
         bottomNavigationView.setSelectedItemId(R.id.nav_home);
-        // ✅ Icône verte pour selected, gris sinon
-        ColorStateList iconColors = new ColorStateList(
-                new int[][]{
-                        new int[]{android.R.attr.state_checked},   // sélectionné
-                        new int[]{}                                  // par défaut
-                },
-                new int[]{
-                        Color.parseColor("#88BD2E"),  // vert pour icône sélectionnée
-                        Color.parseColor("#AAAAAA")   // gris sinon
-                }
-        );
 
-        // ✅ Texte blanc pour selected, gris sinon
-        ColorStateList textColors = new ColorStateList(
-                new int[][]{
-                        new int[]{android.R.attr.state_checked},   // sélectionné
-                        new int[]{}                                  // par défaut
-                },
-                new int[]{
-                        Color.WHITE,                  // blanc pour texte sélectionné
-                        Color.parseColor("#AAAAAA")   // gris sinon
-                }
-        );
-
-        bottomNavigationView.setItemIconTintList(iconColors);
-        bottomNavigationView.setItemTextColor(textColors);
         // Gérer les clics sur les items du menu
         bottomNavigationView.setOnItemSelectedListener(item -> {
             int itemId = item.getItemId();
