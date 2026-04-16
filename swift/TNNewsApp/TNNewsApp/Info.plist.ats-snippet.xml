@@ -1,0 +1,9 @@
+<!--
+  Ajoute ce bloc dans le Info.plist de ton target iOS
+  (temporaire pour compatibilité avec l'endpoint HTTP des prières Android)
+-->
+<key>NSAppTransportSecurity</key>
+<dict>
+    <key>NSAllowsArbitraryLoads</key>
+    <true/>
+</dict>
