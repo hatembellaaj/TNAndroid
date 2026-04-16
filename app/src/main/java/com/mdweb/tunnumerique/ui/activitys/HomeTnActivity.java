@@ -314,11 +314,10 @@ public class HomeTnActivity extends AppCompatActivity {
 
         drawerLayout.closeDrawer(GravityCompat.START);
 
-        // ── "À LA UNE" → reste sur HomeTnActivity, affiche tout ─────────
+        // ── "À LA UNE" → ouvre une page dédiée comme les catégories ────
         if (item.getId().equals("alaune")) {
-            showRecyclerView();
-            displayNews(allNewsList);
-            menuAdapter.setSelectedPosition(0);
+            Intent intent = new Intent(HomeTnActivity.this, AlaUneActivity.class);
+            startActivity(intent);
             return;
         }
 
