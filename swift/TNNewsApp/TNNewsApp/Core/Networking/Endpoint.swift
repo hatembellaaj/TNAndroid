@@ -35,7 +35,7 @@ enum Endpoint {
         case .plusLus(.en): return "https://news-tunisia.tunisienumerique.com/jsondata/popular.json"
 
         case .categories(.fr): return "https://preprod.tunisienumerique.com/jsondata/categories.json"
-        case .categories(.ar): return "https://news-tunisia.tunisienumerique.com/jsondata/categories.json"
+        case .categories(.ar): return "https://arabe.tunisienumerique.com/jsondata/categories.json"
         case .categories(.en): return "https://news-tunisia.tunisienumerique.com/jsondata/categories.json"
 
         case .videos: return "https://preprod.tunisienumerique.com/jsondata/videotunisienumerique"
