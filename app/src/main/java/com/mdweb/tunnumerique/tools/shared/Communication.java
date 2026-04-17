@@ -103,7 +103,7 @@ public class Communication {
     public static final String URL_CATEGORIES = "https://preprod.tunisienumerique.com/jsondata/categories.json ";
     public static final String FILE_NAME_CATEGORIES = "categories.json";
 
-    public static final String URL_CATEGORIES_AR = "https://news-tunisia.tunisienumerique.com/jsondata/categories.json";
+    public static final String URL_CATEGORIES_AR = "https://arabe.tunisienumerique.com/jsondata/categories.json";
     public static final String FILE_NAME_CATEGORIES_AR = "categoriesar.json";
 
     // en

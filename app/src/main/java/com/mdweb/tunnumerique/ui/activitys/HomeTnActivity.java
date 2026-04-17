@@ -12,7 +12,6 @@ import android.widget.Toast;
 import android.widget.LinearLayout;
 
 import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.fragment.app.Fragment;
@@ -21,7 +20,9 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.viewpager2.widget.ViewPager2;
 
+import com.android.volley.Request;
 import com.android.volley.RequestQueue;
+import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.navigation.NavigationView;
@@ -44,7 +45,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
-public class HomeTnActivity extends AppCompatActivity {
+public class HomeTnActivity extends BaseActivity {
 
     private static final String TAG = "HomeActivity";
 
@@ -93,6 +94,9 @@ public class HomeTnActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.hometn_activity);
+        Log.d(TAG, "onCreate currentLang=" + SessionManager.getInstance().getCurrentLang(this)
+                + " locale=" + getResources().getConfiguration().locale
+                + " layoutDir=" + getResources().getConfiguration().getLayoutDirection());
 
         // Initialisation des vues
         initViews();
@@ -580,14 +584,17 @@ public class HomeTnActivity extends AppCompatActivity {
     private void loadLocalArticles() {
         allNewsList = new ArrayList<>();
         String currentLng = SessionManager.getInstance().getCurrentLang(this);
+        String sourceFile = Communication.FILE_NEWS_INIT;
 
         try {
             if (currentLng.equals(Constant.AR)) {
+                sourceFile = Communication.FILE_NEWS_INIT_AR;
                 allNewsList.addAll(new DataParser().getListFetchNews(
                         new Utils(this).getStringFromFile(Communication.FILE_NEWS_INIT_AR)
                 ));
                 Log.d(TAG, "📰 Articles chargés en ARABE: " + allNewsList.size());
             } else if (currentLng.equals(Constant.EN)) {
+                sourceFile = Communication.FILE_NEWS_INIT_EN;
                 allNewsList.addAll(new DataParser().getListFetchNews(
                         new Utils(this).getStringFromFile(Communication.FILE_NEWS_INIT_EN)
                 ));
@@ -597,6 +604,13 @@ public class HomeTnActivity extends AppCompatActivity {
                         new Utils(this).getStringFromFile(Communication.FILE_NEWS_INIT)
                 ));
                 Log.d(TAG, "📰 Articles chargés en FRANÇAIS: " + allNewsList.size());
+            }
+            Log.d(TAG, "loadLocalArticles currentLng=" + currentLng + " sourceFile=" + sourceFile);
+            if (!allNewsList.isEmpty()) {
+                Log.d(TAG, "Premier article title=" + allNewsList.get(0).getTitleNews());
+            } else {
+                Log.w(TAG, "Aucun article chargé pour la langue=" + currentLng);
+                fetchNewsFromServer(currentLng);
             }
 
             // Afficher tous les articles dans NEWS
@@ -619,19 +633,30 @@ public class HomeTnActivity extends AppCompatActivity {
         Log.e("MENU_DEBUG", "🔥 loadCategoriesForMenu APPELÉE");
         Log.e("MENU_DEBUG", "════════════════════════════════");
         String currentLang = SessionManager.getInstance().getCurrentLang(this);
+        String sourceFile = Communication.FILE_NAME_CATEGORIES;
 
         try {
             List<com.mdweb.tunnumerique.data.model.Categories> categoriesListTemp;
 
             if (currentLang.equals(Constant.AR)) {
+                sourceFile = Communication.FILE_NAME_CATEGORIES_AR;
                 categoriesListTemp = new DataParser().getListCategories(
                         new Utils(this).getStringFromFile(Communication.FILE_NAME_CATEGORIES_AR), 0);
             } else if (currentLang.equals(Constant.EN)) {
+                sourceFile = Communication.FILE_NAME_CATEGORIES_EN;
                 categoriesListTemp = new DataParser().getListCategories(
                         new Utils(this).getStringFromFile(Communication.FILE_NAME_CATEGORIES_EN), 0);
             } else {
                 categoriesListTemp = new DataParser().getListCategories(
                         new Utils(this).getStringFromFile(Communication.FILE_NAME_CATEGORIES), 1);
+            }
+            Log.d(TAG, "loadCategoriesForMenu currentLang=" + currentLang
+                    + " sourceFile=" + sourceFile
+                    + " count=" + categoriesListTemp.size());
+            if (categoriesListTemp.isEmpty()) {
+                Log.w(TAG, "Aucune catégorie locale, fallback réseau pour lang=" + currentLang);
+                fetchCategoriesFromServer(currentLang);
+                return;
             }
 
             updateDrawerMenu(categoriesListTemp);
@@ -650,7 +675,7 @@ public class HomeTnActivity extends AppCompatActivity {
         menuItemsList.clear();
 
         // ✅ AJOUTER "À LA UNE" EN PREMIER COMME HEADER
-        menuItemsList.add(new NavigationMenuAdapter.MenuItem("A la une", "alaune", true));
+        menuItemsList.add(new NavigationMenuAdapter.MenuItem(getString(R.string.menu_alaune), "alaune", true));
 
         // ✅ AJOUTER LES CATÉGORIES
         for (com.mdweb.tunnumerique.data.model.Categories category : categories) {
@@ -665,8 +690,8 @@ public class HomeTnActivity extends AppCompatActivity {
         }
 
         // ✅ AJOUTER A PROPOS ET PARAMÈTRES
-        menuItemsList.add(new NavigationMenuAdapter.MenuItem("A propos", "about"));
-        menuItemsList.add(new NavigationMenuAdapter.MenuItem("Paramètres", "settings"));
+        menuItemsList.add(new NavigationMenuAdapter.MenuItem(getString(R.string.menu_about), "about"));
+        menuItemsList.add(new NavigationMenuAdapter.MenuItem(getString(R.string.paremtre), "settings"));
 
         menuAdapter.notifyDataSetChanged();
         menuAdapter.setSelectedPosition(0);
@@ -678,14 +703,17 @@ public class HomeTnActivity extends AppCompatActivity {
     private void loadDossiers() {
         dossiersList = new ArrayList<>();
         String currentLng = SessionManager.getInstance().getCurrentLang(this);
+        String sourceFile = Communication.FILE_NAME_DOSSIER;
 
         try {
             if (currentLng.equals(Constant.AR)) {
+                sourceFile = Communication.FILE_NAME_DOSSIER_AR;
                 dossiersList.addAll(new DataParser().getListDossier(
                         new Utils(this).getStringFromFile(Communication.FILE_NAME_DOSSIER_AR)
                 ));
                 Log.d(TAG, "📂 Dossiers chargés en ARABE: " + dossiersList.size());
             } else if (currentLng.equals(Constant.EN)) {
+                sourceFile = Communication.FILE_NAME_DOSSIER_EN;
                 dossiersList.addAll(new DataParser().getListDossier(
                         new Utils(this).getStringFromFile(Communication.FILE_NAME_DOSSIER_EN)
                 ));
@@ -696,6 +724,13 @@ public class HomeTnActivity extends AppCompatActivity {
                 ));
                 Log.d(TAG, "📂 Dossiers chargés en FRANÇAIS: " + dossiersList.size());
             }
+            Log.d(TAG, "loadDossiers currentLng=" + currentLng + " sourceFile=" + sourceFile
+                    + " count=" + dossiersList.size());
+            if (dossiersList.isEmpty()) {
+                Log.w(TAG, "Aucun dossier local, fallback réseau pour lang=" + currentLng);
+                fetchDossiersFromServer(currentLng);
+                return;
+            }
 
             setupDossierViewPager();
 
@@ -703,6 +738,77 @@ public class HomeTnActivity extends AppCompatActivity {
             Log.e(TAG, "❌ Erreur chargement dossiers: " + e.getMessage());
             e.printStackTrace();
         }
+    }
+
+    private void fetchNewsFromServer(String currentLng) {
+        String url = Communication.URL_NEWS_INIT;
+        if (Constant.AR.equals(currentLng)) {
+            url = Communication.URL_NEWS_INIT_AR;
+        } else if (Constant.EN.equals(currentLng)) {
+            url = Communication.URL_NEWS_INIT_EN;
+        }
+
+        StringRequest request = new StringRequest(Request.Method.GET, url,
+                response -> {
+                    List<News> remoteNews = new DataParser().getListFetchNews(response);
+                    Log.d(TAG, "fetchNewsFromServer lang=" + currentLng + " count=" + remoteNews.size() + " url=" + url);
+                    if (!remoteNews.isEmpty()) {
+                        allNewsList.clear();
+                        allNewsList.addAll(remoteNews);
+                        displayNews(allNewsList);
+                    }
+                },
+                error -> Log.e(TAG, "fetchNewsFromServer error lang=" + currentLng + " url=" + url + " msg=" + error)
+        );
+        requestQueue.add(request);
+    }
+
+    private void fetchCategoriesFromServer(String currentLang) {
+        String url = Communication.URL_CATEGORIES;
+        int state = 1;
+        if (Constant.AR.equals(currentLang)) {
+            url = Communication.URL_CATEGORIES_AR;
+            state = 0;
+        } else if (Constant.EN.equals(currentLang)) {
+            url = Communication.URL_CATEGORIES_EN;
+            state = 0;
+        }
+
+        int finalState = state;
+        StringRequest request = new StringRequest(Request.Method.GET, url,
+                response -> {
+                    List<com.mdweb.tunnumerique.data.model.Categories> categories = new DataParser().getListCategories(response, finalState);
+                    Log.d(TAG, "fetchCategoriesFromServer lang=" + currentLang + " count=" + categories.size() + " url=" + url);
+                    if (!categories.isEmpty()) {
+                        updateDrawerMenu(categories);
+                    }
+                },
+                error -> Log.e(TAG, "fetchCategoriesFromServer error lang=" + currentLang + " url=" + url + " msg=" + error)
+        );
+        requestQueue.add(request);
+    }
+
+    private void fetchDossiersFromServer(String currentLng) {
+        String url = Communication.URL_DOSSIER;
+        if (Constant.AR.equals(currentLng)) {
+            url = Communication.URL_DOSSIER_AR;
+        } else if (Constant.EN.equals(currentLng)) {
+            url = Communication.URL_DOSSIER_EN;
+        }
+
+        StringRequest request = new StringRequest(Request.Method.GET, url,
+                response -> {
+                    List<News> remoteDossiers = new DataParser().getListDossier(response);
+                    Log.d(TAG, "fetchDossiersFromServer lang=" + currentLng + " count=" + remoteDossiers.size() + " url=" + url);
+                    if (!remoteDossiers.isEmpty()) {
+                        dossiersList.clear();
+                        dossiersList.addAll(remoteDossiers);
+                        setupDossierViewPager();
+                    }
+                },
+                error -> Log.e(TAG, "fetchDossiersFromServer error lang=" + currentLng + " url=" + url + " msg=" + error)
+        );
+        requestQueue.add(request);
     }
 
     /**

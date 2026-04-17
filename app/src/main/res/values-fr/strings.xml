@@ -202,4 +202,6 @@
     <string name="isha">Al-Icha</string>
     <string name="blagues">Blagues</string>
     <string name="tunisie">Tunisie</string>
+    <string name="menu_alaune">À la une</string>
+    <string name="menu_about">À propos</string>
 </resources>

@@ -327,6 +327,7 @@ public class SessionManager {
             editor = pref.edit();
             editor.putString("lang", b);
             editor.apply();
+            Log.d("SessionManager", "setCurrentLng -> " + b + " (" + context.getClass().getSimpleName() + ")");
         } else
             Log.d("NullPointr", "nullPointer");
 
@@ -334,7 +335,9 @@ public class SessionManager {
 
     public String getCurrentLang(Context context) {
         pref = context.getSharedPreferences(Constant.PREF_NAME, Context.MODE_PRIVATE);
-        return pref.getString("lang", "");
+        String lang = pref.getString("lang", "");
+        Log.d("SessionManager", "getCurrentLang -> " + lang + " (" + context.getClass().getSimpleName() + ")");
+        return lang;
     }
 
 
