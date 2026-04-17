@@ -146,6 +146,7 @@ public class NavigationMenuAdapter extends RecyclerView.Adapter<RecyclerView.Vie
             if (headerItem == null) return;
 
             MenuItem finalHeaderItem = headerItem;
+            title.setText(finalHeaderItem.getTitle());
 
             int p32 = dp(itemView.getContext(), 32);
             int p24 = dp(itemView.getContext(), 24);
@@ -208,7 +209,7 @@ public class NavigationMenuAdapter extends RecyclerView.Adapter<RecyclerView.Vie
 
                 // ✅ CRÉER LE TEXTVIEW
                 TextView tv = new TextView(container.getContext());
-                tv.setText(capitalizeFirstLetter(item.getTitle()));
+                tv.setText(item.getTitle());
                 tv.setPadding(dp(container.getContext(), 32), dp(container.getContext(), 18),
                         dp(container.getContext(), 32), dp(container.getContext(), 18));
                 tv.setLayoutParams(new LinearLayout.LayoutParams(
@@ -246,11 +247,6 @@ public class NavigationMenuAdapter extends RecyclerView.Adapter<RecyclerView.Vie
                 div.setBackgroundColor(0xFFDDDDDD);
                 container.addView(div);
             }
-        }
-
-        private String capitalizeFirstLetter(String text) {
-            if (text == null || text.isEmpty()) return text;
-            return text.substring(0, 1).toUpperCase() + text.substring(1).toLowerCase();
         }
     }
 

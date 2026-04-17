@@ -675,7 +675,7 @@ public class HomeTnActivity extends BaseActivity {
         menuItemsList.clear();
 
         // ✅ AJOUTER "À LA UNE" EN PREMIER COMME HEADER
-        menuItemsList.add(new NavigationMenuAdapter.MenuItem("A la une", "alaune", true));
+        menuItemsList.add(new NavigationMenuAdapter.MenuItem(getString(R.string.menu_alaune), "alaune", true));
 
         // ✅ AJOUTER LES CATÉGORIES
         for (com.mdweb.tunnumerique.data.model.Categories category : categories) {
@@ -690,8 +690,8 @@ public class HomeTnActivity extends BaseActivity {
         }
 
         // ✅ AJOUTER A PROPOS ET PARAMÈTRES
-        menuItemsList.add(new NavigationMenuAdapter.MenuItem("A propos", "about"));
-        menuItemsList.add(new NavigationMenuAdapter.MenuItem("Paramètres", "settings"));
+        menuItemsList.add(new NavigationMenuAdapter.MenuItem(getString(R.string.menu_about), "about"));
+        menuItemsList.add(new NavigationMenuAdapter.MenuItem(getString(R.string.paremtre), "settings"));
 
         menuAdapter.notifyDataSetChanged();
         menuAdapter.setSelectedPosition(0);
