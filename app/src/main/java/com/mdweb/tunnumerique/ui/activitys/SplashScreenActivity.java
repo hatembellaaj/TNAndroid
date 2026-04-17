@@ -350,12 +350,14 @@ public class SplashScreenActivity extends BaseActivity {
 
                         @Override
                         public void onResponseError(VolleyError volleyError) {
+                            Log.e("SplashData", "NEWS_FR error url=" + Communication.URL_NEWS_INIT + " msg=" + volleyError);
                         }
                     });
 
                     stringRequest.makeStringRequestGet(Communication.URL_NEWS_INIT_AR, Communication.FILE_NEWS_INIT_AR, new ResponseCompleteInterface() {
                         @Override
                         public void onResponseComplete(String response) {
+                            Log.d("SplashData", "NEWS_AR ok url=" + Communication.URL_NEWS_INIT_AR + " file=" + Communication.FILE_NEWS_INIT_AR);
                             Intent ainte = new Intent();
                             ainte.setAction("com.mdweb.tn.refresh");
                             Log.d("testserviceIntent", "je suis dans reponse ok init data articles splsh");
@@ -369,6 +371,7 @@ public class SplashScreenActivity extends BaseActivity {
 
                         @Override
                         public void onResponseError(VolleyError volleyError) {
+                            Log.e("SplashData", "NEWS_AR error url=" + Communication.URL_NEWS_INIT_AR + " msg=" + volleyError);
                         }
                     });
 
@@ -388,6 +391,7 @@ public class SplashScreenActivity extends BaseActivity {
 
                         @Override
                         public void onResponseError(VolleyError volleyError) {
+                            Log.e("SplashData", "NEWS_EN error url=" + Communication.URL_NEWS_INIT_EN + " msg=" + volleyError);
                         }
                     });
 
@@ -416,10 +420,12 @@ public class SplashScreenActivity extends BaseActivity {
                     stringRequest.makeStringRequestGet(Communication.URL_DOSSIER_AR, Communication.FILE_NAME_DOSSIER_AR, new ResponseCompleteInterface() {
                         @Override
                         public void onResponseComplete(String response) {
+                            Log.d("SplashData", "DOSSIER_AR ok url=" + Communication.URL_DOSSIER_AR + " file=" + Communication.FILE_NAME_DOSSIER_AR);
                         }
 
                         @Override
                         public void onResponseError(VolleyError volleyError) {
+                            Log.e("SplashData", "DOSSIER_AR error url=" + Communication.URL_DOSSIER_AR + " msg=" + volleyError);
                         }
                     });
 
@@ -447,10 +453,12 @@ public class SplashScreenActivity extends BaseActivity {
                     stringRequest.makeStringRequestGet(Communication.URL_CATEGORIES_AR, Communication.FILE_NAME_CATEGORIES_AR, new ResponseCompleteInterface() {
                         @Override
                         public void onResponseComplete(String response) {
+                            Log.d("SplashData", "CATEGORIES_AR ok url=" + Communication.URL_CATEGORIES_AR + " file=" + Communication.FILE_NAME_CATEGORIES_AR);
                         }
 
                         @Override
                         public void onResponseError(VolleyError volleyError) {
+                            Log.e("SplashData", "CATEGORIES_AR error url=" + Communication.URL_CATEGORIES_AR + " msg=" + volleyError);
                         }
                     });
 

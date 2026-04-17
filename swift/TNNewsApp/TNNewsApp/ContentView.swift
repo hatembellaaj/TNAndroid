@@ -287,18 +287,79 @@ struct LegacySideMenuView: View {
     let onClose: () -> Void
 
     private var categoryItems: [(label: String, filter: String?)] {
-        [
-            ("A la une", "A la une"),
-            ("Actualités", "Actualités"),
-            ("Monde", "Monde"),
-            ("Politique", "Politique"),
-            ("Economie", "Economie"),
-            ("Autos", "Autos"),
-            ("Sport", "Sport"),
-            ("Tech & net", "Tech"),
-            ("Société", "Société"),
-            ("Recette", "Recette")
-        ]
+        switch selectedLanguage {
+        case .fr:
+            return [
+                ("À la une", "À la une"),
+                ("Actualités", "Actualités"),
+                ("Monde", "Monde"),
+                ("Politique", "Politique"),
+                ("Economie", "Economie"),
+                ("Autos", "Autos"),
+                ("Sport", "Sport"),
+                ("Tech & net", "Tech"),
+                ("Société", "Société"),
+                ("Recette", "Recette")
+            ]
+        case .en:
+            return [
+                ("Top stories", "Top stories"),
+                ("News", "News"),
+                ("World", "World"),
+                ("Politics", "Politics"),
+                ("Economy", "Economy"),
+                ("Autos", "Autos"),
+                ("Sports", "Sports"),
+                ("Tech", "Tech"),
+                ("Society", "Society"),
+                ("Recipes", "Recipes")
+            ]
+        case .ar:
+            return [
+                ("أهم الأخبار", "أهم الأخبار"),
+                ("الأخبار", "الأخبار"),
+                ("العالم", "العالم"),
+                ("سياسة", "سياسة"),
+                ("اقتصاد", "اقتصاد"),
+                ("سيارات", "سيارات"),
+                ("رياضة", "رياضة"),
+                ("تكنولوجيا", "تكنولوجيا"),
+                ("مجتمع", "مجتمع"),
+                ("وصفات", "وصفات")
+            ]
+        }
+    }
+
+    private var menuTitle: String {
+        switch selectedLanguage {
+        case .fr: return "TUNISIE NUMÉRIQUE"
+        case .en: return "TUNISIA DIGITAL"
+        case .ar: return "تونس الرقمية"
+        }
+    }
+
+    private var menuSubtitle: String {
+        switch selectedLanguage {
+        case .fr: return "LA TUNISIE À L'ÈRE DE LA DÉMOCRATIE"
+        case .en: return "TUNISIA IN THE DIGITAL ERA"
+        case .ar: return "تونس في العصر الرقمي"
+        }
+    }
+
+    private var aboutLabel: String {
+        switch selectedLanguage {
+        case .fr: return "À propos"
+        case .en: return "About"
+        case .ar: return "من نحن"
+        }
+    }
+
+    private var settingsLabel: String {
+        switch selectedLanguage {
+        case .fr: return "Paramètres"
+        case .en: return "Settings"
+        case .ar: return "الإعدادات"
+        }
     }
 
     var body: some View {
@@ -317,12 +378,16 @@ struct LegacySideMenuView: View {
                             .frame(width: 42, height: 42)
                             .background(Color(androidGreen))
                     }
-                    Text("TUNISIE NUMÉRIQUE")
+                    Text(menuTitle)
+                        .multilineTextAlignment(selectedLanguage == .ar ? .trailing : .leading)
                         .font(.system(size: 19, weight: .heavy))
                         .foregroundStyle(Color(androidGreen))
-                    Text("LA TUNISIE À L'ÈRE DE LA DÉMOCRATIE")
+                        .frame(maxWidth: .infinity, alignment: selectedLanguage == .ar ? .trailing : .leading)
+                    Text(menuSubtitle)
+                        .multilineTextAlignment(selectedLanguage == .ar ? .trailing : .leading)
                         .font(.system(size: 10, weight: .bold))
                         .foregroundStyle(Color(androidGreen).opacity(0.85))
+                        .frame(maxWidth: .infinity, alignment: selectedLanguage == .ar ? .trailing : .leading)
                 }
                 Spacer()
                 Button(action: onClose) {
@@ -367,7 +432,7 @@ struct LegacySideMenuView: View {
                 onSelectMenuItem(.about)
             } label: {
                 HStack {
-                    Text("A propos")
+                    Text(aboutLabel)
                         .font(.system(size: 20, weight: .medium))
                         .foregroundStyle(.gray)
                     Spacer()
@@ -382,7 +447,7 @@ struct LegacySideMenuView: View {
                 onSelectMenuItem(.settings)
             } label: {
                 HStack {
-                    Text("Paramètres")
+                    Text(settingsLabel)
                         .font(.system(size: 20, weight: .medium))
                         .foregroundStyle(.gray)
                     Spacer()
