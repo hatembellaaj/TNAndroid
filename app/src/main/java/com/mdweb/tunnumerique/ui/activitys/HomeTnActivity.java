@@ -660,6 +660,8 @@ public class HomeTnActivity extends BaseActivity {
             }
 
             updateDrawerMenu(categoriesListTemp);
+            // Rafraîchit depuis le réseau pour éviter d'afficher un cache d'une ancienne langue.
+            fetchCategoriesFromServer(currentLang);
 
         } catch (Exception e) {
             Log.e(TAG, "❌ Erreur catégories: " + e.getMessage());
