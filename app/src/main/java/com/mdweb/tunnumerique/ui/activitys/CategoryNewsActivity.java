@@ -9,7 +9,6 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -35,7 +34,7 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Set;
 
-public class CategoryNewsActivity extends AppCompatActivity {
+public class CategoryNewsActivity extends BaseActivity {
 
     private static final String TAG = "CategoryNewsActivity";
 

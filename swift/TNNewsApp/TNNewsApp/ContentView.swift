@@ -27,6 +27,7 @@ struct ContentView: View {
                             } else {
                                 HomeNewsFeedView(
                                     newsItems: vm.newsItems,
+                                    selectedLanguage: selectedLanguage,
                                     categoryFilter: selectedCategoryFilter,
                                     favoriteItems: $favoriteItems
                                 )
@@ -287,18 +288,79 @@ struct LegacySideMenuView: View {
     let onClose: () -> Void
 
     private var categoryItems: [(label: String, filter: String?)] {
-        [
-            ("A la une", "A la une"),
-            ("Actualités", "Actualités"),
-            ("Monde", "Monde"),
-            ("Politique", "Politique"),
-            ("Economie", "Economie"),
-            ("Autos", "Autos"),
-            ("Sport", "Sport"),
-            ("Tech & net", "Tech"),
-            ("Société", "Société"),
-            ("Recette", "Recette")
-        ]
+        switch selectedLanguage {
+        case .fr:
+            return [
+                ("À la une", "À la une"),
+                ("Actualités", "Actualités"),
+                ("Monde", "Monde"),
+                ("Politique", "Politique"),
+                ("Economie", "Economie"),
+                ("Autos", "Autos"),
+                ("Sport", "Sport"),
+                ("Tech & net", "Tech"),
+                ("Société", "Société"),
+                ("Recette", "Recette")
+            ]
+        case .en:
+            return [
+                ("Top stories", "Top stories"),
+                ("News", "News"),
+                ("World", "World"),
+                ("Politics", "Politics"),
+                ("Economy", "Economy"),
+                ("Autos", "Autos"),
+                ("Sports", "Sports"),
+                ("Tech", "Tech"),
+                ("Society", "Society"),
+                ("Recipes", "Recipes")
+            ]
+        case .ar:
+            return [
+                ("أهم الأخبار", "أهم الأخبار"),
+                ("الأخبار", "الأخبار"),
+                ("العالم", "العالم"),
+                ("سياسة", "سياسة"),
+                ("اقتصاد", "اقتصاد"),
+                ("سيارات", "سيارات"),
+                ("رياضة", "رياضة"),
+                ("تكنولوجيا", "تكنولوجيا"),
+                ("مجتمع", "مجتمع"),
+                ("وصفات", "وصفات")
+            ]
+        }
+    }
+
+    private var menuTitle: String {
+        switch selectedLanguage {
+        case .fr: return "TUNISIE NUMÉRIQUE"
+        case .en: return "TUNISIA DIGITAL"
+        case .ar: return "تونس الرقمية"
+        }
+    }
+
+    private var menuSubtitle: String {
+        switch selectedLanguage {
+        case .fr: return "LA TUNISIE À L'ÈRE DE LA DÉMOCRATIE"
+        case .en: return "TUNISIA IN THE DIGITAL ERA"
+        case .ar: return "تونس في العصر الرقمي"
+        }
+    }
+
+    private var aboutLabel: String {
+        switch selectedLanguage {
+        case .fr: return "À propos"
+        case .en: return "About"
+        case .ar: return "من نحن"
+        }
+    }
+
+    private var settingsLabel: String {
+        switch selectedLanguage {
+        case .fr: return "Paramètres"
+        case .en: return "Settings"
+        case .ar: return "الإعدادات"
+        }
     }
 
     var body: some View {
@@ -317,12 +379,16 @@ struct LegacySideMenuView: View {
                             .frame(width: 42, height: 42)
                             .background(Color(androidGreen))
                     }
-                    Text("TUNISIE NUMÉRIQUE")
+                    Text(menuTitle)
+                        .multilineTextAlignment(selectedLanguage == .ar ? .trailing : .leading)
                         .font(.system(size: 19, weight: .heavy))
                         .foregroundStyle(Color(androidGreen))
-                    Text("LA TUNISIE À L'ÈRE DE LA DÉMOCRATIE")
+                        .frame(maxWidth: .infinity, alignment: selectedLanguage == .ar ? .trailing : .leading)
+                    Text(menuSubtitle)
+                        .multilineTextAlignment(selectedLanguage == .ar ? .trailing : .leading)
                         .font(.system(size: 10, weight: .bold))
                         .foregroundStyle(Color(androidGreen).opacity(0.85))
+                        .frame(maxWidth: .infinity, alignment: selectedLanguage == .ar ? .trailing : .leading)
                 }
                 Spacer()
                 Button(action: onClose) {
@@ -367,7 +433,7 @@ struct LegacySideMenuView: View {
                 onSelectMenuItem(.about)
             } label: {
                 HStack {
-                    Text("A propos")
+                    Text(aboutLabel)
                         .font(.system(size: 20, weight: .medium))
                         .foregroundStyle(.gray)
                     Spacer()
@@ -382,7 +448,7 @@ struct LegacySideMenuView: View {
                 onSelectMenuItem(.settings)
             } label: {
                 HStack {
-                    Text("Paramètres")
+                    Text(settingsLabel)
                         .font(.system(size: 20, weight: .medium))
                         .foregroundStyle(.gray)
                     Spacer()
@@ -502,6 +568,7 @@ struct LanguageSelectionSheet: View {
 
 struct HomeNewsFeedView: View {
     let newsItems: [BootstrapViewModel.NewsRow]
+    let selectedLanguage: UiLanguage
     let categoryFilter: String?
     @Binding var favoriteItems: [BootstrapViewModel.NewsRow]
     @State private var currentTopStoryIndex = 0
@@ -510,7 +577,7 @@ struct HomeNewsFeedView: View {
 
     private var displayedNews: [BootstrapViewModel.NewsRow] {
         if isHomeMode {
-            return filteredNews(for: "Actualités")
+            return filteredNews(for: defaultNewsCategoryLabel)
         }
 
         guard let filter = categoryFilter?.trimmingCharacters(in: .whitespacesAndNewlines),
@@ -552,9 +619,11 @@ struct HomeNewsFeedView: View {
 
         switch normalizedFilter {
         case "news", "actualites", "actualite":
-            values.formUnion(["news", "actualites", "actualite", "اخبار", "الاخبار"])
+            values.formUnion(["news", "actualites", "actualite", "اخبار", "الاخبار", "latest", "new"])
         case "اخبار", "الاخبار":
             values.formUnion(["news", "actualites", "actualite", "اخبار", "الاخبار"])
+        case "alaune", "topstories", "اهمالاخبار":
+            values.formUnion(["alaune", "topstories", "اهمالاخبار", "headline", "headlines"])
         default:
             break
         }
@@ -563,8 +632,48 @@ struct HomeNewsFeedView: View {
     }
 
     private var topStories: [BootstrapViewModel.NewsRow] {
-        let featured = filteredNews(for: "A la une")
+        let featured = filteredNews(for: topStoriesCategoryLabel)
         return Array(featured.prefix(8))
+    }
+
+    private var topStoriesCategoryLabel: String {
+        switch selectedLanguage {
+        case .fr: return "À la une"
+        case .en: return "Top stories"
+        case .ar: return "أهم الأخبار"
+        }
+    }
+
+    private var defaultNewsCategoryLabel: String {
+        switch selectedLanguage {
+        case .fr: return "Actualités"
+        case .en: return "News"
+        case .ar: return "الأخبار"
+        }
+    }
+
+    private var topStoriesSectionTitle: String {
+        switch selectedLanguage {
+        case .fr: return "À LA UNE"
+        case .en: return "TOP STORIES"
+        case .ar: return "أهم الأخبار"
+        }
+    }
+
+    private var defaultNewsSectionTitle: String {
+        switch selectedLanguage {
+        case .fr: return "ACTUALITÉS"
+        case .en: return "NEWS"
+        case .ar: return "الأخبار"
+        }
+    }
+
+    private var emptyNewsMessage: String {
+        switch selectedLanguage {
+        case .fr: return "Aucun article trouvé pour cette rubrique."
+        case .en: return "No articles found for this section."
+        case .ar: return "لم يتم العثور على مقالات في هذا القسم."
+        }
     }
 
     private var isHomeMode: Bool {
@@ -578,7 +687,7 @@ struct HomeNewsFeedView: View {
         ScrollView {
             VStack(alignment: .leading, spacing: 14) {
                 if isHomeMode {
-                    NewsSectionHeader(title: "A LA UNE")
+                    NewsSectionHeader(title: topStoriesSectionTitle)
 
                     TabView(selection: $currentTopStoryIndex) {
                         ForEach(Array(topStories.enumerated()), id: \.element.id) { index, item in
@@ -616,11 +725,11 @@ struct HomeNewsFeedView: View {
                     }
                 }
 
-                NewsSectionHeader(title: isHomeMode ? "ACTUALITÉS" : (categoryFilter ?? "ACTUALITÉS").uppercased())
+                NewsSectionHeader(title: isHomeMode ? defaultNewsSectionTitle : (categoryFilter ?? defaultNewsSectionTitle).uppercased())
                     .padding(.top, 8)
 
                 if displayedNews.isEmpty {
-                    Text("Aucun article trouvé pour cette rubrique.")
+                    Text(emptyNewsMessage)
                         .font(.system(size: 15, weight: .medium))
                         .foregroundStyle(.secondary)
                         .padding(.horizontal, 8)
