@@ -204,4 +204,6 @@
     <string name="blagues">Jokes</string>
     <string name="tunisie">Tunisia</string>
     <string name="loading">loading</string>
+    <string name="menu_alaune">Top stories</string>
+    <string name="menu_about">About</string>
 </resources>

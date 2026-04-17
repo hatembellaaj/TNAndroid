@@ -205,5 +205,7 @@
     <string name="al_icha">العشاء</string>
     <string name="blagues">نكت</string>
     <string name="tunisie">تونس</string>
+    <string name="menu_alaune">أهم الأخبار</string>
+    <string name="menu_about">حول التطبيق</string>
 
 </resources>

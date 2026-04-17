@@ -117,15 +117,9 @@ public class DataParser {
                 JSONObject _jsonObject = jsonArray.getJSONObject(i);
                 Categories categories = new Categories();
                 categories.setIdCategories(_jsonObject.getString("menu_id"));
-                String decodedName = _jsonObject.getString("menu_titre");
+                String decodedName = decodeMenuText(_jsonObject.getString("menu_titre"));
                 if (state == 1) {
-                    String name = "";
-                    try {
-                        name = new String(_jsonObject.getString("menu_titre").getBytes("ISO-8859-1"), "UTF-8");
-                    } catch (UnsupportedEncodingException e) {
-                        e.printStackTrace();
-                    }
-                    decodedName = Html.fromHtml(name).toString();
+                    decodedName = Html.fromHtml(decodedName).toString();
                 }
                 categories.setTitleCategories(decodedName);
                 categories.setTitleUrlCategories(_jsonObject.getString("menu_titre_url"));
@@ -144,6 +138,20 @@ public class DataParser {
             e.printStackTrace();
         }
         return categoriesList;
+    }
+
+    private String decodeMenuText(String rawText) {
+        if (rawText == null) return "";
+        String decoded = rawText;
+        try {
+            // Corrige les cas de texte mal encodé de type "Ø§Ù„..."
+            if (rawText.contains("Ã") || rawText.contains("Ø") || rawText.contains("Ù")) {
+                decoded = new String(rawText.getBytes("ISO-8859-1"), "UTF-8");
+            }
+        } catch (UnsupportedEncodingException e) {
+            Log.w("DataParser", "decodeMenuText fallback: " + e.getMessage());
+        }
+        return Html.fromHtml(decoded).toString();
     }
 
     // ==============================

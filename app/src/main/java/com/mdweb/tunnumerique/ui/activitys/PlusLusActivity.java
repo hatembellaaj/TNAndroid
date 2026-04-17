@@ -10,7 +10,6 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -31,7 +30,7 @@ import com.mdweb.tunnumerique.ui.adapters.PlusLusAdapter;
 import java.util.ArrayList;
 import java.util.List;
 
-public class PlusLusActivity extends AppCompatActivity {
+public class PlusLusActivity extends BaseActivity {
 
     private static final String TAG = "PlusLusActivity";
 
