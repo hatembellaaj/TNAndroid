@@ -20,7 +20,9 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.viewpager2.widget.ViewPager2;
 
+import com.android.volley.Request;
 import com.android.volley.RequestQueue;
+import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.navigation.NavigationView;
@@ -608,6 +610,7 @@ public class HomeTnActivity extends BaseActivity {
                 Log.d(TAG, "Premier article title=" + allNewsList.get(0).getTitleNews());
             } else {
                 Log.w(TAG, "Aucun article chargé pour la langue=" + currentLng);
+                fetchNewsFromServer(currentLng);
             }
 
             // Afficher tous les articles dans NEWS
@@ -650,6 +653,11 @@ public class HomeTnActivity extends BaseActivity {
             Log.d(TAG, "loadCategoriesForMenu currentLang=" + currentLang
                     + " sourceFile=" + sourceFile
                     + " count=" + categoriesListTemp.size());
+            if (categoriesListTemp.isEmpty()) {
+                Log.w(TAG, "Aucune catégorie locale, fallback réseau pour lang=" + currentLang);
+                fetchCategoriesFromServer(currentLang);
+                return;
+            }
 
             updateDrawerMenu(categoriesListTemp);
 
@@ -718,6 +726,11 @@ public class HomeTnActivity extends BaseActivity {
             }
             Log.d(TAG, "loadDossiers currentLng=" + currentLng + " sourceFile=" + sourceFile
                     + " count=" + dossiersList.size());
+            if (dossiersList.isEmpty()) {
+                Log.w(TAG, "Aucun dossier local, fallback réseau pour lang=" + currentLng);
+                fetchDossiersFromServer(currentLng);
+                return;
+            }
 
             setupDossierViewPager();
 
@@ -725,6 +738,77 @@ public class HomeTnActivity extends BaseActivity {
             Log.e(TAG, "❌ Erreur chargement dossiers: " + e.getMessage());
             e.printStackTrace();
         }
+    }
+
+    private void fetchNewsFromServer(String currentLng) {
+        String url = Communication.URL_NEWS_INIT;
+        if (Constant.AR.equals(currentLng)) {
+            url = Communication.URL_NEWS_INIT_AR;
+        } else if (Constant.EN.equals(currentLng)) {
+            url = Communication.URL_NEWS_INIT_EN;
+        }
+
+        StringRequest request = new StringRequest(Request.Method.GET, url,
+                response -> {
+                    List<News> remoteNews = new DataParser().getListFetchNews(response);
+                    Log.d(TAG, "fetchNewsFromServer lang=" + currentLng + " count=" + remoteNews.size() + " url=" + url);
+                    if (!remoteNews.isEmpty()) {
+                        allNewsList.clear();
+                        allNewsList.addAll(remoteNews);
+                        displayNews(allNewsList);
+                    }
+                },
+                error -> Log.e(TAG, "fetchNewsFromServer error lang=" + currentLng + " url=" + url + " msg=" + error)
+        );
+        requestQueue.add(request);
+    }
+
+    private void fetchCategoriesFromServer(String currentLang) {
+        String url = Communication.URL_CATEGORIES;
+        int state = 1;
+        if (Constant.AR.equals(currentLang)) {
+            url = Communication.URL_CATEGORIES_AR;
+            state = 0;
+        } else if (Constant.EN.equals(currentLang)) {
+            url = Communication.URL_CATEGORIES_EN;
+            state = 0;
+        }
+
+        int finalState = state;
+        StringRequest request = new StringRequest(Request.Method.GET, url,
+                response -> {
+                    List<com.mdweb.tunnumerique.data.model.Categories> categories = new DataParser().getListCategories(response, finalState);
+                    Log.d(TAG, "fetchCategoriesFromServer lang=" + currentLang + " count=" + categories.size() + " url=" + url);
+                    if (!categories.isEmpty()) {
+                        updateDrawerMenu(categories);
+                    }
+                },
+                error -> Log.e(TAG, "fetchCategoriesFromServer error lang=" + currentLang + " url=" + url + " msg=" + error)
+        );
+        requestQueue.add(request);
+    }
+
+    private void fetchDossiersFromServer(String currentLng) {
+        String url = Communication.URL_DOSSIER;
+        if (Constant.AR.equals(currentLng)) {
+            url = Communication.URL_DOSSIER_AR;
+        } else if (Constant.EN.equals(currentLng)) {
+            url = Communication.URL_DOSSIER_EN;
+        }
+
+        StringRequest request = new StringRequest(Request.Method.GET, url,
+                response -> {
+                    List<News> remoteDossiers = new DataParser().getListDossier(response);
+                    Log.d(TAG, "fetchDossiersFromServer lang=" + currentLng + " count=" + remoteDossiers.size() + " url=" + url);
+                    if (!remoteDossiers.isEmpty()) {
+                        dossiersList.clear();
+                        dossiersList.addAll(remoteDossiers);
+                        setupDossierViewPager();
+                    }
+                },
+                error -> Log.e(TAG, "fetchDossiersFromServer error lang=" + currentLng + " url=" + url + " msg=" + error)
+        );
+        requestQueue.add(request);
     }
 
     /**
