@@ -11,11 +11,20 @@ struct ContentView: View {
     @State private var selectedCategoryFilter: String? = nil
     @State private var selectedTab = 0
     @State private var favoriteItems: [BootstrapViewModel.NewsRow] = TNFavoriteArticlesStorage.load()
+    @State private var splashMessage = "Chargement des données..."
+    @State private var splashProgress: Double = 0.1
+    @State private var splashAdImageURL: URL?
+    @State private var showSplashAd = false
 
     var body: some View {
         Group {
             if showSplash {
-                AndroidStyleSplashView()
+                AndroidStyleSplashView(
+                    message: splashMessage,
+                    progress: splashProgress,
+                    adImageURL: splashAdImageURL,
+                    showAd: showSplashAd
+                )
             } else {
                 TabView(selection: $selectedTab) {
                     NavigationStack {
@@ -162,11 +171,58 @@ struct ContentView: View {
         }
         .task {
             guard showSplash else { return }
-            try? await Task.sleep(nanoseconds: 1_200_000_000)
+            await runSplashSequence()
             withAnimation(.easeOut(duration: 0.25)) {
                 showSplash = false
             }
         }
+    }
+
+    @MainActor
+    private func runSplashSequence() async {
+        splashProgress = 0.1
+        splashMessage = "Chargement des données..."
+        showSplashAd = false
+
+        async let pubImageURL = fetchSplashPubImageURL()
+
+        let steps: [(String, Double)] = [
+            ("Chargement des données...", 0.25),
+            ("Préparation du contenu...", 0.50),
+            ("Finalisation...", 0.80),
+            ("Prêt !", 1.0)
+        ]
+
+        for (message, progress) in steps {
+            splashMessage = message
+            splashProgress = progress
+            try? await Task.sleep(nanoseconds: 900_000_000)
+        }
+
+        splashAdImageURL = await pubImageURL
+        if splashAdImageURL != nil {
+            showSplashAd = true
+            try? await Task.sleep(nanoseconds: 5_000_000_000)
+            showSplashAd = false
+        }
+    }
+
+    private func fetchSplashPubImageURL() async -> URL? {
+        guard let url = URL(string: "https://jsondata.tunisienumerique.com/pub.json") else { return nil }
+        do {
+            let (data, response) = try await URLSession.shared.data(from: url)
+            guard let http = response as? HTTPURLResponse, (200...299).contains(http.statusCode) else { return nil }
+
+            if let root = try JSONSerialization.jsonObject(with: data) as? [String: Any] {
+                let pub = root["pub"] as? [String: Any] ?? root
+                if let image = pub["image"] as? String, let imageURL = URL(string: image), !image.isEmpty {
+                    return imageURL
+                }
+            }
+        } catch {
+            print("[TN-iOS][Splash] Pub fetch failed: \(error.localizedDescription)")
+        }
+        return nil
     }
 }
 
@@ -999,6 +1055,11 @@ private struct NewsThumbnail: View {
 }
 
 struct AndroidStyleSplashView: View {
+    let message: String
+    let progress: Double
+    let adImageURL: URL?
+    let showAd: Bool
+
     var body: some View {
         ZStack {
             Color.white.ignoresSafeArea()
@@ -1009,15 +1070,35 @@ struct AndroidStyleSplashView: View {
                 .offset(x: -120, y: -260)
 
             VStack(spacing: 16) {
-                TNLauncherLogoBadge()
+                if showAd, let adImageURL {
+                    AsyncImage(url: adImageURL) { phase in
+                        switch phase {
+                        case .success(let image):
+                            image
+                                .resizable()
+                                .scaledToFit()
+                        case .failure(_):
+                            Color.black.opacity(0.08)
+                                .overlay(Text("Publicité indisponible").foregroundStyle(.secondary))
+                        case .empty:
+                            ProgressView()
+                        @unknown default:
+                            ProgressView()
+                        }
+                    }
+                    .frame(maxWidth: .infinity, maxHeight: 380)
+                    .padding(.horizontal, 18)
+                } else {
+                    TNLauncherLogoBadge()
 
-                Text("Chargement de données...")
-                    .font(.footnote)
-                    .foregroundStyle(.secondary)
+                    Text(message)
+                        .font(.footnote)
+                        .foregroundStyle(.secondary)
 
-                ProgressView()
-                    .tint(Color(androidGreen))
-                    .frame(width: 160)
+                    ProgressView(value: progress, total: 1.0)
+                        .tint(Color(androidGreen))
+                        .frame(width: 220)
+                }
             }
         }
     }
