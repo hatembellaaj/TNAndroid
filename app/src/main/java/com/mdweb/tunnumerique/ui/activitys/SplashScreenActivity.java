@@ -108,7 +108,6 @@ public class SplashScreenActivity extends BaseActivity {
     private RelativeLayout relativeLayout;
     static boolean active = false;
     static boolean pub_cliked = false;
-    static int first_run;
     private String openURL;
     private boolean hasStartedFlow = false;
     private boolean hasScheduledStartup = false;
@@ -157,14 +156,6 @@ public class SplashScreenActivity extends BaseActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        if (first_run == 1) {
-            intent = new Intent(SplashScreenActivity.this, HomeTnActivity.class);
-            intent.putExtra("openURL", "");
-            startActivity(intent);
-            finish();
-            return;
-        }
-
         if (hasStartedFlow) {
             return;
         }
@@ -283,8 +274,6 @@ public class SplashScreenActivity extends BaseActivity {
     }
 
     public void initData() {
-        first_run = 1;
-
         //view pub
         view_pub_serveur = (SplashScreenActivity.this).getLayoutInflater().inflate(R.layout.pub_start_layout, null);
         pub = (ImageView) view_pub_serveur.findViewById(R.id.pub);
