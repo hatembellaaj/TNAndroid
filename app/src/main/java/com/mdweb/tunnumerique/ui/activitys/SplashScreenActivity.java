@@ -110,6 +110,8 @@ public class SplashScreenActivity extends BaseActivity {
     static boolean pub_cliked = false;
     static int first_run;
     private String openURL;
+    private boolean hasStartedFlow = false;
+    private boolean hasScheduledStartup = false;
 
     private static final int FLEXIBLE_APP_UPDATE_REQ_CODE = 123;
     java.text.DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.FRANCE);
@@ -155,21 +157,22 @@ public class SplashScreenActivity extends BaseActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        String lng = SessionManager.getInstance().getCurrentLang(this);
+        if (first_run == 1) {
+            intent = new Intent(SplashScreenActivity.this, HomeTnActivity.class);
+            intent.putExtra("openURL", "");
+            startActivity(intent);
+            finish();
+            return;
+        }
 
+        if (hasStartedFlow) {
+            return;
+        }
+        hasStartedFlow = true;
+
+        String lng = SessionManager.getInstance().getCurrentLang(this);
         initData();
-        getDataPubFromServeur();
-        new Handler().postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                if (lng != null && !lng.isEmpty()) {
-                    startPub();
-                } else {
-                    Intent intentLng = new Intent(SplashScreenActivity.this, LangueActivity.class);
-                    startActivityForResult(intentLng, 3251);
-                }
-            }
-        }, 2000);
+        fetchPubDataAndStart(lng);
     }
 
     /**
@@ -280,57 +283,54 @@ public class SplashScreenActivity extends BaseActivity {
     }
 
     public void initData() {
-        if (first_run == 1) {
-            intent = new Intent(SplashScreenActivity.this, HomeTnActivity.class);
-            intent.putExtra("openURL", "");
-            startActivity(intent);
-            finish();
-        } else {
-            first_run = 1;
+        first_run = 1;
 
-            //view pub
-            view_pub_serveur = (SplashScreenActivity.this).getLayoutInflater().inflate(R.layout.pub_start_layout, null);
-            pub = (ImageView) view_pub_serveur.findViewById(R.id.pub);
+        //view pub
+        view_pub_serveur = (SplashScreenActivity.this).getLayoutInflater().inflate(R.layout.pub_start_layout, null);
+        pub = (ImageView) view_pub_serveur.findViewById(R.id.pub);
 
-            handlerMain = new Handler();
-            handlerPub = new Handler();
-            //initialisation des fichier pour les données des services web vide
-            localFilesManager = new LocalFilesManager(getBaseContext());
-            localFilesManager.saveLocallyFile(Communication.FILE_NEWS_INIT, "");
-            localFilesManager.saveLocallyFile(Communication.FILE_NEWS_INIT_AR, "");
-            localFilesManager.saveLocallyFile(Communication.FILE_NEWS_INIT_EN, "");
-            localFilesManager.saveLocallyFile(Communication.FILE_NAME_DOSSIER, "");
-            localFilesManager.saveLocallyFile(Communication.FILE_NAME_DOSSIER_EN, "");
-            localFilesManager.saveLocallyFile(Communication.FILE_NAME_DOSSIER_AR, "");
-            localFilesManager.saveLocallyFile(Communication.FILE_NAME_PLUS_LUS, "");
-            localFilesManager.saveLocallyFile(Communication.FILE_NAME_PLUS_LUS_EN, "");
-            localFilesManager.saveLocallyFile(Communication.FILE_NAME_PLUS_LUS_AR, "");
-            localFilesManager.saveLocallyFile(Communication.FILE_NAME_CATEGORIES, "");
-            localFilesManager.saveLocallyFile(Communication.FILE_NAME_CATEGORIES_AR, "");
-            localFilesManager.saveLocallyFile(Communication.FILE_NAME_CATEGORIES_EN, "");
-            localFilesManager.saveLocallyFile(Communication.FILE_NAME_PIERE, "");
-            localFilesManager.saveLocallyFile(Communication.FILE_NAME_SUPPORTED_COUNTRIES, "");
-            localFilesManager.saveLocallyFile(Communication.FILE_NAME_VIDEO, "");
-            localFilesManager.saveLocallyFile(Communication.FILE_SURVEY, "");
-            localFilesManager.saveLocallyFile(Communication.TEXT, "");
+        handlerMain = new Handler();
+        handlerPub = new Handler();
+        //initialisation des fichier pour les données des services web vide
+        localFilesManager = new LocalFilesManager(getBaseContext());
+        localFilesManager.saveLocallyFile(Communication.FILE_NEWS_INIT, "");
+        localFilesManager.saveLocallyFile(Communication.FILE_NEWS_INIT_AR, "");
+        localFilesManager.saveLocallyFile(Communication.FILE_NEWS_INIT_EN, "");
+        localFilesManager.saveLocallyFile(Communication.FILE_NAME_DOSSIER, "");
+        localFilesManager.saveLocallyFile(Communication.FILE_NAME_DOSSIER_EN, "");
+        localFilesManager.saveLocallyFile(Communication.FILE_NAME_DOSSIER_AR, "");
+        localFilesManager.saveLocallyFile(Communication.FILE_NAME_PLUS_LUS, "");
+        localFilesManager.saveLocallyFile(Communication.FILE_NAME_PLUS_LUS_EN, "");
+        localFilesManager.saveLocallyFile(Communication.FILE_NAME_PLUS_LUS_AR, "");
+        localFilesManager.saveLocallyFile(Communication.FILE_NAME_CATEGORIES, "");
+        localFilesManager.saveLocallyFile(Communication.FILE_NAME_CATEGORIES_AR, "");
+        localFilesManager.saveLocallyFile(Communication.FILE_NAME_CATEGORIES_EN, "");
+        localFilesManager.saveLocallyFile(Communication.FILE_NAME_PIERE, "");
+        localFilesManager.saveLocallyFile(Communication.FILE_NAME_SUPPORTED_COUNTRIES, "");
+        localFilesManager.saveLocallyFile(Communication.FILE_NAME_VIDEO, "");
+        localFilesManager.saveLocallyFile(Communication.FILE_SURVEY, "");
+        localFilesManager.saveLocallyFile(Communication.TEXT, "");
 
-            r2 = new Runnable() {
-                @Override
-                public void run() {
-                    if (active && !pub_cliked) {
-                        intent = new Intent(SplashScreenActivity.this, HomeTnActivity.class);
-                        intent.putExtra("openURL", openURL);
-                        startActivity(intent);
-                        finish();
+        r2 = new Runnable() {
+            @Override
+            public void run() {
+                if (active && !pub_cliked) {
+                    startInitialDataDownload();
+                    intent = new Intent(SplashScreenActivity.this, HomeTnActivity.class);
+                    intent.putExtra("openURL", openURL);
+                    startActivity(intent);
+                    finish();
 
-                    }
                 }
-            };
+            }
+        };
+    }
 
-            // Initialise JsonRequest
-            initHorairePriereData();
-            final JsonRequestHelper stringRequest = new JsonRequestHelper(this);
-            new AsyncTask<Void, Void, Void>() {
+    private void startInitialDataDownload() {
+        // Initialise JsonRequest
+        initHorairePriereData();
+        final JsonRequestHelper stringRequest = new JsonRequestHelper(this);
+        new AsyncTask<Void, Void, Void>() {
                 @Override
                 protected Void doInBackground(Void... voids) {
                     //  get News json file from server
@@ -531,7 +531,46 @@ public class SplashScreenActivity extends BaseActivity {
                 protected void onPostExecute(Void aVoid) {
                 }
             }.execute();
+    }
+
+    private void fetchPubDataAndStart(final String lng) {
+        getDataPubFromServeur();
+        final JsonRequestHelper jsonRequestHelper = new JsonRequestHelper(this);
+        jsonRequestHelper.makeStringRequestGet(Communication.URL_Pub, Communication.FILE_NAME_PUB, new ResponseCompleteInterface() {
+            @Override
+            public void onResponseComplete(String response) {
+                parsePubResponse(response);
+                scheduleStartup(lng);
+            }
+
+            @Override
+            public void onResponseError(VolleyError volleyError) {
+                scheduleStartup(lng);
+            }
+        });
+
+        new Handler().postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                scheduleStartup(lng);
+            }
+        }, 1500);
+    }
+
+    private void scheduleStartup(final String lng) {
+        if (hasScheduledStartup) {
+            return;
         }
+        hasScheduledStartup = true;
+        new Handler().postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                if (lng == null || lng.isEmpty()) {
+                    SessionManager.getInstance().setCurrentLng(SplashScreenActivity.this, Constant.FR);
+                }
+                startPub();
+            }
+        }, 2000);
     }
 
     public void getData(int type) {
@@ -601,16 +640,34 @@ public class SplashScreenActivity extends BaseActivity {
                 .getFileContent(Communication.FILE_NAME_PUB);
         try {
             if (jsonObject1 != null) {
-                url_image_pub = jsonObject1.getJSONObject("pub").getString("image");
-                link_pub = jsonObject1.getJSONObject("pub").getString("link");
-                nameCampagne = jsonObject1.getJSONObject("pub").getString("nameCampagne");
-                isActive = jsonObject1.getJSONObject("pub").getInt("isActive");
-                pubToShow = jsonObject1.getJSONObject("pub").getInt("pubToShow");
+                JSONObject pubObject = jsonObject1.getJSONObject("pub");
+                url_image_pub = pubObject.getString("image");
+                link_pub = pubObject.getString("link");
+                nameCampagne = pubObject.getString("nameCampagne");
+                isActive = pubObject.getInt("isActive");
+                pubToShow = pubObject.getInt("pubToShow");
             } else {
                 Log.d("SplashScreenTest", "pub failer");
             }
         } catch (JSONException e) {
             e.printStackTrace();
+        }
+    }
+
+    private void parsePubResponse(String response) {
+        if (response == null || response.isEmpty()) {
+            return;
+        }
+        try {
+            JSONObject pubJson = new JSONObject(response);
+            JSONObject pubObject = pubJson.getJSONObject("pub");
+            url_image_pub = pubObject.optString("image", "");
+            link_pub = pubObject.optString("link", "");
+            nameCampagne = pubObject.optString("nameCampagne", "");
+            isActive = pubObject.optInt("isActive", 0);
+            pubToShow = pubObject.optInt("pubToShow", 0);
+        } catch (JSONException e) {
+            Log.e("SplashScreenTest", "Erreur parsing pub.json", e);
         }
     }
 
