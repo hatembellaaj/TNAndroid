@@ -565,12 +565,10 @@ public class SplashScreenActivity extends BaseActivity {
         new Handler().postDelayed(new Runnable() {
             @Override
             public void run() {
-                if (lng != null && !lng.isEmpty()) {
-                    startPub();
-                } else {
-                    Intent intentLng = new Intent(SplashScreenActivity.this, LangueActivity.class);
-                    startActivityForResult(intentLng, 3251);
+                if (lng == null || lng.isEmpty()) {
+                    SessionManager.getInstance().setCurrentLng(SplashScreenActivity.this, Constant.FR);
                 }
+                startPub();
             }
         }, 2000);
     }
