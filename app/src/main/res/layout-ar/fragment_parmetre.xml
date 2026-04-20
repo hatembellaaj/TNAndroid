@@ -5,6 +5,7 @@
     android:layout_height="match_parent"
     android:background="@color/white_color"
     android:orientation="vertical"
+    android:layoutDirection="rtl"
     android:paddingLeft="20dp"
     android:paddingRight="20dp">
 
@@ -21,7 +22,9 @@
             android:layout_marginTop="16dp"
             android:text="@string/veuillez_choisir_votre_mode"
             android:textColor="@color/black_color"
-            android:textSize="16sp" />
+            android:textSize="16sp"
+            android:gravity="end"
+            android:textAlignment="viewEnd" />
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -69,7 +72,8 @@
                     android:text="@string/jours"
                     android:textColor="@color/black_color"
                     android:textSize="15sp"
-                    />
+                    android:gravity="end"
+                    android:textAlignment="viewEnd" />
 
                 <View
                     android:layout_width="124dp"
@@ -82,7 +86,8 @@
                     android:text="@string/nuit"
                     android:textColor="@color/black_color"
                     android:textSize="15sp"
-                    />
+                    android:gravity="end"
+                    android:textAlignment="viewEnd" />
 
             </LinearLayout>
 
@@ -142,7 +147,9 @@
                     android:layout_centerVertical="true"
                     android:layout_marginEnd="20dp"
                     android:text="@string/automatique"
-                    android:textColor="@color/color_text_switch" />
+                    android:textColor="@color/color_text_switch"
+                    android:gravity="end"
+                    android:textAlignment="viewEnd" />
 
                 <androidx.appcompat.widget.SwitchCompat
                     android:id="@+id/auto_switch"
@@ -165,7 +172,9 @@
             android:layout_marginTop="24dp"
             android:textSize="16sp"
             android:text="@string/veuillez_choisir_votre_langue"
-            android:textColor="@color/black_color" />
+            android:textColor="@color/black_color"
+            android:gravity="end"
+            android:textAlignment="viewEnd" />
 
         <RadioGroup
             android:id="@+id/radioLang"
@@ -240,7 +249,7 @@
                 android:scaleX="1.2"
                 android:scaleY="1.2"
                 android:text="عربي"
-                android:textAlignment="textStart"
+                android:textAlignment="viewEnd"
                 android:textColor="@color/black_color" />
 
 

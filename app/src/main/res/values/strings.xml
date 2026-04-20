@@ -170,7 +170,7 @@
     <!--<string name="ad_id_test">ca-app-pub-3940256099942544/6300978111</string>-->
     <!--<string name="ad_id_test">ca-app-pub-2102118777505746/4044741086</string>-->
     <string name="ad_id_test">ca-app-pub-2102118777505746~3353162866</string>
-    <string name="paremtre">Settings</string>
+    <string name="paremtre">Top 24</string>
     <string name="huawei_text">Pour recevoir des  notifications vous devez activer l\'application.</string>
     <string name="go_to_protected">Protogée votre application</string>
     <string name="huawei_headline">Application  protégée</string>
