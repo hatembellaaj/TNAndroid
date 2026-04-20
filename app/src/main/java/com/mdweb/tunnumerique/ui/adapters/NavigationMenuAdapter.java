@@ -201,7 +201,7 @@ public class NavigationMenuAdapter extends RecyclerView.Adapter<RecyclerView.Vie
             for (int i = 0; i < items.size(); i++) {
                 MenuItem item = items.get(i);
 
-                if (item.isHeader() || item.getId().equals("about") || item.getId().equals("settings")) {
+                if (item.isHeader() || item.getId().equals("about") || item.getId().equals("top24")) {
                     continue;
                 }
 
@@ -270,7 +270,7 @@ public class NavigationMenuAdapter extends RecyclerView.Adapter<RecyclerView.Vie
             for (int i = 0; i < items.size(); i++) {
                 MenuItem item = items.get(i);
 
-                if (item.getId().equals("about") || item.getId().equals("settings")) {
+                if (item.getId().equals("about") || item.getId().equals("top24")) {
                     if (!firstItem) {
                         View divider = new View(container.getContext());
                         divider.setLayoutParams(new LinearLayout.LayoutParams(
