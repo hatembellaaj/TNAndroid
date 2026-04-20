@@ -1,6 +1,7 @@
 package com.mdweb.tunnumerique.ui.adapters;
 
 import android.content.Context;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -64,6 +65,14 @@ public class CategoryNewsAdapter extends RecyclerView.Adapter<CategoryNewsAdapte
         // Titre
         holder.title.setText(news.getTitleNews());
 
+        boolean isArabic = isArabicLanguage();
+        if (isArabic) {
+            holder.title.setGravity(Gravity.END);
+            holder.title.setTextAlignment(View.TEXT_ALIGNMENT_VIEW_END);
+            holder.date.setGravity(Gravity.END);
+            holder.date.setTextAlignment(View.TEXT_ALIGNMENT_VIEW_END);
+        }
+
         // Date
         if (news.getDateNews() != null && !news.getDateNews().isEmpty()) {
             holder.date.setText(formatDate(news.getDateNews()));
@@ -120,6 +129,11 @@ public class CategoryNewsAdapter extends RecyclerView.Adapter<CategoryNewsAdapte
         };
         holder.image.setOnClickListener(openDetail);
         holder.title.setOnClickListener(openDetail);
+    }
+
+    private boolean isArabicLanguage() {
+        String language = context.getResources().getConfiguration().getLocales().get(0).getLanguage();
+        return language != null && language.startsWith("ar");
     }
 
     @Override

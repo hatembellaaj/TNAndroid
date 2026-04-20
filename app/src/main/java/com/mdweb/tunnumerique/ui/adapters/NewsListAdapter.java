@@ -1,6 +1,7 @@
 package com.mdweb.tunnumerique.ui.adapters;
 
 import android.content.Context;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -67,6 +68,16 @@ public class NewsListAdapter extends RecyclerView.Adapter<NewsListAdapter.NewsVi
 
         // Titre de l'article
         holder.title.setText(news.getTitleNews());
+
+        boolean isArabic = isArabicLanguage();
+        if (isArabic) {
+            holder.title.setGravity(Gravity.END);
+            holder.title.setTextAlignment(View.TEXT_ALIGNMENT_VIEW_END);
+            holder.category.setGravity(Gravity.END);
+            holder.category.setTextAlignment(View.TEXT_ALIGNMENT_VIEW_END);
+            holder.date.setGravity(Gravity.END);
+            holder.date.setTextAlignment(View.TEXT_ALIGNMENT_VIEW_END);
+        }
 
         // Catégorie
         if (news.getTypeNews() != null && !news.getTypeNews().isEmpty()) {
@@ -217,6 +228,11 @@ public class NewsListAdapter extends RecyclerView.Adapter<NewsListAdapter.NewsVi
         } catch (Exception e) {
             android.util.Log.e("NewsListAdapter", "❌ Erreur partage: " + e.getMessage());
         }
+    }
+
+    private boolean isArabicLanguage() {
+        String language = context.getResources().getConfiguration().getLocales().get(0).getLanguage();
+        return language != null && language.startsWith("ar");
     }
 
     @Override

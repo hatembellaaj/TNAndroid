@@ -280,7 +280,7 @@ public class CategoryNewsActivity extends BaseActivity {
         }
 
         menuItemsList.add(new NavigationMenuAdapter.MenuItem("A propos", "about"));
-        menuItemsList.add(new NavigationMenuAdapter.MenuItem(getString(R.string.paremtre), "settings"));
+        menuItemsList.add(new NavigationMenuAdapter.MenuItem(getString(R.string.paremtre), "top24"));
 
         menuAdapter.notifyDataSetChanged();
 
@@ -316,10 +316,8 @@ public class CategoryNewsActivity extends BaseActivity {
             return;
         }
 
-        if (item.getId().equals("settings")) {
-            Intent intent = new Intent(CategoryNewsActivity.this, HomeTnActivity.class);
-            intent.putExtra("OPEN_FRAGMENT", "settings");
-            intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        if (item.getId().equals("top24")) {
+            Intent intent = new Intent(CategoryNewsActivity.this, PlusLusActivity.class);
             startActivity(intent);
             return;
         }
