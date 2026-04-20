@@ -1,6 +1,7 @@
 package com.mdweb.tunnumerique.ui.adapters;
 
 import android.content.Context;
+import android.os.Build;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -132,7 +133,18 @@ public class CategoryNewsAdapter extends RecyclerView.Adapter<CategoryNewsAdapte
     }
 
     private boolean isArabicLanguage() {
-        String language = context.getResources().getConfiguration().getLocales().get(0).getLanguage();
+        java.util.Locale locale;
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+            if (context.getResources().getConfiguration().getLocales().isEmpty()) {
+                locale = Locale.getDefault();
+            } else {
+                locale = context.getResources().getConfiguration().getLocales().get(0);
+            }
+        } else {
+            locale = context.getResources().getConfiguration().locale;
+        }
+
+        String language = locale != null ? locale.getLanguage() : null;
         return language != null && language.startsWith("ar");
     }
 
