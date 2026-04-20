@@ -168,8 +168,25 @@ public class ArticleDetailFragment extends Fragment {
 //                }
 //            }
 //        });
-        String contenu =news.getContenuNews();
-        webviewDescription.loadDataWithBaseURL("https://www.tunisienumerique.com", contenu, "text/html", "UTF-8", null);
+        String contenu = news.getContenuNews();
+        if (contenu == null) {
+            contenu = "";
+        }
+        boolean isArabic = Locale.getDefault().getLanguage().startsWith("ar");
+        if (isArabic) {
+            webviewDescription.setLayoutDirection(View.LAYOUT_DIRECTION_RTL);
+            webviewDescription.setTextDirection(View.TEXT_DIRECTION_RTL);
+        } else {
+            webviewDescription.setLayoutDirection(View.LAYOUT_DIRECTION_LTR);
+            webviewDescription.setTextDirection(View.TEXT_DIRECTION_LTR);
+        }
+        webviewDescription.loadDataWithBaseURL(
+                "https://www.tunisienumerique.com",
+                wrapArticleHtml(contenu, isArabic),
+                "text/html",
+                "UTF-8",
+                null
+        );
 
 
         // share article
@@ -228,6 +245,22 @@ public class ArticleDetailFragment extends Fragment {
 
 
         return view;
+    }
+
+    private String wrapArticleHtml(String bodyHtml, boolean isArabic) {
+        String direction = isArabic ? "rtl" : "ltr";
+        String align = isArabic ? "right" : "left";
+
+        return "<html><head><meta name='viewport' content='width=device-width, initial-scale=1.0' />"
+                + "<style>"
+                + "body{margin:0;padding:0;color:#212121;font-size:18px;line-height:1.6;font-family:sans-serif;"
+                + "direction:" + direction + ";text-align:" + align + ";}"
+                + (isArabic ? "*{direction:rtl !important;text-align:right !important;unicode-bidi:embed;}" : "")
+                + "img,iframe,video{max-width:100%;height:auto;}"
+                + "table{max-width:100%!important;}"
+                + "</style></head><body dir='" + direction + "'>"
+                + bodyHtml
+                + "</body></html>";
     }
 
 

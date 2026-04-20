@@ -61,7 +61,9 @@ public class Communication {
     public static final String URL_NEWS_INIT = "https://preprod.tunisienumerique.com/results.json";
     public static final String FILE_NEWS_INIT = "init.json";
     // ar
-    public static final String URL_NEWS_INIT_AR = "https://arabe.tunisienumerique.com/results.json";
+    // NOTE: arabe.tunisienumerique.com may be unavailable in some networks (DNS -1003).
+    // Use the stable preprod endpoint to avoid blocking the app in Arabic mode.
+    public static final String URL_NEWS_INIT_AR = "https://preprod.tunisienumerique.com/results.json";
     public static final String FILE_NEWS_INIT_AR = "initar.json";
 
     //En
@@ -80,7 +82,7 @@ public class Communication {
 
     //http://196.203.63.32/nps/arrakmia/dossiers.json
 
-    public static final String URL_DOSSIER_AR = "https://arabe.tunisienumerique.com/dossiers.json";
+    public static final String URL_DOSSIER_AR = "https://preprod.tunisienumerique.com/jsondata/dossiers.json";
     public static final String FILE_NAME_DOSSIER_AR = "dossier_ar.json";
 
     //dossier
@@ -93,7 +95,7 @@ public class Communication {
 
     //http://196.203.63.32/nps/arrakmia/popular.json
 
-    public static final String URL_PLUS_LUS_AR = "https://arabe.tunisienumerique.com/jsondata/popular.json";
+    public static final String URL_PLUS_LUS_AR = "https://preprod.tunisienumerique.com/jsondata/popular.json";
     public static final String FILE_NAME_PLUS_LUS_AR = "popular_ar.json";
 
     public static final String URL_PLUS_LUS_EN = "https://news-tunisia.tunisienumerique.com/jsondata/popular.json";
@@ -103,7 +105,7 @@ public class Communication {
     public static final String URL_CATEGORIES = "https://preprod.tunisienumerique.com/jsondata/categories.json ";
     public static final String FILE_NAME_CATEGORIES = "categories.json";
 
-    public static final String URL_CATEGORIES_AR = "https://arabe.tunisienumerique.com/jsondata/categories.json";
+    public static final String URL_CATEGORIES_AR = "https://preprod.tunisienumerique.com/jsondata/categories.json";
     public static final String FILE_NAME_CATEGORIES_AR = "categoriesar.json";
 
     // en
