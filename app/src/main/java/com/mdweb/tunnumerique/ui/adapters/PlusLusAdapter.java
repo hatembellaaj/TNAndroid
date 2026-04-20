@@ -1,6 +1,8 @@
 package com.mdweb.tunnumerique.ui.adapters;
 
 import android.content.Context;
+import android.os.Build;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -91,6 +93,14 @@ public class PlusLusAdapter extends RecyclerView.Adapter<PlusLusAdapter.ArticleV
 
         // Titre
         holder.tvArticleTitle.setText(news.getTitleNews() != null ? news.getTitleNews() : "");
+
+        boolean isArabic = isArabicLanguage();
+        if (isArabic) {
+            holder.tvArticleTitle.setGravity(Gravity.END);
+            holder.tvArticleTitle.setTextAlignment(View.TEXT_ALIGNMENT_VIEW_END);
+            holder.tvArticleDate.setGravity(Gravity.END);
+            holder.tvArticleDate.setTextAlignment(View.TEXT_ALIGNMENT_VIEW_END);
+        }
 
         // Date
         if (news.getDateNews() != null && !news.getDateNews().isEmpty()) {
@@ -228,6 +238,22 @@ public class PlusLusAdapter extends RecyclerView.Adapter<PlusLusAdapter.ArticleV
         } catch (Exception e) {
             return dateStr;
         }
+    }
+
+    private boolean isArabicLanguage() {
+        java.util.Locale locale;
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+            if (context.getResources().getConfiguration().getLocales().isEmpty()) {
+                locale = Locale.getDefault();
+            } else {
+                locale = context.getResources().getConfiguration().getLocales().get(0);
+            }
+        } else {
+            locale = context.getResources().getConfiguration().locale;
+        }
+
+        String language = locale != null ? locale.getLanguage() : null;
+        return language != null && language.startsWith("ar");
     }
 
     @Override

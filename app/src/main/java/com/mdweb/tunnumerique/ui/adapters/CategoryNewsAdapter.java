@@ -1,6 +1,8 @@
 package com.mdweb.tunnumerique.ui.adapters;
 
 import android.content.Context;
+import android.os.Build;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -64,6 +66,14 @@ public class CategoryNewsAdapter extends RecyclerView.Adapter<CategoryNewsAdapte
         // Titre
         holder.title.setText(news.getTitleNews());
 
+        boolean isArabic = isArabicLanguage();
+        if (isArabic) {
+            holder.title.setGravity(Gravity.END);
+            holder.title.setTextAlignment(View.TEXT_ALIGNMENT_VIEW_END);
+            holder.date.setGravity(Gravity.END);
+            holder.date.setTextAlignment(View.TEXT_ALIGNMENT_VIEW_END);
+        }
+
         // Date
         if (news.getDateNews() != null && !news.getDateNews().isEmpty()) {
             holder.date.setText(formatDate(news.getDateNews()));
@@ -120,6 +130,22 @@ public class CategoryNewsAdapter extends RecyclerView.Adapter<CategoryNewsAdapte
         };
         holder.image.setOnClickListener(openDetail);
         holder.title.setOnClickListener(openDetail);
+    }
+
+    private boolean isArabicLanguage() {
+        java.util.Locale locale;
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+            if (context.getResources().getConfiguration().getLocales().isEmpty()) {
+                locale = Locale.getDefault();
+            } else {
+                locale = context.getResources().getConfiguration().getLocales().get(0);
+            }
+        } else {
+            locale = context.getResources().getConfiguration().locale;
+        }
+
+        String language = locale != null ? locale.getLanguage() : null;
+        return language != null && language.startsWith("ar");
     }
 
     @Override
