@@ -280,7 +280,7 @@ public class CategoryNewsActivity extends BaseActivity {
         }
 
         menuItemsList.add(new NavigationMenuAdapter.MenuItem("A propos", "about"));
-        menuItemsList.add(new NavigationMenuAdapter.MenuItem("Paramètres", "settings"));
+        menuItemsList.add(new NavigationMenuAdapter.MenuItem(getString(R.string.paremtre), "settings"));
 
         menuAdapter.notifyDataSetChanged();
 
