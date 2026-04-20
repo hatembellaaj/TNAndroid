@@ -3,6 +3,7 @@ package com.mdweb.tunnumerique.ui.activitys;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+import android.view.Gravity;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -129,6 +130,7 @@ public class ArticleDetailActivity extends BaseActivity {
             finish();
             return;
         }
+        applyCurrentLanguageDirection();
 
         // =========================================
         // ✅ GESTION PAYWALL (badge + catégorie)
@@ -225,14 +227,47 @@ public class ArticleDetailActivity extends BaseActivity {
     }
 
     private String wrapArticleHtml(String bodyHtml) {
+        boolean isArabic = Constant.AR.equals(SessionManager.getInstance().getCurrentLang(this));
+        String direction = isArabic ? "rtl" : "ltr";
+        String align = isArabic ? "right" : "left";
         return "<html><head><meta name='viewport' content='width=device-width, initial-scale=1.0' />"
                 + "<style>"
-                + "body{margin:0;padding:0;color:#212121;font-size:18px;line-height:1.6;font-family:sans-serif;}"
+                + "body{margin:0;padding:0;color:#212121;font-size:18px;line-height:1.6;font-family:sans-serif;"
+                + "direction:" + direction + ";text-align:" + align + ";}"
+                + (isArabic ? "*{direction:rtl !important;text-align:right !important;unicode-bidi:embed;}" : "")
                 + "img,iframe,video{max-width:100%;height:auto;}"
                 + "table{max-width:100%!important;}"
-                + "</style></head><body>"
+                + "</style></head><body dir='" + direction + "'>"
                 + bodyHtml
                 + "</body></html>";
+    }
+
+    private void applyCurrentLanguageDirection() {
+        boolean isArabic = Constant.AR.equals(SessionManager.getInstance().getCurrentLang(this));
+
+        if (isArabic) {
+            articleContentWebView.setLayoutDirection(View.LAYOUT_DIRECTION_RTL);
+            articleContentWebView.setTextDirection(View.TEXT_DIRECTION_RTL);
+            articleTitle.setGravity(Gravity.END);
+            articleTitle.setTextAlignment(View.TEXT_ALIGNMENT_VIEW_END);
+            articleCategory.setGravity(Gravity.END);
+            articleCategory.setTextAlignment(View.TEXT_ALIGNMENT_VIEW_END);
+            articleTime.setGravity(Gravity.END);
+            articleTime.setTextAlignment(View.TEXT_ALIGNMENT_VIEW_END);
+            msgAbonne.setGravity(Gravity.END);
+            msgAbonne.setTextAlignment(View.TEXT_ALIGNMENT_VIEW_END);
+        } else {
+            articleContentWebView.setLayoutDirection(View.LAYOUT_DIRECTION_LTR);
+            articleContentWebView.setTextDirection(View.TEXT_DIRECTION_LTR);
+            articleTitle.setGravity(Gravity.START);
+            articleTitle.setTextAlignment(View.TEXT_ALIGNMENT_VIEW_START);
+            articleCategory.setGravity(Gravity.START);
+            articleCategory.setTextAlignment(View.TEXT_ALIGNMENT_VIEW_START);
+            articleTime.setGravity(Gravity.START);
+            articleTime.setTextAlignment(View.TEXT_ALIGNMENT_VIEW_START);
+            msgAbonne.setGravity(Gravity.START);
+            msgAbonne.setTextAlignment(View.TEXT_ALIGNMENT_VIEW_START);
+        }
     }
 
     private String formatPublicationTime(String dateStr) {
