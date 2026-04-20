@@ -1,6 +1,7 @@
 package com.mdweb.tunnumerique.ui.adapters;
 
 import android.content.Context;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -91,6 +92,14 @@ public class PlusLusAdapter extends RecyclerView.Adapter<PlusLusAdapter.ArticleV
 
         // Titre
         holder.tvArticleTitle.setText(news.getTitleNews() != null ? news.getTitleNews() : "");
+
+        boolean isArabic = isArabicLanguage();
+        if (isArabic) {
+            holder.tvArticleTitle.setGravity(Gravity.END);
+            holder.tvArticleTitle.setTextAlignment(View.TEXT_ALIGNMENT_VIEW_END);
+            holder.tvArticleDate.setGravity(Gravity.END);
+            holder.tvArticleDate.setTextAlignment(View.TEXT_ALIGNMENT_VIEW_END);
+        }
 
         // Date
         if (news.getDateNews() != null && !news.getDateNews().isEmpty()) {
@@ -228,6 +237,11 @@ public class PlusLusAdapter extends RecyclerView.Adapter<PlusLusAdapter.ArticleV
         } catch (Exception e) {
             return dateStr;
         }
+    }
+
+    private boolean isArabicLanguage() {
+        String language = context.getResources().getConfiguration().getLocales().get(0).getLanguage();
+        return language != null && language.startsWith("ar");
     }
 
     @Override

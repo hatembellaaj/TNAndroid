@@ -305,8 +305,9 @@ public class HomeTnActivity extends BaseActivity {
         }
 
         // ── "Paramètres" ─────────────────────────────────────────────────
-        if (item.getId().equals("settings")) {
-            openParametreFragment();
+        if (item.getId().equals("top24")) {
+            Intent intent = new Intent(HomeTnActivity.this, PlusLusActivity.class);
+            startActivity(intent);
             return;
         }
 
@@ -693,7 +694,7 @@ public class HomeTnActivity extends BaseActivity {
 
         // ✅ AJOUTER A PROPOS ET PARAMÈTRES
         menuItemsList.add(new NavigationMenuAdapter.MenuItem(getString(R.string.menu_about), "about"));
-        menuItemsList.add(new NavigationMenuAdapter.MenuItem(getString(R.string.paremtre), "settings"));
+        menuItemsList.add(new NavigationMenuAdapter.MenuItem(getString(R.string.paremtre), "top24"));
 
         menuAdapter.notifyDataSetChanged();
         menuAdapter.setSelectedPosition(0);
