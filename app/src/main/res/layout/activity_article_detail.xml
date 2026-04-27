@@ -1,129 +1,96 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.coordinatorlayout.widget.CoordinatorLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="#FFFFFF">
 
-    <!-- Header -->
+    <ImageView
+        android:id="@+id/backgroundDie"
+        android:layout_width="330dp"
+        android:layout_height="473dp"
+        android:layout_gravity="start|top"
+        android:alpha="0.85"
+        android:scaleType="fitXY"
+        android:src="@drawable/die"
+        android:translationX="45dp"
+        android:translationY="-43dp" />
+
     <LinearLayout
         android:id="@+id/header"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:padding="16dp"
-        android:gravity="center_vertical"
+        android:layout_height="80dp"
         android:background="#FFFFFF"
-        android:elevation="4dp">
+        android:gravity="center_vertical"
+        android:orientation="horizontal"
+        android:paddingStart="24dp"
+        android:paddingTop="28dp"
+        android:paddingEnd="24dp"
+        android:paddingBottom="8dp">
 
         <ImageView
             android:id="@+id/back_button"
-            android:layout_width="42dp"
-            android:layout_height="42dp"
-            android:src="@drawable/button_retour"
+            android:layout_width="24dp"
+            android:layout_height="24dp"
             android:contentDescription="Retour"
-            android:clickable="true"
-            android:focusable="true"
-            android:padding="12dp"
-            android:background="?attr/selectableItemBackgroundBorderless" />
+            android:src="@drawable/arrow_back" />
 
         <ImageView
             android:id="@+id/logo_tn"
-            android:layout_width="0dp"
-            android:layout_height="40dp"
-            android:layout_weight="1"
-            android:src="@drawable/nv_logo_tn"
-            android:contentDescription="Tunisie Numérique"
-            android:scaleType="centerInside"
-            android:layout_marginStart="8dp"
-            android:layout_marginEnd="16dp" />
+            android:layout_width="69dp"
+            android:layout_height="32dp"
+            android:layout_marginStart="70dp"
+            android:adjustViewBounds="true"
+            android:src="@drawable/nv_logo_tn" />
 
         <TextView
             android:id="@+id/language_button"
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:drawablePadding="3dp"
+            android:gravity="end"
             android:text="FR"
-            android:textSize="13sp"
-            android:textColor="#4A4A4A"
-            android:fontFamily="sans-serif-bold"
-            android:padding="4dp"
-            android:clickable="true"
-            android:focusable="true"
-            android:background="?attr/selectableItemBackgroundBorderless"/>
-
+            android:textColor="#000000"
+            android:textSize="14sp"
+            android:textStyle="bold"
+            app:drawableEndCompat="@drawable/ic_arrow_down_sign_to_navigate" />
     </LinearLayout>
 
-    <!-- ScrollView -->
     <androidx.core.widget.NestedScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_marginTop="72dp"
+        android:layout_marginTop="80dp"
+        android:layout_marginBottom="72dp"
         android:fillViewport="true">
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical">
+            android:orientation="vertical"
+            android:paddingStart="24dp"
+            android:paddingEnd="24dp">
 
-            <!-- Image de l'article -->
             <androidx.cardview.widget.CardView
                 android:layout_width="match_parent"
-                android:layout_height="250dp"
-                android:layout_margin="16dp"
-                app:cardCornerRadius="12dp"
-                app:cardElevation="4dp">
+                android:layout_height="162dp"
+                android:layout_marginTop="2dp"
+                app:cardCornerRadius="7dp"
+                app:cardElevation="0dp">
 
                 <ImageView
                     android:id="@+id/article_image"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:scaleType="centerCrop"
-                    android:contentDescription="Image de l'article" />
-
+                    android:scaleType="centerCrop" />
             </androidx.cardview.widget.CardView>
 
-            <!-- ===== BADGE PREMIUM (conditionnel) ===== -->
-            <LinearLayout
-                android:id="@+id/premium_badge_container"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:gravity="center_vertical"
-                android:paddingStart="10dp"
-                android:paddingEnd="12dp"
-                android:paddingTop="6dp"
-                android:paddingBottom="6dp"
-                android:background="#FFF8D3"
-                android:layout_marginStart="16dp"
-                android:layout_marginBottom="8dp"
-
-                android:visibility="gone">
-
-                <ImageView
-                    android:id="@+id/premium_icon"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginEnd="6dp"
-                    android:contentDescription="Premium"
-                    android:src="@drawable/couronne" />
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text= "Article reservé au abonnés"/>
-
-
-            </LinearLayout>
-
-            <!-- ===== CATÉGORIE + ACTIONS ===== -->
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="horizontal"
+                android:layout_marginTop="10dp"
                 android:gravity="center_vertical"
-                android:paddingStart="16dp"
-                android:paddingEnd="16dp"
-                android:layout_marginBottom="8dp">
+                android:orientation="horizontal">
 
                 <TextView
                     android:id="@+id/article_category"
@@ -131,90 +98,70 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="POLITIQUE"
-                    android:textSize="13sp"
-                    android:textStyle="bold"
                     android:textColor="#88BD2E"
-                    android:fontFamily="sans-serif-bold" />
+                    android:textSize="11sp"
+                    android:textStyle="bold" />
 
                 <ImageView
                     android:id="@+id/bookmark_button"
-                    android:layout_width="24dp"
-                    android:layout_height="24dp"
-                    android:src="@drawable/icon_save_r"
-                    android:contentDescription="Sauvegarder"
-                    android:clickable="true"
-                    android:focusable="true"
-                    android:scaleType="fitCenter"
-                    android:background="?attr/selectableItemBackgroundBorderless" />
+                    android:layout_width="13dp"
+                    android:layout_height="17dp"
+                    android:src="@drawable/ic_bookmark_outline"
+                    android:tint="#B9B9B9" />
 
                 <ImageView
                     android:id="@+id/share_button"
-                    android:layout_width="24dp"
-                    android:layout_height="24dp"
-                    android:layout_marginStart="16dp"
-                    android:scaleType="fitCenter"
-                    android:background="?attr/selectableItemBackgroundBorderless"
-                    android:contentDescription="Partager"
-                    android:src="@drawable/icon_partage_r"
-                    app:tint="#AAAAAA" />
-
+                    android:layout_width="17dp"
+                    android:layout_height="19dp"
+                    android:layout_marginStart="14dp"
+                    android:src="@drawable/ic_share_off"
+                    android:tint="#B9B9B9" />
             </LinearLayout>
 
-            <!-- ===== TITRE ===== -->
             <TextView
                 android:id="@+id/article_title"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:textSize="15sp"
-                android:textColor="#0C0805"
-                android:fontFamily="sans-serif-bold"
-                android:textStyle="bold"
-                android:lineSpacingExtra="4dp"
-                android:layout_marginStart="16dp"
-                android:layout_marginEnd="16dp"
-                android:layout_marginBottom="12dp" />
+                android:layout_marginTop="10dp"
+                android:textColor="#000000"
+                android:textSize="11sp"
+                android:textStyle="bold" />
 
-            <!-- ===== TEMPS DE PUBLICATION ===== -->
             <TextView
                 android:id="@+id/article_time"
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:textSize="13sp"
-                android:textColor="#999999"
-                android:layout_marginStart="16dp"
-                android:layout_marginEnd="16dp"
-                android:layout_marginBottom="16dp" />
+                android:layout_marginTop="6dp"
+                android:textColor="#343434"
+                android:textSize="9sp" />
 
-            <!-- ===== AUDIO PLAYER ===== -->
             <LinearLayout
                 android:id="@+id/audio_player_container"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:gravity="center_vertical"
-                android:padding="12dp"
-                android:layout_marginStart="16dp"
-                android:layout_marginEnd="16dp"
-                android:layout_marginBottom="16dp"
+                android:layout_height="58dp"
+                android:layout_marginTop="10dp"
                 android:background="@drawable/bg_audio_rounded"
+                android:gravity="center_vertical"
+                android:orientation="horizontal"
+                android:paddingStart="12dp"
+                android:paddingEnd="12dp"
                 android:visibility="gone">
 
                 <ImageView
                     android:id="@+id/play_button"
-                    android:layout_width="20dp"
-                    android:layout_height="20dp"
-                    android:src="@drawable/ic_play_detail"
-                    android:contentDescription="Lecture"
-                    android:clickable="true"
-                    android:focusable="true" />
+                    android:layout_width="28dp"
+                    android:layout_height="24dp"
+                    android:src="@drawable/ic_play_detail" />
 
                 <SeekBar
                     android:id="@+id/audio_seekbar"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:layout_marginStart="12dp"
-                    android:layout_marginEnd="12dp"
+                    android:layout_marginStart="10dp"
+                    android:layout_marginEnd="10dp"
+                    android:max="100"
+                    android:progress="40"
                     android:progressTint="#414141"
                     android:thumbTint="#88BD2E" />
 
@@ -223,40 +170,81 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="1:34"
-                    android:textSize="13sp"
-                    android:textColor="#666666" />
-
+                    android:textColor="#414141"
+                    android:textSize="9sp"
+                    android:textStyle="bold" />
             </LinearLayout>
 
-            <!-- ===== CONTENU ARTICLE ===== -->
-            <WebView
-                android:id="@+id/article_content_webview"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="16dp"
-                android:layout_marginEnd="16dp"
-                android:visibility="gone"
-                android:layout_marginBottom="24dp" />
             <TextView
                 android:id="@+id/msg_abonne"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:textSize="15sp"
+                android:layout_marginTop="12dp"
                 android:background="#FDD944"
-                android:textColor="#534D33"
+                android:fontFamily="sans-serif-bold"
                 android:padding="16dp"
                 android:text="S’abonner pour lire l’article sur le site"
-                android:lineSpacingExtra="6dp"
-                android:layout_marginStart="32dp"
-                android:layout_marginEnd="32dp"
-                android:visibility="gone"
+                android:textColor="#534D33"
+                android:textSize="13sp"
+                android:visibility="gone" />
+
+            <WebView
+                android:id="@+id/article_content_webview"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="12dp"
                 android:layout_marginBottom="24dp"
-                android:fontFamily="sans-serif-bold" />
+                android:visibility="gone" />
 
+            <LinearLayout
+                android:id="@+id/premium_badge_container"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:paddingStart="10dp"
+                android:paddingTop="6dp"
+                android:paddingEnd="10dp"
+                android:paddingBottom="6dp"
+                android:background="#FFF8D3"
+                android:visibility="gone">
 
+                <ImageView
+                    android:layout_width="16dp"
+                    android:layout_height="16dp"
+                    android:layout_marginEnd="6dp"
+                    android:src="@drawable/couronne" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Article réservé aux abonnés"
+                    android:textColor="#534D33"
+                    android:textSize="11sp" />
+            </LinearLayout>
 
         </LinearLayout>
-
     </androidx.core.widget.NestedScrollView>
+
+    <FrameLayout
+        android:id="@+id/bottomNavContainer"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom"
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd="16dp"
+        android:layout_marginBottom="12dp"
+        android:background="@drawable/bg_bottom_nav_rounded"
+        android:elevation="8dp">
+
+        <com.google.android.material.bottomnavigation.BottomNavigationView
+            android:id="@+id/bottomNavigationView"
+            android:layout_width="match_parent"
+            android:layout_height="56dp"
+            android:background="@android:color/transparent"
+            app:itemIconSize="24dp"
+            app:itemIconTint="@color/bottom_nav_color"
+            app:labelVisibilityMode="unlabeled"
+            app:menu="@menu/menu_bottom_navigation" />
+    </FrameLayout>
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

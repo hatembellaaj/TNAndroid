@@ -3,6 +3,8 @@ package com.mdweb.tunnumerique.ui.activitys;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+import android.text.SpannableString;
+import android.text.style.ForegroundColorSpan;
 import android.view.Gravity;
 import android.view.View;
 import android.widget.ImageView;
@@ -15,6 +17,7 @@ import android.webkit.WebView;
 
 
 import com.bumptech.glide.Glide;
+import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.mdweb.tunnumerique.R;
 import com.mdweb.tunnumerique.data.model.News;
 import com.mdweb.tunnumerique.tools.SessionManager;
@@ -39,6 +42,7 @@ public class ArticleDetailActivity extends BaseActivity {
     private TextView articleTitle;
     private TextView articleTime;
     private TextView msgAbonne;
+    private BottomNavigationView bottomNavigationView;
 
     private WebView articleContentWebView;
 
@@ -95,12 +99,35 @@ public class ArticleDetailActivity extends BaseActivity {
         playButton = findViewById(R.id.play_button);
         audioSeekbar = findViewById(R.id.audio_seekbar);
         audioDuration = findViewById(R.id.audio_duration);
+        bottomNavigationView = findViewById(R.id.bottomNavigationView);
     }
 
     private void setupHeader() {
         backButton.setOnClickListener(v -> finish());
         languageButton.setOnClickListener(v -> changeLanguage());
         updateLanguageButton();
+        setupBottomNavigation();
+    }
+
+    private void setupBottomNavigation() {
+        if (bottomNavigationView == null) return;
+        bottomNavigationView.setSelectedItemId(R.id.nav_horaires);
+        bottomNavigationView.setOnItemSelectedListener(item -> {
+            int itemId = item.getItemId();
+            if (itemId == R.id.nav_home) {
+                startActivity(new Intent(ArticleDetailActivity.this, HomeTnActivity.class));
+                return true;
+            } else if (itemId == R.id.nav_horaires) {
+                return true;
+            } else if (itemId == R.id.nav_enregistres) {
+                startActivity(new Intent(ArticleDetailActivity.this, FavorisActivity.class));
+                return true;
+            } else if (itemId == R.id.nav_top24) {
+                startActivity(new Intent(ArticleDetailActivity.this, PlusLusActivity.class));
+                return true;
+            }
+            return false;
+        });
     }
 
     private void getArticleData() {
@@ -187,14 +214,25 @@ public class ArticleDetailActivity extends BaseActivity {
         // Titre
         // =========================================
         if (currentNews.getTitleNews() != null) {
-            articleTitle.setText(currentNews.getTitleNews());
+            articleTitle.setText(currentNews.getTitleNews().toUpperCase(Locale.getDefault()));
         }
 
         // =========================================
         // Temps de publication
         // =========================================
         if (currentNews.getDateNews() != null) {
-            articleTime.setText(formatPublicationTime(currentNews.getDateNews()));
+            String author = "Tunisie Numérique";
+            if (currentNews.getAuthorNameNews() != null && !currentNews.getAuthorNameNews().trim().isEmpty()) {
+                author = currentNews.getAuthorNameNews().trim();
+            }
+            String formattedDate = formatPublicationTime(currentNews.getDateNews());
+            String row = "Par " + author + " | " + formattedDate;
+            SpannableString styled = new SpannableString(row);
+            int dateStart = row.lastIndexOf(formattedDate);
+            if (dateStart >= 0) {
+                styled.setSpan(new ForegroundColorSpan(0xFF88BD2E), dateStart, row.length(), 0);
+            }
+            articleTime.setText(styled);
         }
 
         // =========================================
@@ -232,7 +270,7 @@ public class ArticleDetailActivity extends BaseActivity {
         String align = isArabic ? "right" : "left";
         return "<html><head><meta name='viewport' content='width=device-width, initial-scale=1.0' />"
                 + "<style>"
-                + "body{margin:0;padding:0;color:#212121;font-size:18px;line-height:1.6;font-family:sans-serif;"
+                + "body{margin:0;padding:0;color:#212121;font-size:11px;line-height:16px;font-family:sans-serif;"
                 + "direction:" + direction + ";text-align:" + align + ";}"
                 + (isArabic ? "*{direction:rtl !important;text-align:right !important;unicode-bidi:embed;}" : "")
                 + "img,iframe,video{max-width:100%;height:auto;}"
@@ -282,13 +320,13 @@ public class ArticleDetailActivity extends BaseActivity {
             long diffDays    = diffMs / (24 * 60 * 60 * 1000);
 
             if (diffMinutes < 60) {
-                return "Il ya " + diffMinutes + " minutes";
+                return "Il y a " + diffMinutes + " minutes";
             } else if (diffHours < 24) {
-                return "Il ya " + diffHours + " heures";
+                return "Il y a " + diffHours + " heures";
             } else if (diffDays < 7) {
-                return "Il ya " + diffDays + " jours";
+                return "Il y a " + diffDays + " jours";
             } else {
-                return new SimpleDateFormat("dd MMM yyyy", Locale.FRENCH).format(articleDate);
+                return new SimpleDateFormat("dd MMMM yyyy", Locale.FRENCH).format(articleDate);
             }
         } catch (Exception e) {
             return dateStr;

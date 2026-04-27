@@ -172,7 +172,8 @@ public class SplashScreenActivity extends BaseActivity {
     public void animationProgressBar() {
         textLoading.setVisibility(View.VISIBLE);
         progressLoading.setVisibility(View.VISIBLE);
-        progressLoading.setProgress(0);
+        textLoading.setText("Chargement des données");
+        progressLoading.setProgress(28);
 
         // Animation du texte avec alpha
         textLoading.setAlpha(0f);
@@ -186,16 +187,17 @@ public class SplashScreenActivity extends BaseActivity {
         final int duration = 5000; // 5 secondes
         final int updateInterval = 50; // Mise à jour toutes les 50ms
         final int maxProgress = 100;
+        final int startProgress = 28;
 
         new Thread(new Runnable() {
-            int currentProgress = 0;
+            int currentProgress = startProgress;
             long startTime = System.currentTimeMillis();
 
             @Override
             public void run() {
                 while (currentProgress < maxProgress) {
                     long elapsed = System.currentTimeMillis() - startTime;
-                    currentProgress = (int) ((elapsed * maxProgress) / duration);
+                    currentProgress = startProgress + (int) ((elapsed * (maxProgress - startProgress)) / duration);
 
                     if (currentProgress > maxProgress) {
                         currentProgress = maxProgress;
@@ -206,17 +208,6 @@ public class SplashScreenActivity extends BaseActivity {
                         @Override
                         public void run() {
                             progressLoading.setProgress(progress);
-
-                            // Optionnel : changer le texte selon la progression
-                            if (progress < 30) {
-                                textLoading.setText("Chargement des données...");
-                            } else if (progress < 60) {
-                                textLoading.setText("Préparation du contenu...");
-                            } else if (progress < 90) {
-                                textLoading.setText("Finalisation...");
-                            } else {
-                                textLoading.setText("Prêt !");
-                            }
                         }
                     });
 
