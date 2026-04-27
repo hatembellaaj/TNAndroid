@@ -7,7 +7,6 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
-import android.widget.Toast;
 
 import com.mdweb.tunnumerique.R;
 import com.mdweb.tunnumerique.tools.LocaleHelper;
@@ -16,12 +15,14 @@ import com.mdweb.tunnumerique.tools.shared.Constant;
 
 public class LangueActivity extends BaseActivity {
 
-    // Déclaration des vues
-    private RelativeLayout optionArabic, optionEnglish, optionFrench;    private View radioArabic, radioEnglish;
+    private RelativeLayout optionArabic;
+    private RelativeLayout optionEnglish;
+    private RelativeLayout optionFrench;
+    private ImageView radioArabic;
+    private ImageView radioEnglish;
     private ImageView radioFrench;
     private Button btnOk;
 
-    // Langue sélectionnée (par défaut: français)
     private String selectedLanguage = Constant.FR;
 
     @Override
@@ -29,19 +30,11 @@ public class LangueActivity extends BaseActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_langue);
 
-        // Initialisation des vues
         initViews();
-
-        // Configuration des écouteurs de clics
         setupClickListeners();
-
-        // Charger la langue sauvegardée (si elle existe)
         loadSavedLanguage();
     }
 
-    /**
-     * Initialise toutes les vues
-     */
     private void initViews() {
         optionArabic = findViewById(R.id.option_arabic);
         optionEnglish = findViewById(R.id.option_english);
@@ -54,11 +47,7 @@ public class LangueActivity extends BaseActivity {
         btnOk = findViewById(R.id.btn_ok);
     }
 
-    /**
-     * Configure les écouteurs de clics pour toutes les options
-     */
     private void setupClickListeners() {
-        // Clic sur l'option arabe
         optionArabic.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -66,7 +55,6 @@ public class LangueActivity extends BaseActivity {
             }
         });
 
-        // Clic sur l'option anglaise
         optionEnglish.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -74,7 +62,6 @@ public class LangueActivity extends BaseActivity {
             }
         });
 
-        // Clic sur l'option française
         optionFrench.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -82,7 +69,6 @@ public class LangueActivity extends BaseActivity {
             }
         });
 
-        // Clic sur le bouton OK
         btnOk.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -91,61 +77,36 @@ public class LangueActivity extends BaseActivity {
         });
     }
 
-    /**
-     * Sélectionne une langue et met à jour l'interface
-     * @param languageCode Code de la langue (Constant.AR, Constant.EN, Constant.FR)
-     */
     private void selectLanguage(String languageCode) {
-        // Réinitialiser toutes les options
         resetAllOptions();
-
-        // Mettre à jour la langue sélectionnée
         selectedLanguage = languageCode;
 
-        // Mettre en évidence l'option sélectionnée
-        if (languageCode.equals(Constant.AR)) {
-            radioArabic.setBackgroundResource(R.drawable.ic_check_circle);
-        } else if (languageCode.equals(Constant.EN)) {
-            radioEnglish.setBackgroundResource(R.drawable.ic_check_circle);
-        } else if (languageCode.equals(Constant.FR)) {
+        if (Constant.AR.equals(languageCode)) {
+            radioArabic.setImageResource(R.drawable.ic_check_circle);
+        } else if (Constant.EN.equals(languageCode)) {
+            radioEnglish.setImageResource(R.drawable.ic_check_circle);
+        } else {
             radioFrench.setImageResource(R.drawable.ic_check_circle);
         }
     }
 
-    /**
-     * Réinitialise toutes les options à l'état non sélectionné
-     */
     private void resetAllOptions() {
-        // Réinitialiser les boutons radio
-        radioArabic.setBackgroundResource(R.drawable.radio_unchecked);
-        radioEnglish.setBackgroundResource(R.drawable.radio_unchecked);
-        radioFrench.setImageResource(R.drawable.radio_unchecked);
+        radioArabic.setImageResource(android.R.color.transparent);
+        radioEnglish.setImageResource(android.R.color.transparent);
+        radioFrench.setImageResource(android.R.color.transparent);
     }
 
-    /**
-     * Confirme la sélection et passe à l'écran suivant
-     */
     private void confirmSelection() {
-        // Sauvegarder la langue sélectionnée dans SessionManager
         SessionManager.getInstance().setCurrentLng(this, selectedLanguage);
         LocaleHelper.setLocale(this, selectedLanguage);
         Log.d("LangueActivity", "confirmSelection selectedLanguage=" + selectedLanguage);
 
-        // Afficher un message de confirmation
-        String languageName = getLanguageName(selectedLanguage);
-        Toast.makeText(this, "Langue sélectionnée : " + languageName,
-                Toast.LENGTH_SHORT).show();
-
-        // Naviguer vers l'activité principale
         Intent intent = new Intent(LangueActivity.this, HomeTnActivity.class);
         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
         startActivity(intent);
         finish();
     }
 
-    /**
-     * Charge la langue sauvegardée depuis SessionManager
-     */
     private void loadSavedLanguage() {
         String savedLanguage = SessionManager.getInstance().getCurrentLang(this);
         if (savedLanguage == null || savedLanguage.isEmpty()) {
@@ -153,22 +114,5 @@ public class LangueActivity extends BaseActivity {
         }
         Log.d("LangueActivity", "loadSavedLanguage -> " + savedLanguage);
         selectLanguage(savedLanguage);
-    }
-
-    /**
-     * Retourne le nom de la langue en fonction du code
-     * @param languageCode Code de la langue
-     * @return Nom de la langue
-     */
-    private String getLanguageName(String languageCode) {
-        if (languageCode.equals(Constant.AR)) {
-            return "العربية";
-        } else if (languageCode.equals(Constant.EN)) {
-            return "English";
-        } else if (languageCode.equals(Constant.FR)) {
-            return "Français";
-        } else {
-            return "Unknown";
-        }
     }
 }
