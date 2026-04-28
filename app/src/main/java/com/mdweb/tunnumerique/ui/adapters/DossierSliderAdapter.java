@@ -68,7 +68,7 @@ public class DossierSliderAdapter extends RecyclerView.Adapter<DossierSliderAdap
 
         // Titre du dossier
         if (holder.title != null) {
-            holder.title.setText(dossier.getTitleNews());
+            holder.title.setText(dossier.getTitleNews() != null ? dossier.getTitleNews().toUpperCase(Locale.getDefault()) : "");
             holder.title.setVisibility(View.VISIBLE);
         }
 
@@ -78,7 +78,8 @@ public class DossierSliderAdapter extends RecyclerView.Adapter<DossierSliderAdap
                 holder.author.setText("Par " + author.trim());
                 holder.author.setVisibility(View.VISIBLE);
             } else {
-                holder.author.setVisibility(View.GONE);
+                holder.author.setText("Par Tunisie Numérique");
+                holder.author.setVisibility(View.VISIBLE);
             }
         }
 
@@ -256,8 +257,11 @@ public class DossierSliderAdapter extends RecyclerView.Adapter<DossierSliderAdap
         for (int i = 0; i < count; i++) {
             ImageView dot = new ImageView(context);
 
-            LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(12, 12);
-            params.setMargins(4, 0, 4, 0);
+            LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
+                    LinearLayout.LayoutParams.WRAP_CONTENT,
+                    LinearLayout.LayoutParams.WRAP_CONTENT
+            );
+            params.setMargins(3, 0, 3, 0);
             dot.setLayoutParams(params);
 
             if (i == currentPosition) {

@@ -7,65 +7,58 @@
     android:layout_height="match_parent"
     tools:context=".ui.activitys.HomeTnActivity">
 
-    <!-- Contenu principal -->
     <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:background="#FFFFFF">
 
-        <!-- HEADER -->
         <LinearLayout
             android:id="@+id/header"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="80dp"
             android:background="#FFFFFF"
-            android:elevation="4dp"
             android:gravity="center_vertical"
             android:orientation="horizontal"
-            android:padding="16dp">
+            android:paddingStart="24dp"
+            android:paddingTop="28dp"
+            android:paddingEnd="24dp"
+            android:paddingBottom="8dp">
 
-            <!-- Zone de clic agrandie via padding -->
             <ImageView
                 android:id="@+id/menu_icon"
-                android:layout_width="48dp"
-                android:layout_height="48dp"
-                android:src="@drawable/icon_menu"
+                android:layout_width="24dp"
+                android:layout_height="14dp"
                 android:contentDescription="Menu"
-                android:clickable="true"
-                android:focusable="true"
-                android:padding="12dp"
-                android:background="?attr/selectableItemBackgroundBorderless"/>
+                android:src="@drawable/icon_menu" />
 
             <ImageView
                 android:id="@+id/headerLogo"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="8dp"
-                android:layout_marginEnd="8dp"
-                android:layout_weight="1"
-                android:scaleType="fitCenter"
-                android:src="@drawable/nv_logo_tn"
-                android:contentDescription="Logo Home"/>
+                android:layout_width="69dp"
+                android:layout_height="32dp"
+                android:layout_marginStart="60dp"
+                android:adjustViewBounds="true"
+                android:contentDescription="Logo Home"
+                android:src="@drawable/nv_logo_tn" />
 
             <TextView
                 android:id="@+id/language_button"
-                android:layout_width="wrap_content"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:gravity="end"
                 android:text="FR"
+                android:textColor="#000000"
                 android:textSize="14sp"
-                android:textColor="#4A4A4A"
-                android:fontFamily="sans-serif-medium"
-                android:padding="12dp"
-                android:clickable="true"
-                android:focusable="true"
-                android:background="?attr/selectableItemBackgroundBorderless"/>
+                android:textStyle="bold"
+                app:drawableEndCompat="@drawable/ic_arrow_down_sign_to_navigate"
+                android:drawablePadding="3dp" />
         </LinearLayout>
 
-        <!-- Container principal avec ScrollView -->
         <androidx.core.widget.NestedScrollView
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_below="@id/header"
             android:layout_above="@id/bottomNavContainer"
+            android:layout_below="@id/header"
             android:fillViewport="true">
 
             <LinearLayout
@@ -73,98 +66,91 @@
                 android:layout_height="wrap_content"
                 android:orientation="vertical">
 
-                <LinearLayout
+                <androidx.constraintlayout.widget.ConstraintLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:orientation="vertical"
-                    android:paddingTop="8dp"
+                    android:paddingStart="24dp"
+                    android:paddingTop="0dp"
+                    android:paddingEnd="24dp"
                     android:paddingBottom="8dp">
 
-                    <androidx.constraintlayout.widget.ConstraintLayout
-                        android:layout_width="match_parent"
+                    <TextView
+                        android:id="@+id/categoryTitle_h"
+                        android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:paddingStart="16dp"
-                        android:paddingEnd="16dp"
-                        android:paddingBottom="16dp">
+                        android:text="A LA UNE"
+                        android:textColor="#000000"
+                        android:textSize="11sp"
+                        android:textStyle="bold"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent" />
 
-                        <TextView
-                            android:id="@+id/categoryTitle_h"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="A LA UNE"
-                            android:textSize="15sp"
-                            android:textColor="#FF0C0805"
-                            android:textStyle="bold"
-                            android:fontFamily="sans-serif-bold"
-                            android:letterSpacing="0.05"
-                            app:layout_constraintStart_toStartOf="parent"
-                            app:layout_constraintTop_toTopOf="parent"
-                            app:layout_constraintBottom_toBottomOf="parent" />
+                    <View
+                        android:id="@+id/barCategorie"
+                        android:layout_width="20dp"
+                        android:layout_height="2dp"
+                        android:layout_marginStart="4dp"
+                        android:background="@drawable/bg_bar_categorie"
+                        app:layout_constraintBottom_toBottomOf="@id/categoryTitle_h"
+                        app:layout_constraintStart_toEndOf="@id/categoryTitle_h"
+                        app:layout_constraintTop_toTopOf="@id/categoryTitle_h" />
+                </androidx.constraintlayout.widget.ConstraintLayout>
 
-                        <View
-                            android:id="@+id/barCategorie"
-                            android:layout_width="30dp"
-                            android:layout_height="4dp"
-                            android:layout_marginStart="4dp"
-                            android:background="@drawable/bg_bar_categorie"
-                            app:layout_constraintStart_toEndOf="@id/categoryTitle_h"
-                            app:layout_constraintTop_toTopOf="@id/categoryTitle_h"
-                            app:layout_constraintBottom_toBottomOf="@id/categoryTitle_h" />
-
-                    </androidx.constraintlayout.widget.ConstraintLayout>
-
-                    <androidx.viewpager2.widget.ViewPager2
-                        android:id="@+id/dossierViewPager"
-                        android:layout_width="match_parent"
-                        android:layout_height="340dp"
-                        android:clipToPadding="false"
-                        android:clipChildren="false"
-                        android:paddingStart="16dp"
-                        android:paddingEnd="16dp" />
-
-                </LinearLayout>
+                <androidx.viewpager2.widget.ViewPager2
+                    android:id="@+id/dossierViewPager"
+                    android:layout_width="match_parent"
+                    android:layout_height="305dp"
+                    android:clipChildren="false"
+                    android:clipToPadding="false"
+                    android:paddingStart="24dp"
+                    android:paddingEnd="24dp" />
 
                 <View
                     android:layout_width="match_parent"
                     android:layout_height="1dp"
-                    android:layout_marginTop="8dp"
-                    android:layout_marginBottom="8dp"
-                    android:background="#E0E0E0" />
+                    android:background="#E5E5E5" />
 
-                <!-- Section NEWS -->
                 <androidx.constraintlayout.widget.ConstraintLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:paddingStart="16dp"
-                    android:paddingEnd="16dp"
+                    android:paddingStart="24dp"
                     android:paddingTop="8dp"
-                    android:paddingBottom="8dp">
+                    android:paddingEnd="24dp"
+                    android:paddingBottom="4dp">
 
                     <TextView
                         android:id="@+id/newsSectionTitle"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="@string/actualite"
-                        android:textSize="15sp"
-                        android:textColor="#FF0C0805"
+                        android:text="NEWS"
+                        android:textColor="#000000"
+                        android:textSize="11sp"
                         android:textStyle="bold"
-                        android:fontFamily="sans-serif-bold"
-                        android:letterSpacing="0.05"
+                        app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toTopOf="parent"
-                        app:layout_constraintBottom_toBottomOf="parent" />
+                        app:layout_constraintTop_toTopOf="parent" />
 
                     <View
                         android:id="@+id/barNews"
-                        android:layout_width="30dp"
-                        android:layout_height="4dp"
+                        android:layout_width="20dp"
+                        android:layout_height="2dp"
                         android:layout_marginStart="4dp"
                         android:background="@drawable/bg_bar_categorie"
+                        app:layout_constraintBottom_toBottomOf="@id/newsSectionTitle"
                         app:layout_constraintStart_toEndOf="@id/newsSectionTitle"
-                        app:layout_constraintTop_toTopOf="@id/newsSectionTitle"
-                        app:layout_constraintBottom_toBottomOf="@id/newsSectionTitle" />
-
+                        app:layout_constraintTop_toTopOf="@id/newsSectionTitle" />
                 </androidx.constraintlayout.widget.ConstraintLayout>
+
+                <TextView
+                    android:id="@+id/newsSubtitle"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:paddingStart="24dp"
+                    android:paddingEnd="24dp"
+                    android:text="Lorem ipsum est simplement du faux texte"
+                    android:textColor="#9F9F9F"
+                    android:textSize="10sp" />
 
                 <androidx.recyclerview.widget.RecyclerView
                     android:id="@+id/newsRecyclerView"
@@ -172,17 +158,15 @@
                     android:layout_height="wrap_content"
                     android:nestedScrollingEnabled="false"
                     android:paddingBottom="80dp" />
-
             </LinearLayout>
-
         </androidx.core.widget.NestedScrollView>
 
         <FrameLayout
             android:id="@+id/fragment_container"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_below="@id/header"
             android:layout_above="@id/bottomNavContainer"
+            android:layout_below="@id/header"
             android:visibility="gone" />
 
         <FrameLayout
@@ -190,8 +174,8 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_alignParentBottom="true"
-            android:layout_marginStart="16dp"
-            android:layout_marginEnd="16dp"
+            android:layout_marginStart="24dp"
+            android:layout_marginEnd="24dp"
             android:layout_marginBottom="12dp"
             android:background="@drawable/bg_bottom_nav_rounded"
             android:elevation="8dp">
@@ -199,24 +183,17 @@
             <com.google.android.material.bottomnavigation.BottomNavigationView
                 android:id="@+id/bottomNavigationView"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:minHeight="48dp"
+                android:layout_height="50dp"
                 android:background="@android:color/transparent"
-                android:elevation="0dp"
-                app:elevation="0dp"
-                app:itemIconSize="22dp"
-                app:itemTextAppearance="@style/NavigationViewTextStyle"
-                app:itemIconPadding="2dp"
+                app:itemBackground="@android:color/transparent"
+                app:itemIconSize="24dp"
                 app:itemIconTint="@color/bottom_nav_color"
-                app:itemTextColor="@color/bottom_nav_color"
-                app:labelVisibilityMode="labeled"
-                app:menu="@menu/menu_bottom_navigation"/>
-
+                app:itemRippleColor="@android:color/transparent"
+                app:labelVisibilityMode="unlabeled"
+                app:menu="@menu/menu_bottom_navigation" />
         </FrameLayout>
-
     </RelativeLayout>
 
-    <!-- Overlay -->
     <View
         android:id="@+id/drawerOverlay"
         android:layout_width="match_parent"
@@ -226,17 +203,16 @@
         android:focusable="true"
         android:visibility="gone" />
 
-    <!-- NavigationView -->
     <com.google.android.material.navigation.NavigationView
         android:id="@+id/navigationView"
         android:layout_width="320dp"
         android:layout_height="match_parent"
         android:layout_gravity="start"
-        android:fitsSystemWindows="false"
         android:background="@drawable/nav_background_rounded"
-        app:insetForeground="@null"
         android:clickable="false"
+        android:fitsSystemWindows="false"
         android:focusable="false"
-        app:headerLayout="@layout/nav_header_menu"/>
+        app:headerLayout="@layout/nav_header_menu"
+        app:insetForeground="@null" />
 
 </androidx.drawerlayout.widget.DrawerLayout>

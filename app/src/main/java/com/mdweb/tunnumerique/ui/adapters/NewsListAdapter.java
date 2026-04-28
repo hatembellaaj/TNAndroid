@@ -2,6 +2,8 @@ package com.mdweb.tunnumerique.ui.adapters;
 
 import android.content.Context;
 import android.os.Build;
+import android.text.SpannableString;
+import android.text.style.ForegroundColorSpan;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -68,7 +70,7 @@ public class NewsListAdapter extends RecyclerView.Adapter<NewsListAdapter.NewsVi
         android.util.Log.d("NewsListAdapter", "Binding article " + position + ": " + news.getTitleNews());
 
         // Titre de l'article
-        holder.title.setText(news.getTitleNews());
+        holder.title.setText(news.getTitleNews() != null ? news.getTitleNews().toUpperCase(Locale.getDefault()) : "");
 
         boolean isArabic = isArabicLanguage();
         if (isArabic) {
@@ -91,7 +93,18 @@ public class NewsListAdapter extends RecyclerView.Adapter<NewsListAdapter.NewsVi
 
         // Date
         if (news.getDateNews() != null && !news.getDateNews().isEmpty()) {
-            holder.date.setText(formatDate(news.getDateNews()));
+            String author = "Tunisie Numérique";
+            if (news.getAuthorNameNews() != null && !news.getAuthorNameNews().trim().isEmpty()) {
+                author = news.getAuthorNameNews().trim();
+            }
+            String formattedDate = formatDate(news.getDateNews());
+            String row = "Par " + author + " | " + formattedDate;
+            SpannableString styled = new SpannableString(row);
+            int dateStart = row.lastIndexOf(formattedDate);
+            if (dateStart >= 0) {
+                styled.setSpan(new ForegroundColorSpan(0xFF88BD2E), dateStart, row.length(), 0);
+            }
+            holder.date.setText(styled);
             holder.date.setVisibility(View.VISIBLE);
         } else {
             holder.date.setVisibility(View.GONE);
@@ -257,13 +270,11 @@ public class NewsListAdapter extends RecyclerView.Adapter<NewsListAdapter.NewsVi
      */
     private String formatDate(String dateStr) {
         try {
-            // Essayer de parser la date (ajustez le format selon votre JSON)
             SimpleDateFormat inputFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault());
-            SimpleDateFormat outputFormat = new SimpleDateFormat("dd/MM/yyyy", Locale.getDefault());
+            SimpleDateFormat outputFormat = new SimpleDateFormat("dd MMMM yyyy", Locale.FRENCH);
             Date date = inputFormat.parse(dateStr);
             return outputFormat.format(date);
         } catch (Exception e) {
-            // Si le parsing échoue, retourner la date telle quelle
             return dateStr;
         }
     }
