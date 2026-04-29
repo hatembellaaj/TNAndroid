@@ -17,6 +17,6 @@
 
     <item
         android:id="@+id/nav_top24"
-        android:icon="@drawable/top_24"
-        android:title="Top24" />
+        android:icon="@drawable/icon_setting"
+        android:title="Paramètres" />
 </menu>
