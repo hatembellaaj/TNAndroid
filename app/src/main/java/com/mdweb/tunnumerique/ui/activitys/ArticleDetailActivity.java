@@ -123,7 +123,9 @@ public class ArticleDetailActivity extends BaseActivity {
                 startActivity(new Intent(ArticleDetailActivity.this, FavorisActivity.class));
                 return true;
             } else if (itemId == R.id.nav_top24) {
-                startActivity(new Intent(ArticleDetailActivity.this, PlusLusActivity.class));
+                Intent intent = new Intent(ArticleDetailActivity.this, MainActivity.class);
+                intent.putExtra("current", "ParametreFragment");
+                startActivity(intent);
                 return true;
             }
             return false;

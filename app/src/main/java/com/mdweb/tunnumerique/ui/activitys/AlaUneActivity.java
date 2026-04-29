@@ -151,7 +151,8 @@ public class AlaUneActivity extends BaseActivity {
                 return true;
 
             } else if (itemId == R.id.nav_top24) {
-                Intent intent = new Intent(AlaUneActivity.this, PlusLusActivity.class);
+                Intent intent = new Intent(AlaUneActivity.this, MainActivity.class);
+                intent.putExtra("current", "ParametreFragment");
                 startActivity(intent);
                 return true;
             }
@@ -289,7 +290,8 @@ public class AlaUneActivity extends BaseActivity {
         }
 
         if (item.getId().equals("top24")) {
-            Intent intent = new Intent(AlaUneActivity.this, PlusLusActivity.class);
+            Intent intent = new Intent(AlaUneActivity.this, MainActivity.class);
+            intent.putExtra("current", "ParametreFragment");
             startActivity(intent);
             return;
         }

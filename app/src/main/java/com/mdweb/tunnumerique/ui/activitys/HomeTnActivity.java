@@ -184,8 +184,8 @@ public class HomeTnActivity extends BaseActivity {
 
 
             } else if (itemId == R.id.nav_top24) {
-                // Rediriger vers MainActivity avec le fragment Plus Lus (Top24)
-                Intent intent = new Intent(HomeTnActivity.this, PlusLusActivity.class);
+                Intent intent = new Intent(HomeTnActivity.this, MainActivity.class);
+                intent.putExtra("current", "ParametreFragment");
                 startActivity(intent);
                 return true;
             }

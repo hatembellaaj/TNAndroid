@@ -220,7 +220,8 @@ public class FavorisActivity extends BaseActivity implements View.OnClickListene
                 return true;
 
             } else if (itemId == R.id.nav_top24) {
-                Intent intent = new Intent(FavorisActivity.this, PlusLusActivity.class);
+                Intent intent = new Intent(FavorisActivity.this, MainActivity.class);
+                intent.putExtra("current", "ParametreFragment");
                 startActivity(intent);
                 return true;
             }

@@ -331,7 +331,9 @@ public class PlusLusActivity extends BaseActivity {
                 return true;
 
             } else if (itemId == R.id.nav_top24) {
-                // Déjà sur cette page
+                Intent intent = new Intent(PlusLusActivity.this, MainActivity.class);
+                intent.putExtra("current", "ParametreFragment");
+                startActivity(intent);
                 return true;
             }
 
