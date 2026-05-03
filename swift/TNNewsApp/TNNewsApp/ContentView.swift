@@ -103,7 +103,11 @@ struct ContentView: View {
                             }
                         }
                     }
-                    .tabItem { Label("Home", systemImage: "house") }
+                    .tabItem {
+                        Image("Home")
+                            .renderingMode(.template)
+                        Text("Home")
+                    }
                     .tag(0)
 
                     NavigationStack {
@@ -129,20 +133,34 @@ struct ContentView: View {
                         }
                         .navigationTitle("Prières")
                     }
-                    .tabItem { Label("Prières", systemImage: "clock") }
+                    .tabItem {
+                        Image("Priere")
+                            .renderingMode(.template)
+                        Text("Prières")
+                    }
                     .tag(1)
 
                     NavigationStack {
                         FavoritesNewsFeedView(favoriteItems: $favoriteItems)
                     }
-                    .tabItem { Label("Favoris", systemImage: "bookmark") }
+                    .tabItem {
+                        Image("Favorite")
+                            .renderingMode(.template)
+                        Text("Favoris")
+                    }
                     .tag(2)
 
                     NavigationStack {
-                        Text("Paramètres")
-                            .navigationTitle("Paramètres")
+                        Top24NewsFeedView(
+                            selectedLanguage: selectedLanguage,
+                            favoriteItems: $favoriteItems
+                        )
                     }
-                    .tabItem { Label("Paramètres", systemImage: "gearshape") }
+                    .tabItem {
+                        Image("Top24")
+                            .renderingMode(.template)
+                        Text("Top 24h")
+                    }
                     .tag(3)
                 }
                 .tint(Color(androidGreen))
@@ -176,6 +194,7 @@ struct ContentView: View {
                 showSplash = false
             }
         }
+        .environment(\.layoutDirection, selectedLanguage == .ar ? .rightToLeft : .leftToRight)
     }
 
     @MainActor
@@ -343,47 +362,54 @@ struct LegacySideMenuView: View {
     let onSelectMenuItem: (MenuDestination) -> Void
     let onClose: () -> Void
 
+    private var primaryCategoryItem: (label: String, filter: String?) {
+        switch selectedLanguage {
+        case .fr: return ("A la une", "À la une")
+        case .en: return ("Top stories", "Top stories")
+        case .ar: return ("أهم الأخبار", "أهم الأخبار")
+        }
+    }
+
     private var categoryItems: [(label: String, filter: String?)] {
         switch selectedLanguage {
         case .fr:
             return [
-                ("À la une", "À la une"),
-                ("Actualités", "Actualités"),
                 ("Monde", "Monde"),
                 ("Politique", "Politique"),
                 ("Economie", "Economie"),
-                ("Autos", "Autos"),
+                ("Societe", "Société"),
                 ("Sport", "Sport"),
                 ("Tech & net", "Tech"),
-                ("Société", "Société"),
-                ("Recette", "Recette")
+                ("Life Style", "Life Style")
             ]
         case .en:
             return [
-                ("Top stories", "Top stories"),
-                ("News", "News"),
                 ("World", "World"),
                 ("Politics", "Politics"),
                 ("Economy", "Economy"),
-                ("Autos", "Autos"),
-                ("Sports", "Sports"),
-                ("Tech", "Tech"),
                 ("Society", "Society"),
-                ("Recipes", "Recipes")
+                ("Sports", "Sports"),
+                ("Tech & net", "Tech"),
+                ("Lifestyle", "Lifestyle")
             ]
         case .ar:
             return [
-                ("أهم الأخبار", "أهم الأخبار"),
-                ("الأخبار", "الأخبار"),
                 ("العالم", "العالم"),
                 ("سياسة", "سياسة"),
                 ("اقتصاد", "اقتصاد"),
-                ("سيارات", "سيارات"),
+                ("مجتمع", "مجتمع"),
                 ("رياضة", "رياضة"),
                 ("تكنولوجيا", "تكنولوجيا"),
-                ("مجتمع", "مجتمع"),
-                ("وصفات", "وصفات")
+                ("نمط الحياة", "نمط الحياة")
             ]
+        }
+    }
+
+    private var videosLabel: String {
+        switch selectedLanguage {
+        case .fr: return "Videos"
+        case .en: return "Videos"
+        case .ar: return "فيديو"
         }
     }
 
@@ -421,104 +447,138 @@ struct LegacySideMenuView: View {
 
     var body: some View {
         VStack(spacing: 0) {
-            HStack(alignment: .top) {
-                VStack(alignment: .leading, spacing: 4) {
-                    HStack(spacing: 6) {
-                        Text("T")
-                            .font(.system(size: 24, weight: .heavy))
-                            .foregroundStyle(.white)
-                            .frame(width: 42, height: 42)
-                            .background(Color(androidGreen))
-                        Text("N")
-                            .font(.system(size: 24, weight: .heavy))
-                            .foregroundStyle(.white)
-                            .frame(width: 42, height: 42)
-                            .background(Color(androidGreen))
+            // Header: title + small TN logo, X close button top-right
+            ZStack(alignment: .topTrailing) {
+                VStack(spacing: 4) {
+                    HStack(alignment: .top, spacing: 4) {
+                        Text(menuTitle)
+                            .font(.system(size: 22, weight: .heavy))
+                            .foregroundStyle(Color(androidGreen))
+                        TNCompactLogo()
+                            .scaleEffect(0.55, anchor: .center)
+                            .frame(width: 46, height: 28)
+                            .offset(y: -10)
                     }
-                    Text(menuTitle)
-                        .multilineTextAlignment(selectedLanguage == .ar ? .trailing : .leading)
-                        .font(.system(size: 19, weight: .heavy))
-                        .foregroundStyle(Color(androidGreen))
-                        .frame(maxWidth: .infinity, alignment: selectedLanguage == .ar ? .trailing : .leading)
                     Text(menuSubtitle)
-                        .multilineTextAlignment(selectedLanguage == .ar ? .trailing : .leading)
-                        .font(.system(size: 10, weight: .bold))
+                        .font(.system(size: 11, weight: .bold))
                         .foregroundStyle(Color(androidGreen).opacity(0.85))
-                        .frame(maxWidth: .infinity, alignment: selectedLanguage == .ar ? .trailing : .leading)
                 }
-                Spacer()
+                .frame(maxWidth: .infinity)
+                .padding(.top, 56)
+                .padding(.bottom, 18)
+
                 Button(action: onClose) {
                     Image(systemName: "xmark.circle")
-                        .font(.system(size: 28, weight: .regular))
+                        .font(.system(size: 26, weight: .regular))
                         .foregroundStyle(.black.opacity(0.75))
                 }
+                .padding(.top, 16)
+                .padding(.trailing, 18)
             }
-            .padding(20)
             .background(Color.white)
 
-            VStack(spacing: 12) {
-                ForEach(categoryItems, id: \.label) { item in
-                    Button {
-                        selectedCategoryFilter = item.filter
-                        onSelectMenuItem(.news)
-                    } label: {
-                        HStack {
-                            Text(item.label)
-                                .font(.system(size: 20, weight: .semibold))
-                                .foregroundStyle(item.filter == selectedCategoryFilter ? Color(androidGreen) : .black)
-                            Spacer()
-                        }
-                        .padding(.horizontal, 18)
-                        .frame(height: 56)
-                        .background(Color("#ECEEEE"))
-                        .overlay(
-                            RoundedRectangle(cornerRadius: 16)
-                                .stroke(item.filter == selectedCategoryFilter ? Color(androidGreen) : Color.clear, lineWidth: 2)
-                        )
-                        .clipShape(RoundedRectangle(cornerRadius: 16))
-                    }
-                    .buttonStyle(.plain)
+            // "À la une" alone in its own card
+            VStack(spacing: 0) {
+                menuCategoryButton(label: primaryCategoryItem.label, filter: primaryCategoryItem.filter)
+            }
+            .background(Color("#ECEEEE"))
+            .clipShape(RoundedRectangle(cornerRadius: 14, style: .continuous))
+            .padding(.horizontal, 18)
+            .padding(.top, 18)
+
+            // Categories card (Monde, Politique, ..., Videos)
+            VStack(spacing: 0) {
+                ForEach(Array(categoryItems.enumerated()), id: \.offset) { _, item in
+                    menuCategoryButton(label: item.label, filter: item.filter)
+                    Divider().padding(.leading, 18)
                 }
+                videosMenuButton()
+            }
+            .background(Color("#ECEEEE"))
+            .clipShape(RoundedRectangle(cornerRadius: 14, style: .continuous))
+            .padding(.horizontal, 18)
+            .padding(.top, 16)
+
+            // About / Settings (gray, separators)
+            VStack(spacing: 0) {
+                Button {
+                    onSelectMenuItem(.about)
+                } label: {
+                    HStack {
+                        Text(aboutLabel)
+                            .font(.system(size: 17, weight: .medium))
+                            .foregroundStyle(.gray)
+                        Spacer()
+                    }
+                    .padding(.horizontal, 18)
+                    .frame(height: 52)
+                }
+                .buttonStyle(.plain)
+
+                Divider().padding(.leading, 18)
+
+                Button {
+                    onSelectMenuItem(.settings)
+                } label: {
+                    HStack {
+                        Text(settingsLabel)
+                            .font(.system(size: 17, weight: .medium))
+                            .foregroundStyle(.gray)
+                        Spacer()
+                    }
+                    .padding(.horizontal, 18)
+                    .frame(height: 52)
+                }
+                .buttonStyle(.plain)
             }
             .padding(.horizontal, 18)
-            .padding(.vertical, 12)
+            .padding(.top, 24)
 
-            Divider().padding(.top, 4)
-
-            Button {
-                onSelectMenuItem(.about)
-            } label: {
-                HStack {
-                    Text(aboutLabel)
-                        .font(.system(size: 20, weight: .medium))
-                        .foregroundStyle(.gray)
-                    Spacer()
-                }
-                .padding(.horizontal, 18)
-                .frame(height: 62)
-            }
-            .buttonStyle(.plain)
-
-            Divider()
-            Button {
-                onSelectMenuItem(.settings)
-            } label: {
-                HStack {
-                    Text(settingsLabel)
-                        .font(.system(size: 20, weight: .medium))
-                        .foregroundStyle(.gray)
-                    Spacer()
-                }
-                .padding(.horizontal, 18)
-                .frame(height: 62)
-            }
-            .buttonStyle(.plain)
             Spacer()
         }
         .frame(maxHeight: .infinity, alignment: .top)
         .background(Color.white)
         .clipShape(RoundedRectangle(cornerRadius: 22, style: .continuous))
         .padding(.vertical, 10)
+    }
+
+    private func menuCategoryButton(label: String, filter: String?) -> some View {
+        Button {
+            selectedCategoryFilter = filter
+            onSelectMenuItem(.news)
+        } label: {
+            HStack {
+                Text(label)
+                    .font(.system(size: 17, weight: .semibold))
+                    .foregroundStyle(isSelectedCategory(filter) ? Color(androidGreen) : .black)
+                Spacer()
+            }
+            .padding(.horizontal, 18)
+            .frame(height: 52)
+            .contentShape(Rectangle())
+        }
+        .buttonStyle(.plain)
+    }
+
+    private func videosMenuButton() -> some View {
+        Button {
+            onSelectMenuItem(.videos)
+        } label: {
+            HStack {
+                Text(videosLabel)
+                    .font(.system(size: 17, weight: .semibold))
+                    .foregroundStyle(selectedDestination == .videos ? Color(androidGreen) : .black)
+                Spacer()
+            }
+            .padding(.horizontal, 18)
+            .frame(height: 52)
+            .contentShape(Rectangle())
+        }
+        .buttonStyle(.plain)
+    }
+
+    private func isSelectedCategory(_ filter: String?) -> Bool {
+        selectedDestination == .news && filter == selectedCategoryFilter
     }
 }
 
@@ -896,6 +956,187 @@ struct FavoritesNewsFeedView: View {
     }
 }
 
+struct Top24NewsFeedView: View {
+    let selectedLanguage: UiLanguage
+    @Binding var favoriteItems: [BootstrapViewModel.NewsRow]
+
+    @State private var items: [BootstrapViewModel.NewsRow] = []
+    @State private var isLoading = false
+    @State private var errorMessage: String?
+    @State private var selectedItem: BootstrapViewModel.NewsRow?
+
+    private var favoriteIDs: Set<String> { Set(favoriteItems.map(\.id)) }
+
+    private var sectionTitle: String {
+        switch selectedLanguage {
+        case .fr: return "TOP 24H"
+        case .en: return "TOP 24H"
+        case .ar: return "الأكثر قراءة"
+        }
+    }
+
+    private var emptyMessage: String {
+        switch selectedLanguage {
+        case .fr: return "Aucun article disponible pour le moment."
+        case .en: return "No articles available right now."
+        case .ar: return "لا توجد مقالات متوفرة حالياً."
+        }
+    }
+
+    var body: some View {
+        ScrollView {
+            VStack(alignment: .leading, spacing: 14) {
+                NewsSectionHeader(title: sectionTitle)
+                    .padding(.top, 8)
+
+                if isLoading {
+                    ProgressView()
+                        .frame(maxWidth: .infinity)
+                        .padding(.vertical, 24)
+                } else if let errorMessage {
+                    Text(errorMessage)
+                        .foregroundStyle(.red)
+                        .font(.system(size: 14, weight: .medium))
+                        .padding(.horizontal, 8)
+                        .padding(.vertical, 10)
+                } else if items.isEmpty {
+                    Text(emptyMessage)
+                        .font(.system(size: 15, weight: .medium))
+                        .foregroundStyle(.secondary)
+                        .padding(.horizontal, 8)
+                        .padding(.vertical, 10)
+                } else {
+                    VStack(spacing: 12) {
+                        ForEach(items) { item in
+                            VStack(spacing: 8) {
+                                NewsFeedRowCard(item: item)
+                                    .contentShape(Rectangle())
+                                    .onTapGesture { selectedItem = item }
+                                    .zIndex(0)
+
+                                TNNewsCardActionsRow(
+                                    isFavorite: favoriteIDs.contains(item.id),
+                                    onToggleFavorite: { toggleFavorite(item) },
+                                    onShare: { share(item) }
+                                )
+                                .padding(.horizontal, 12)
+                                .zIndex(1)
+                            }
+                        }
+                    }
+                }
+            }
+            .padding(.horizontal, 12)
+            .padding(.vertical, 8)
+        }
+        .background(Color(newsScreenBackground))
+        .navigationDestination(item: $selectedItem) { item in
+            NewsHTMLDetailView(item: item)
+        }
+        .task { await load() }
+        .onChange(of: selectedLanguage) { _, _ in
+            Task { await load() }
+        }
+    }
+
+    @MainActor
+    private func load() async {
+        isLoading = true
+        errorMessage = nil
+        defer { isLoading = false }
+
+        guard let endpoint = selectedLanguage.endpointURL(for: .mostRead),
+              let url = URL(string: endpoint) else {
+            errorMessage = "Endpoint Top 24h indisponible."
+            items = []
+            return
+        }
+
+        print("[TN-iOS][Top24] Loading from: \(url.absoluteString)")
+
+        do {
+            let (data, response) = try await URLSession.shared.data(from: url)
+            if let http = response as? HTTPURLResponse {
+                print("[TN-iOS][Top24] HTTP status: \(http.statusCode)")
+            }
+            let payload = try JSONSerialization.jsonObject(with: data)
+            let json = payload as? [String: Any]
+            let rootArray = payload as? [[String: Any]]
+            let arrays: [[String: Any]] =
+                (json?["data"] as? [[String: Any]]) ??
+                (json?["results"] as? [[String: Any]]) ??
+                (json?["news"] as? [[String: Any]]) ??
+                (json?["popular"] as? [[String: Any]]) ??
+                rootArray ?? []
+
+            items = arrays.enumerated().map { idx, row in
+                let id = (row["News_ID"] as? String) ??
+                    (row["id"] as? String) ??
+                    (row["id_news"] as? String) ??
+                    String(idx)
+
+                let rawTitle = (row["News_Titre"] as? String) ??
+                    (row["title"] as? String) ??
+                    (row["titre"] as? String) ??
+                    "Sans titre"
+
+                let rawSummary = (row["News_Description"] as? String) ??
+                    (row["description"] as? String) ??
+                    (row["resume"] as? String) ?? ""
+
+                let rawCategory = (row["News_list_category"] as? String) ??
+                    (row["News_Categorie"] as? String) ??
+                    (row["category"] as? String) ?? ""
+
+                let rawContent = (row["News_Contenu"] as? String) ??
+                    (row["content"] as? String) ?? rawSummary
+
+                let date = (row["News_Format_Date"] as? String) ??
+                    (row["News_Date"] as? String) ??
+                    (row["date"] as? String) ?? ""
+
+                let shareURL = (row["News_Url_Partage"] as? String) ??
+                    (row["shareURL"] as? String) ?? ""
+
+                let imageURL = (row["News_Url_Image"] as? String) ??
+                    (row["imageURL"] as? String) ?? ""
+
+                return BootstrapViewModel.NewsRow(
+                    id: id,
+                    title: rawTitle,
+                    category: rawCategory,
+                    summary: rawSummary,
+                    contentHTML: rawContent,
+                    date: date,
+                    shareURL: shareURL,
+                    imageURL: imageURL
+                )
+            }
+            print("[TN-iOS][Top24] Loaded \(items.count) articles")
+        } catch {
+            errorMessage = "Erreur chargement Top 24h: \(error.localizedDescription)"
+            print("[TN-iOS][Top24] Error: \(error)")
+            items = []
+        }
+    }
+
+    private func toggleFavorite(_ item: BootstrapViewModel.NewsRow) {
+        if let idx = favoriteItems.firstIndex(where: { $0.id == item.id }) {
+            favoriteItems.remove(at: idx)
+        } else {
+            favoriteItems.insert(item, at: 0)
+        }
+    }
+
+    private func share(_ item: BootstrapViewModel.NewsRow) {
+        let text = [item.title, item.shareURL].filter { !$0.isEmpty }.joined(separator: "\n")
+        guard let scene = UIApplication.shared.connectedScenes.first as? UIWindowScene,
+              let root = scene.windows.first?.rootViewController else { return }
+        let vc = UIActivityViewController(activityItems: [text], applicationActivities: nil)
+        root.present(vc, animated: true)
+    }
+}
+
 private enum TNFavoriteArticlesStorage {
     private static let key = "tn_ios_favorite_articles_v1"
 
@@ -923,18 +1164,24 @@ private struct TNNewsCardActionsRow: View {
             Spacer()
 
             Button(action: onToggleFavorite) {
-                Image(systemName: isFavorite ? "bookmark.fill" : "bookmark")
-                    .font(.system(size: 22, weight: .semibold))
-                    .foregroundStyle(isFavorite ? Color(androidGreen) : .gray)
+                Image("Favorite")
+                    .renderingMode(.template)
+                    .resizable()
+                    .scaledToFit()
+                    .frame(width: 20, height: 24)
+                    .foregroundStyle(isFavorite ? Color(androidGreen) : Color(white: 0.745))
             }
             .buttonStyle(.plain)
             .contentShape(Rectangle())
             .padding(4)
 
             Button(action: onShare) {
-                Image(systemName: "square.and.arrow.up")
-                    .font(.system(size: 22, weight: .semibold))
-                    .foregroundStyle(.gray)
+                Image("Share")
+                    .renderingMode(.template)
+                    .resizable()
+                    .scaledToFit()
+                    .frame(width: 22, height: 22)
+                    .foregroundStyle(Color(white: 0.745))
             }
             .buttonStyle(.plain)
             .contentShape(Rectangle())
